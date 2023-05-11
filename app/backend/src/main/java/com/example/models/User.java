@@ -1,14 +1,16 @@
 package com.example.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class User {
     @Id
-    private Long id;
+    private String id;
     private String name;
     private String surname;
+    @Indexed(unique = true)
     private String email;
     private String password;
 
@@ -22,11 +24,11 @@ public class User {
         this.password = password;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,11 +1,13 @@
 package com.example.models;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Document
 public class ShoppingList {
+    @Id
     private String id;
     private List<Item> itemList;
 
