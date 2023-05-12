@@ -17,13 +17,13 @@ public class FamilyController {
     private FamilyService familyService;
 
     @GetMapping
-    public List<Family> getAllFamilies() {
-        return familyService.getAllFamilies();
+    public List<Family> getAll() {
+        return familyService.getAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Family> getFamilyById(@PathVariable String id) {
-        Family family = familyService.getFamilyById(id);
+    public ResponseEntity<Family> getFamily(@PathVariable String id) {
+        Family family = familyService.findById(id);
         if (family != null) {
             return new ResponseEntity<>(family, HttpStatus.OK);
         } else {
@@ -32,8 +32,8 @@ public class FamilyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFamilyById(@PathVariable String id) {
-        boolean success = familyService.deleteFamilyById(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        boolean success = familyService.delete(id);
         if (success) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
@@ -42,19 +42,19 @@ public class FamilyController {
     }
 
     @PostMapping
-    public ResponseEntity<Family> createFamily(@RequestBody Family family) {
-        Family createdFamily = familyService.createFamily(family);
+    public ResponseEntity<Family> create(@RequestBody Family family) {
+        Family createdFamily = familyService.save(family);
         return new ResponseEntity<>(createdFamily, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Family> updateFamily(@PathVariable String id, @RequestBody Family updatedFamily) {
-        Optional<Family> familyOptional = Optional.ofNullable(familyService.getFamilyById(id));
+    public ResponseEntity<Family> update(@PathVariable String id, @RequestBody Family updatedFamily) {
+        Optional<Family> familyOptional = Optional.ofNullable(familyService.findById(id));
         if (familyOptional.isPresent()) {
             Family existingFamily = familyOptional.get();
             existingFamily.setUsersList(updatedFamily.getUsersList());
             existingFamily.setShoppingList(updatedFamily.getShoppingList());
-            Family updatedFamilyResult = familyService.createFamily(existingFamily);
+            Family updatedFamilyResult = familyService.save(existingFamily);
             return ResponseEntity.ok(updatedFamilyResult);
         } else {
             return ResponseEntity.notFound().build();

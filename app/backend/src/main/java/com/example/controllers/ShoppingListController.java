@@ -16,7 +16,7 @@ public class ShoppingListController {
     private ShoppingListService shoppingListService;
 
     @GetMapping
-    public List<ShoppingList> getAllShoppingLists() {
-        return shoppingListService.getAllShoppingLists();
+    public List<ShoppingList> getAll() {
+        return shoppingListService.getAll();
     }
 }

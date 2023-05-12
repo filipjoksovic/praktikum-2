@@ -13,7 +13,7 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    public List<Item> getAllItems() {
+    public List<Item> getAll() {
         return itemRepository.findAll();
     }
 

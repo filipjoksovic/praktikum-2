@@ -13,14 +13,16 @@ public class FamilyService {
     @Autowired
     private FamilyRepository familyRepository;
 
-    public List<Family> getAllFamilies(){
+    public List<Family> getAll() {
         return familyRepository.findAll();
     }
-    public Family getFamilyById(String id) {
+
+    public Family findById(String id) {
         Optional<Family> familyOptional = familyRepository.findById(id);
         return familyOptional.orElse(null);
     }
-    public boolean deleteFamilyById(String id) {
+
+    public boolean delete(String id) {
         Optional<Family> familyOptional = familyRepository.findById(id);
         if (familyOptional.isPresent()) {
             familyRepository.deleteById(id);
@@ -29,7 +31,8 @@ public class FamilyService {
             return false;
         }
     }
-    public Family createFamily(Family family) {
+
+    public Family save(Family family) {
         return familyRepository.save(family);
     }
 
