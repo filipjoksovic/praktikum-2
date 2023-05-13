@@ -1,4 +1,4 @@
-package com.example.models;
+package com.wishlist.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 

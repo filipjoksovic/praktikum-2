@@ -6,11 +6,43 @@ export interface ICustomTextInputProps {
   labelText: string;
   value: string;
   name: string;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  textContentType?: //TODO make separate type
+  | 'none'
+    | 'URL'
+    | 'addressCity'
+    | 'addressCityAndState'
+    | 'addressState'
+    | 'countryName'
+    | 'creditCardNumber'
+    | 'emailAddress'
+    | 'familyName'
+    | 'fullStreetAddress'
+    | 'givenName'
+    | 'jobTitle'
+    | 'location'
+    | 'middleName'
+    | 'name'
+    | 'namePrefix'
+    | 'nameSuffix'
+    | 'nickname'
+    | 'organizationName'
+    | 'postalCode'
+    | 'streetAddressLine1'
+    | 'streetAddressLine2'
+    | 'sublocality'
+    | 'telephoneNumber'
+    | 'username'
+    | 'password'
+    | 'newPassword'
+    | 'oneTimeCode'
+    | undefined;
   onChangeEmit: (data: {name: string; value: string}) => any;
 }
 
 export const CustomTextInput = (props: ICustomTextInputProps) => {
-  const {labelText, onChangeEmit, name} = props;
+  const {labelText, onChangeEmit, name, autoCapitalize, textContentType} =
+    props;
 
   const [isFocused, setIsFocused] = useState(false);
   const [value, setValue] = useState('');
@@ -38,6 +70,8 @@ export const CustomTextInput = (props: ICustomTextInputProps) => {
         onBlur={changeIsFocused}
         onChangeText={handleTextChange}
         value={value}
+        autoCapitalize={autoCapitalize ?? 'sentences'}
+        textContentType={textContentType ?? 'emailAddress'}
       />
     </View>
   );

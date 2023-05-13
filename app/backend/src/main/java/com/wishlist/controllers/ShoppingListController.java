@@ -1,7 +1,7 @@
-package com.example.controllers;
+package com.wishlist.controllers;
 
-import com.example.models.ShoppingList;
-import com.example.services.ShoppingListService;
+import com.wishlist.models.ShoppingList;
+import com.wishlist.services.ShoppingListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

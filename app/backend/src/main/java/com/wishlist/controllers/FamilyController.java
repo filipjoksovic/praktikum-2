@@ -1,7 +1,7 @@
-package com.example.controllers;
+package com.wishlist.controllers;
 
-import com.example.models.Family;
-import com.example.services.FamilyService;
+import com.wishlist.models.Family;
+import com.wishlist.services.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

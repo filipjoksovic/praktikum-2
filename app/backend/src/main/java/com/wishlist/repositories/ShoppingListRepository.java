@@ -1,6 +1,6 @@
-package com.example.repositories;
+package com.wishlist.repositories;
 
-import com.example.models.ShoppingList;
+import com.wishlist.models.ShoppingList;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

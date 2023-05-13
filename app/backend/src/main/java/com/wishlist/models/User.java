@@ -1,4 +1,4 @@
-package com.example.models;
+package com.wishlist.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -20,6 +20,11 @@ public class User {
     public User(String name, String surname, String email, String password) {
         this.name = name;
         this.surname = surname;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }

@@ -1,7 +1,7 @@
-package com.example.services;
+package com.wishlist.services;
 
-import com.example.models.ShoppingList;
-import com.example.repositories.ShoppingListRepository;
+import com.wishlist.models.ShoppingList;
+import com.wishlist.repositories.ShoppingListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

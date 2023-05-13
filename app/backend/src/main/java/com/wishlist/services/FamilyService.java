@@ -1,7 +1,7 @@
-package com.example.services;
+package com.wishlist.services;
 
-import com.example.models.Family;
-import com.example.repositories.FamilyRepository;
+import com.wishlist.models.Family;
+import com.wishlist.repositories.FamilyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
