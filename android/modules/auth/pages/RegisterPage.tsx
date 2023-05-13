@@ -2,6 +2,7 @@ import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {BUTTONS, STYLESHEET} from '../../../resources/styles/STYLESHEET';
 import {AppLogo, IAppLogoContext} from '../../shared/AppLogo';
 import {CustomTextInput} from '../../shared/components/CustomTextInput';
+import {CustomButton} from '../../shared/components/CustomButton';
 
 export const RegisterPage = () => {
   const stylesheet = StyleSheet.create({
@@ -21,17 +22,21 @@ export const RegisterPage = () => {
     <ScrollView
       style={{
         ...stylesheet.container,
+        padding: 20,
+
+        height: '100%',
       }}
       contentContainerStyle={{alignItems: 'center'}}>
       <AppLogo context={IAppLogoContext.REGISTER} />
 
-      <View style={{width: '100%', gap: 40}}>
+      <View style={{width: '100%', padding: 10, gap: 40}}>
         <CustomTextInput labelText={'Email'} />
         <CustomTextInput labelText={'Password'} />
       </View>
-      <Pressable style={{...BUTTONS.primary, marginTop: 30}}>
-        <Text style={BUTTONS.primary.text}>Press me</Text>
-      </Pressable>
+      <CustomButton
+        text={'Register'}
+        style={{marginBottom: 30, marginTop: 10}}
+      />
     </ScrollView>
   );
 };

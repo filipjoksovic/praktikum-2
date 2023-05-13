@@ -4,14 +4,26 @@ import {useState} from 'react';
 
 export interface ICustomTextInputProps {
   labelText: string;
+  value: string;
+  name: string;
+  onChangeEmit: (data: {name: string; value: string}) => any;
 }
 
 export const CustomTextInput = (props: ICustomTextInputProps) => {
+  const {labelText, onChangeEmit, name} = props;
+
   const [isFocused, setIsFocused] = useState(false);
-  const {labelText} = props;
+  const [value, setValue] = useState('');
 
   const changeIsFocused = () => {
     setIsFocused(prevState => !prevState);
+  };
+
+  const handleTextChange = (value: string) => {
+    setValue(prevState => value);
+    if (onChangeEmit) {
+      onChangeEmit({name, value});
+    }
   };
 
   return (
@@ -24,6 +36,8 @@ export const CustomTextInput = (props: ICustomTextInputProps) => {
         }}
         onFocus={changeIsFocused}
         onBlur={changeIsFocused}
+        onChangeText={handleTextChange}
+        value={value}
       />
     </View>
   );
