@@ -1,6 +1,8 @@
 import {UserAuthDTO} from '../models/UserAuthDTO';
 import {ApiError} from '../models/ApiError';
 import {User} from '../models/User';
+import Config from 'react-native-config';
+import {Environment} from '../environment';
 
 export const isUser = (obj: User): obj is User => {
   return (obj as User).id !== undefined;
@@ -8,9 +10,7 @@ export const isUser = (obj: User): obj is User => {
 
 export class AuthService {
   public static async login(authRequest: UserAuthDTO): Promise<any> {
-    console.log('Sending request to service.');
-    console.log('Data:', authRequest);
-    return await fetch('http://192.168.222.254:8080/api/auth/login', {
+    return await fetch(`${Environment.BACKEND_URL}/auth/login`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   public static async register(authRequest: UserAuthDTO) {
-    return await fetch('http://192.168.222.254:8080/api/auth/register', {
+    return await fetch(`${Environment.BACKEND_URL}/auth/register`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
