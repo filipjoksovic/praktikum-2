@@ -1,0 +1,4 @@
+#Global gitignore
+
+android/environment.ts
+app/backend/src/main/resources/application.properties
