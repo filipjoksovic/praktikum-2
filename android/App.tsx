@@ -11,6 +11,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {LoginPage} from './modules/auth/pages/LoginPage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {HomePage} from './modules/home/pages/HomePage';
 
 const TabNavigation = () => {
   const Tab = createBottomTabNavigator();
@@ -47,6 +48,15 @@ const TabNavigation = () => {
       <Tab.Screen
         name={'Register'}
         component={RegisterPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return <Icon name={'rocket'} color={'#900'} size={30} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name={'Home'}
+        component={HomePage}
         options={{
           tabBarIcon: ({color, size}) => {
             return <Icon name={'rocket'} color={'#900'} size={30} />;
