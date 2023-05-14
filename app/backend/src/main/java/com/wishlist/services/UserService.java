@@ -1,20 +1,35 @@
 package com.wishlist.services;
 
+import com.wishlist.dto.ApiError;
 import com.wishlist.dto.AuthRequestDTO;
+import com.wishlist.dto.AuthResponseDTO;
 import com.wishlist.exceptions.UserAlreadyExistsException;
 import com.wishlist.exceptions.UserLoginException;
 import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
+import com.wishlist.security.IJWTGenerator;
+import com.wishlist.security.JwtGeneratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class UserService implements IUserService, IAuth {
+    private final UserRepository userRepository;
+    private IJWTGenerator jwtGenerator;
+    Logger logger = Logger.getLogger(UserService.class.getName());
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator) {
+        this.userRepository = userRepository;
+        this.jwtGenerator = jwtGenerator;
+    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -36,10 +51,17 @@ public class UserService implements IUserService, IAuth {
         userRepository.deleteById(id);
     }
 
-    public User login(AuthRequestDTO dto) throws Exception {
-        //TODO actual auth logic goes here
-        Optional<User> user = userRepository.findUserByEmail(dto.getEmail());
-        return user.orElseThrow(UserLoginException::new);
+    public AuthResponseDTO login(AuthRequestDTO dto) throws Exception {
+        Optional<User> user = userRepository.findUserByEmailAndPassword(dto.getEmail(), dto.getPassword());
+        if (user.isPresent()) {
+            Map<String, String> jwt = jwtGenerator.generateToken(user.get());
+            logger.info("Generated JWT: " + jwt);
+            return AuthResponseDTO.to(user.get(), jwt.get("token"));
+        } else {
+            throw new Exception("Invalid credentials");
+        }
+
+
     }
 
     public User register(AuthRequestDTO dto) throws Exception {

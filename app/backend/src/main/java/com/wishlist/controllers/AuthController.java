@@ -2,6 +2,7 @@ package com.wishlist.controllers;
 
 import com.wishlist.dto.ApiError;
 import com.wishlist.dto.AuthRequestDTO;
+import com.wishlist.dto.AuthResponseDTO;
 import com.wishlist.models.User;
 import com.wishlist.services.IAuth;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class AuthController {
     public ResponseEntity login(@RequestBody AuthRequestDTO requestDTO) throws Exception {
         logger.info("Received a login request with email: " + requestDTO.getEmail() + " and password: " + requestDTO.getPassword());
         try {
-            User loggedIn = authService.login(requestDTO);
+            AuthResponseDTO loggedIn = authService.login(requestDTO);
             return new ResponseEntity<>(loggedIn, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
