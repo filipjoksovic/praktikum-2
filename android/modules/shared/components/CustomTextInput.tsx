@@ -1,7 +1,6 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import {INPUTS, TYPO} from '../../../resources/styles/STYLESHEET';
-import {useState} from 'react';
-import NamedStyles = StyleSheet.NamedStyles;
+import React, {useState} from 'react';
 
 export interface ICustomTextInputProps {
   labelText: string;
