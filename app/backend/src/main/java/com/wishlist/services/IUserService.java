@@ -4,8 +4,6 @@ import com.wishlist.dto.AccountSetupDTO;
 import com.wishlist.dto.FullUserDetailsDTO;
 import com.wishlist.exceptions.AccountSetupFailedException;
 import com.wishlist.models.User;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface IUserService {
