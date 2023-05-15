@@ -12,6 +12,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {LoginPage} from './modules/auth/pages/LoginPage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {HomePage} from './modules/home/pages/HomePage';
+import {AccountSetup} from './modules/account/account/pages/AccountSetup';
 
 const TabNavigation = () => {
   const Tab = createBottomTabNavigator();
@@ -60,6 +61,15 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({color, size}) => {
             return <Icon name={'rocket'} color={'#900'} size={30} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name={'AccountSetup'}
+        component={AccountSetup}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return <Icon name={'times'} color={'#900'} size={30} />;
           },
         }}
       />

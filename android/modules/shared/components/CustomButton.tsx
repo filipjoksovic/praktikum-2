@@ -1,5 +1,6 @@
 import {Pressable, Text} from 'react-native';
 import {BUTTONS} from '../../../resources/styles/STYLESHEET';
+import React from 'react';
 
 export interface ICustomButtonProps {
   text: string;
@@ -26,7 +27,7 @@ export const CustomButton = (props: ICustomButtonProps) => {
       onPress={handleOnPress}
       onLongPress={handleOnLongPress}
       style={{...BUTTONS.primary, ...style}}>
-      <Text style={BUTTONS.primary.text}>{text}</Text>
+      <Text style={{...BUTTONS.primary.text, textAlign: 'center'}}>{text}</Text>
     </Pressable>
   );
 };
