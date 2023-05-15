@@ -1,19 +1,15 @@
 package com.wishlist.services;
 
-import com.wishlist.dto.ApiError;
-import com.wishlist.dto.AuthRequestDTO;
-import com.wishlist.dto.AuthResponseDTO;
+import com.wishlist.dto.*;
+import com.wishlist.exceptions.AccountSetupFailedException;
 import com.wishlist.exceptions.UserAlreadyExistsException;
-import com.wishlist.exceptions.UserLoginException;
 import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
-import com.wishlist.security.JwtGeneratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +18,7 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
-    private IJWTGenerator jwtGenerator;
+    private final IJWTGenerator jwtGenerator;
     Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
@@ -72,5 +68,18 @@ public class UserService implements IUserService, IAuth {
         return userRepository.save(AuthRequestDTO.toUser(dto));
     }
 
+    @Override
+    public FullUserDetailsDTO setupAccount(AccountSetupDTO dto) throws AccountSetupFailedException {
+        Optional<User> found = userRepository.findById(dto.getId());
+        if (found.isEmpty()) {
+            throw new AccountSetupFailedException("Account setup failed because the user doesn't exist");
+        }
+        User user = found.get();
+        user.setName(dto.getFirstName());
+        user.setSurname(dto.getLastName());
+        user.setDob(LocalDate.parse(dto.getDob()));
+        userRepository.save(user);
+        return FullUserDetailsDTO.to(user);
 
+    }
 }
