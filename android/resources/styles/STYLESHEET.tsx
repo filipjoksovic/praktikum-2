@@ -34,6 +34,10 @@ export const TYPO = StyleSheet.create({
     fontSize: STYLESHEET.typo.heading_four,
     color: STYLESHEET.colors.text_light,
   },
+  paragraph: {
+    fontSize: STYLESHEET.typo.paragraph,
+    color: STYLESHEET.colors.text_light,
+  },
   bold: {
     fontWeight: 'bold',
   },
@@ -81,5 +85,15 @@ export const BUTTONS = StyleSheet.create({
 export const PADDINGS = StyleSheet.create({
   mt_10: {
     marginTop: 10,
+  },
+});
+
+export const LAYOUT = StyleSheet.create({
+  container: {
+    height: 100,
+    padding: 30,
+    backgroundColor: STYLESHEET.colors.bg_light,
+    color: STYLESHEET.colors.text_light,
+    flex: 1,
   },
 });

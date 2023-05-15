@@ -1,6 +1,7 @@
-import {Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {INPUTS, TYPO} from '../../../resources/styles/STYLESHEET';
 import {useState} from 'react';
+import NamedStyles = StyleSheet.NamedStyles;
 
 export interface ICustomTextInputProps {
   labelText: string;
@@ -38,12 +39,18 @@ export interface ICustomTextInputProps {
     | 'oneTimeCode'
     | undefined;
   onChangeEmit: (data: {name: string; value: string}) => any;
+  style?: object;
 }
 
 export const CustomTextInput = (props: ICustomTextInputProps) => {
-  const {labelText, onChangeEmit, name, autoCapitalize, textContentType} =
-    props;
-
+  const {
+    labelText,
+    style,
+    onChangeEmit,
+    name,
+    autoCapitalize,
+    textContentType,
+  } = props;
   const [isFocused, setIsFocused] = useState(false);
   const [value, setValue] = useState('');
 
@@ -59,7 +66,8 @@ export const CustomTextInput = (props: ICustomTextInputProps) => {
   };
 
   return (
-    <View style={{width: '100%', backgroundColor: 'transparent'}}>
+    <View
+      style={{...style, ...{width: '100%', backgroundColor: 'transparent'}}}>
       <Text style={TYPO.heading_four}>{labelText}</Text>
       <TextInput
         style={{
