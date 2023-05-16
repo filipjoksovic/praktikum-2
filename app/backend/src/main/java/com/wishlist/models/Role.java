@@ -1,12 +1,14 @@
 package com.wishlist.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
 public class Role {
+
     @Id
-    public String id;
+    private String id;
+
     @Enumerated(EnumType.STRING)
     private UserRoleEnum name;
 
@@ -28,4 +30,6 @@ public class Role {
     public void setName(UserRoleEnum role) {
         this.name = role;
     }
+
+
 }

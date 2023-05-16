@@ -20,6 +20,16 @@ services:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
       - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
       - ME_CONFIG_MONGODB_SERVER=mongodb
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongodb
 volumes:
   data: {}
 

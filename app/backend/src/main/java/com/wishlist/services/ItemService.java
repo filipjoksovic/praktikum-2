@@ -2,16 +2,19 @@ package com.wishlist.services;
 
 import com.wishlist.models.Item;
 import com.wishlist.repositories.ItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wishlist.services.interfaces.IItemService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ItemService {
+public class ItemService implements IItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
+
+    public ItemService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     public List<Item> getAll() {
         return itemRepository.findAll();

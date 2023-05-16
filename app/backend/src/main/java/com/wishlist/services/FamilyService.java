@@ -2,16 +2,20 @@ package com.wishlist.services;
 
 import com.wishlist.models.Family;
 import com.wishlist.repositories.FamilyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wishlist.services.interfaces.IFamilyService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FamilyService {
-    @Autowired
-    private FamilyRepository familyRepository;
+public class FamilyService implements IFamilyService {
+
+    private final FamilyRepository familyRepository;
+
+    public FamilyService(FamilyRepository familyRepository) {
+        this.familyRepository = familyRepository;
+    }
 
     public List<Family> getAll() {
         return familyRepository.findAll();

@@ -1,10 +1,10 @@
 package com.wishlist.controllers;
 
-import com.wishlist.dto.ApiError;
-import com.wishlist.dto.AuthRequestDTO;
-import com.wishlist.dto.AuthResponseDTO;
+import com.wishlist.dto.*;
 import com.wishlist.models.User;
-import com.wishlist.services.IAuth;
+import com.wishlist.security.IJWTGenerator;
+import com.wishlist.services.interfaces.IAuth;
+import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +21,14 @@ public class AuthController {
     Logger logger = Logger.getLogger(AuthController.class.getName());
 
     private final IAuth authService;
+    private final IJWTGenerator jwtGenerator;
+    private final IUserService userService;
 
     @Autowired
-    public AuthController(IAuth authService) {
+    public AuthController(IAuth authService, IJWTGenerator ijwtGenerator, IUserService userService) {
         this.authService = authService;
+        this.jwtGenerator = ijwtGenerator;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -47,5 +51,18 @@ public class AuthController {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity refreshToken(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO)
+    {
+        try {
+            TokenRefreshResponseDTO tokenRefreshResponseDTO = userService.refreshTokenFunction(tokenRefreshRequestDTO);
+            return new ResponseEntity<>(tokenRefreshResponseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
