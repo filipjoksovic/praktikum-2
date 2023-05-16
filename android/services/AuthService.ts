@@ -1,7 +1,8 @@
 import {UserAuthDTO} from '../models/UserAuthDTO';
 import {ApiError} from '../models/ApiError';
 import {User} from '../models/User';
-import {Environment} from '../environment';
+import Config from 'react-native-config';
+import {Environment} from '../Environment';
 
 export const isUser = (obj: User): obj is User => {
   return (obj as User).id !== undefined;

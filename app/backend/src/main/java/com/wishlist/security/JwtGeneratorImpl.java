@@ -1,6 +1,8 @@
 package com.wishlist.security;
 
 import com.wishlist.models.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,17 +15,66 @@ import java.util.Map;
 public class JwtGeneratorImpl implements IJWTGenerator {
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String secretKey;
+    @Value("${expiration}")
+    private long jwtExpiration;
+    @Value("${refresh.token.expiration}")
+    private long refreshExpiration;
     @Value("${app.jwttoken.message}")
     private String message;
 
     @Override
     public Map<String, String> generateToken(User user) {
-        String jwtToken = "";
-        jwtToken = Jwts.builder().setSubject(user.getEmail()).setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "secret").compact();
-        Map<String, String> jwtTokenGen = new HashMap<>();
-        jwtTokenGen.put("token", jwtToken);
-        jwtTokenGen.put("message", message);
-        return jwtTokenGen;
+        String token = buildToken(user, jwtExpiration);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        return tokenMap;
     }
+
+    @Override
+    public String generateRefreshToken(User user) {
+        return buildToken(user, refreshExpiration);
+    }
+
+    @Override
+    public String buildToken(User user, long expiration) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    @Override
+    public String extractEmail(String token) {
+        try {
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            return claims.getSubject();
+        } catch (JwtException e) {
+            // Handle the exception if the token is invalid or has expired
+            throw new JwtException("Invalid token");
+        }
+    }
+
+    @Override
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = Jwts.parser().parseClaimsJwt(token).getBody();
+            Date expirationDate = claims.getExpiration();
+            Date currentDate = new Date();
+            return expirationDate.before(currentDate);
+        } catch (JwtException e) {
+            // Handle the exception if the token is invalid or has expired
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isTokenValid(String token, User user) {
+        final String email = extractEmail(token);
+        return (email.equals(user.getEmail())) && !isTokenExpired(token);
+    }
+
+
 }

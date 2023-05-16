@@ -1,17 +1,14 @@
 package com.wishlist.services;
 
-import com.wishlist.dto.ApiError;
 import com.wishlist.dto.AuthRequestDTO;
 import com.wishlist.dto.AuthResponseDTO;
 import com.wishlist.exceptions.UserAlreadyExistsException;
-import com.wishlist.exceptions.UserLoginException;
 import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
-import com.wishlist.security.JwtGeneratorImpl;
+import com.wishlist.services.interfaces.IAuth;
+import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +39,9 @@ public class UserService implements IUserService, IAuth {
     public User getUserById(String id) {
         return userRepository.findById(id).get();
     }
+    public User getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email).get();
+    }
 
     public User updateUser(User user) {
         return userRepository.save(user);
@@ -66,8 +66,15 @@ public class UserService implements IUserService, IAuth {
 
     public User register(AuthRequestDTO dto) throws Exception {
         Optional<User> found = userRepository.findUserByEmail(dto.getEmail());
+
         if (found.isPresent()) {
             throw new UserAlreadyExistsException();
+        }
+        else {
+            Map<String, String> jwt = jwtGenerator.generateToken(found.get());
+            logger.info("Generated JWT: " + jwt);
+            String refreshToken = jwtGenerator.generateRefreshToken(AuthRequestDTO.toUser(dto));
+
         }
         return userRepository.save(AuthRequestDTO.toUser(dto));
     }

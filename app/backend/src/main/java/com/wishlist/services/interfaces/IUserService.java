@@ -1,4 +1,4 @@
-package com.wishlist.services;
+package com.wishlist.services.interfaces;
 
 import com.wishlist.models.User;
 
@@ -10,5 +10,6 @@ public interface IUserService {
     User getUserById(String id);
     User updateUser(User user);
     void deleteUserById(String id);
+    User getUserByEmail(String email);
 
 }
