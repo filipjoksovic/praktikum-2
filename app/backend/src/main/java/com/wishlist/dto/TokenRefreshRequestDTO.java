@@ -7,6 +7,9 @@ public class TokenRefreshRequestDTO {
         this.refreshToken = refreshToken;
     }
 
+    public TokenRefreshRequestDTO() {
+    }
+
     public String getRefreshToken() {
         return refreshToken;
     }

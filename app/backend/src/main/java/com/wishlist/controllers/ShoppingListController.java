@@ -22,7 +22,7 @@ public class ShoppingListController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ShoppingList> update(@PathVariable String id, @RequestBody ShoppingList updatedShoppingList) {
-        Optional<ShoppingList> shoppingListOptional = Optional.ofNullable(shoppingListService.getShoppingListById(id));
+        Optional<ShoppingList> shoppingListOptional = Optional.ofNullable(shoppingListService.getShoppingList(id));
         if (shoppingListOptional.isPresent()) {
             ShoppingList existingShoppingList = shoppingListOptional.get();
             existingShoppingList.setItemList(updatedShoppingList.getItemList());

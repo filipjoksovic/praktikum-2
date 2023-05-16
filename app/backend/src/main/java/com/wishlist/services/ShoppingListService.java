@@ -24,7 +24,7 @@ public class ShoppingListService implements IShoppingListService {
         return shoppingListRepository.save(shoppingList);
     }
 
-    public ShoppingList getShoppingListById(String id) {
+    public ShoppingList getShoppingList(String id) {
         return shoppingListRepository.findById(id).get();
     }
 

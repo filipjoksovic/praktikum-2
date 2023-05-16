@@ -10,12 +10,13 @@ public class AuthResponseDTO {
     public String accessToken;
     public String refreshToken;
 
-    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken) {
+    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
     public String getId() {
@@ -66,8 +67,8 @@ public class AuthResponseDTO {
         this.refreshToken = refreshToken;
     }
 
-    public static AuthResponseDTO to(User user, String accessToken) {
-        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken);
+    public static AuthResponseDTO to(User user, String accessToken, String refreshToken) {
+        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken);
     }
 
 }

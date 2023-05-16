@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
 @Service
 public class JwtGeneratorImpl implements IJWTGenerator {
 
@@ -23,6 +25,12 @@ public class JwtGeneratorImpl implements IJWTGenerator {
     @Value("${app.jwttoken.message}")
     private String message;
 
+    Logger logger = Logger.getLogger(JwtGeneratorImpl.class.getName());
+
+    public JwtGeneratorImpl() {
+
+    }
+
     @Override
     public Map<String, String> generateToken(User user) {
         String token = buildToken(user, jwtExpiration);
@@ -32,8 +40,11 @@ public class JwtGeneratorImpl implements IJWTGenerator {
     }
 
     @Override
-    public String generateRefreshToken(User user) {
-        return buildToken(user, refreshExpiration);
+    public Map<String, String> generateRefreshToken(User user) {
+        String token = buildToken(user, refreshExpiration);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("refreshToken", token);
+        return tokenMap;
     }
 
     @Override
@@ -60,12 +71,11 @@ public class JwtGeneratorImpl implements IJWTGenerator {
     @Override
     public boolean isTokenExpired(String token) {
         try {
-            Claims claims = Jwts.parser().parseClaimsJwt(token).getBody();
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             Date expirationDate = claims.getExpiration();
             Date currentDate = new Date();
             return expirationDate.before(currentDate);
         } catch (JwtException e) {
-            // Handle the exception if the token is invalid or has expired
             return true;
         }
     }
@@ -75,6 +85,5 @@ public class JwtGeneratorImpl implements IJWTGenerator {
         final String email = extractEmail(token);
         return (email.equals(user.getEmail())) && !isTokenExpired(token);
     }
-
 
 }

@@ -9,7 +9,7 @@ public interface IShoppingListService {
     List<ShoppingList> getAll();
 
     ShoppingList updateShoppingList(ShoppingList shoppingList);
-    ShoppingList getShoppingListById(String id);
+    ShoppingList getShoppingList(String id);
     ShoppingList save(ShoppingList shoppingList);
 
 
