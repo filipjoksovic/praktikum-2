@@ -7,14 +7,16 @@ public class AuthResponseDTO {
     public String name;
     public String surname;
     public String email;
-    public String token;
+    public String accessToken;
+    public String refreshToken;
 
-    public AuthResponseDTO(String id, String name, String surname, String email, String token) {
+    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.token = token;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
     public String getId() {
@@ -49,15 +51,24 @@ public class AuthResponseDTO {
         this.email = email;
     }
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public static AuthResponseDTO to(User user, String token) {
-        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), token);
+    public String getRefreshToken() {
+        return refreshToken;
     }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public static AuthResponseDTO to(User user, String accessToken, String refreshToken) {
+        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken);
+    }
+
 }

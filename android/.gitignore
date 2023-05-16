@@ -64,4 +64,4 @@ yarn-error.log
 
 #ENV FILE
 .env
-environment.ts
+Environment.ts

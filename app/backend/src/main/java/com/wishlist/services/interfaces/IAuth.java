@@ -1,4 +1,4 @@
-package com.wishlist.services;
+package com.wishlist.services.interfaces;
 
 import com.wishlist.dto.AuthRequestDTO;
 import com.wishlist.dto.AuthResponseDTO;
