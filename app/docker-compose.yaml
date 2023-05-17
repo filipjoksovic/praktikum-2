@@ -22,12 +22,22 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongodb
   spring-app:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: spring-app
     restart: always
     ports:
       - 8080:8080
+    depends_on:
+      - mongodb
+  openai-service:
+    build:
+      context: ./services/openai-service
+      dockerfile: Dockerfile
+    container_name: openai-service
+    restart: always
+    ports:
+      - 3000:3000
     depends_on:
       - mongodb
 volumes:
