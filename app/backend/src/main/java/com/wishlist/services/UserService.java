@@ -2,12 +2,9 @@ package com.wishlist.services;
 
 import com.wishlist.dto.*;
 import com.wishlist.exceptions.AccountSetupFailedException;
-import com.wishlist.dto.AuthRequestDTO;
-import com.wishlist.dto.AuthResponseDTO;
-import com.wishlist.dto.TokenRefreshRequestDTO;
-import com.wishlist.dto.TokenRefreshResponseDTO;
 import com.wishlist.exceptions.RefreshTokenHasExpiredException;
 import com.wishlist.exceptions.UserAlreadyExistsException;
+import com.wishlist.exceptions.UserLoginException;
 import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
