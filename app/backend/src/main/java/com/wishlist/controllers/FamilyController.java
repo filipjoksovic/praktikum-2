@@ -2,7 +2,6 @@ package com.wishlist.controllers;
 
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/families")
 public class FamilyController {
-    @Autowired
-    private FamilyService familyService;
+    private final FamilyService familyService;
+
+    public FamilyController(FamilyService familyService) {
+        this.familyService = familyService;
+    }
 
     @GetMapping
     public List<Family> getAll() {

@@ -16,7 +16,7 @@ public class EmailSenderService implements IEmailSender {
     private String from;
     private final JavaMailSender mailSender;
     private String newAccountMailTemplate = "Dear %s %s,\n\nThank you for creating an account! We're excited to have you on board.\n\nSincerely,\nNakupovalni List Team";
-    private String invitationMailTemplate = "Dear %s %s,\n\nYou have been invited to join the family '%s' on our application. Please use this family ID to join: %s\n\nSincerely,\nNakupovalni List Team";
+    private String invitationMailTemplate = "Dear %s %s,\n\nYou have been invited to join the family '%s' on our application.\n\nSincerely,\nNakupovalni List Team";
 
     public EmailSenderService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
