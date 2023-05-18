@@ -7,16 +7,25 @@ import java.util.List;
 @Document
 public class Family {
     private String id;
+    private String name;
     private List<User> usersList;
     private ShoppingList shoppingList;
     public Family() {
 
     }
-    public Family(List<User> usersList, ShoppingList shoppingList) {
+    public Family(List<User> usersList, ShoppingList shoppingList, String name) {
         this.usersList = usersList;
         this.shoppingList = shoppingList;
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;
