@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 @RequestMapping("/api/auth")
 public class AuthController {
     Logger logger = Logger.getLogger(AuthController.class.getName());
-
     private final IAuth authService;
     private final IJWTGenerator jwtGenerator;
     private final IUserService userService;

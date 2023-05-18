@@ -9,6 +9,7 @@ import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
 import com.wishlist.services.interfaces.IAuth;
+import com.wishlist.services.interfaces.IEmailSender;
 import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,14 @@ import java.util.logging.Logger;
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
     private final IJWTGenerator jwtGenerator;
+    private final IEmailSender emailSender;
     Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
-    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator) {
+    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender) {
         this.userRepository = userRepository;
         this.jwtGenerator = jwtGenerator;
+        this.emailSender = emailSender;
     }
 
     public List<User> getAllUsers() {
@@ -64,7 +67,6 @@ public class UserService implements IUserService, IAuth {
         } else {
             throw new Exception("Invalid credentials");
         }
-
 
     }
 
@@ -113,6 +115,7 @@ public class UserService implements IUserService, IAuth {
         user.setSurname(dto.getLastName());
         user.setDob(LocalDate.parse(dto.getDob()));
         userRepository.save(user);
+        emailSender.sendNewAccountEmail(user.getEmail(), user.getName(), user.getSurname());
         return FullUserDetailsDTO.to(user);
 
     }

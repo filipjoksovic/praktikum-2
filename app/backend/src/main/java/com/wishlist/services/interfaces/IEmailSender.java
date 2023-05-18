@@ -1,7 +1,6 @@
 package com.wishlist.services.interfaces;
 
-import com.wishlist.dto.EmailSenderDTO;
-
 public interface IEmailSender {
-    EmailSenderDTO sendEmail(EmailSenderDTO dto);
+    void sendNewAccountEmail(String email, String name, String surname);
+    void sendInvitationEmail(String email, String inviteeName,String inviteeSurname,String familyName);
 }
