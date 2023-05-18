@@ -59,6 +59,18 @@ export const INPUTS = StyleSheet.create({
     shadowColor: 'black',
     elevation: 10,
   },
+  textarea: {
+    color: STYLESHEET.colors.text_light,
+    backgroundColor: '#F1F1F1',
+    borderStyle: 'solid',
+    borderColor: '#D9D9D9',
+    borderRadius: 7,
+    width: '100%',
+    borderWidth: 1,
+    paddingLeft: 10,
+    shadowColor: 'black',
+    elevation: 10,
+  },
 });
 
 export const BUTTONS = StyleSheet.create({

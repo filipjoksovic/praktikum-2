@@ -24,7 +24,9 @@ export class AppController {
     return this.appService.whisperCall(file);
   }
   @Post('text-summary')
-  async getTextSummary(@Body('prompt') prompt: string): Promise<string> {
+  async getTextSummary(
+    @Body('prompt') prompt: string,
+  ): Promise<{ summary: string }> {
     console.log(prompt);
     return this.appService.chatgptCall(prompt);
   }

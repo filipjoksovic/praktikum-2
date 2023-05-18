@@ -49,11 +49,20 @@ export class AppService {
     }
   }
 
-  async chatgptCall(prompt: string): Promise<string> {
+  async chatgptCall(prompt: string): Promise<{ summary: string }> {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid user input');
     }
 
+    try {
+      const result = await this.summarytModel.findOne({ question: prompt });
+      console.log(result);
+      return { summary: result.summary };
+    } catch (err) {
+      console.log(
+        `[WARN]: ${new Date().toString()}: No data found in db. Querying OpenAI`,
+      );
+    }
     const configuration = {
       headers: {
         Authorization: 'Bearer ' + process.env.OPENAI_API_KEY,
@@ -82,7 +91,7 @@ export class AppService {
       });
       await newSummary.save();
 
-      return completion_text;
+      return { summary: completion_text };
     } catch (error) {
       console.error(error);
       if (error.response) {
