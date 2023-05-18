@@ -1,7 +1,5 @@
-# Use Node.js 20
 FROM node:20-bullseye-slim
 
-# Create app directory
 WORKDIR /usr/src/app
 
 # Install app dependencies
@@ -11,7 +9,7 @@ RUN npm install
 RUN apt-get update && apt-get install -y netcat
 
 # Bundle app source
-COPY . .
+COPY . /usr/src/app
 
 # Expose port
 EXPOSE 3000
@@ -20,8 +18,8 @@ EXPOSE 3000
 RUN npm run build
 
 # Copy wait-for-it script and give it the necessary permissions
-COPY wait-for-it.sh /usr/wait-for-it.sh
-RUN chmod +x /usr/wait-for-it.sh
+COPY wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Run the app
-ENTRYPOINT ["./wait-for-it.sh", "mongodb 27017", "--", "node", "dist/main.js"]
+ENTRYPOINT ["/usr/src/app/wait-for-it.sh", "mongodb 27017", "--", "node", "/usr/src/app/dist/main.js"]
