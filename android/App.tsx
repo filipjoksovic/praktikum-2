@@ -60,7 +60,7 @@ const TabNavigation = () => {
         component={HomePage}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'rocket'} color={'#900'} size={30} />;
+            return <Icon name={'home'} color={'#900'} size={30} />;
           },
         }}
       />
