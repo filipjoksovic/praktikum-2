@@ -3,11 +3,17 @@ package com.wishlist.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 @Document
 public class Item {
     @Id
     private String id;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "shoppingListId")
+    private ShoppingList shoppingList;
 
     public Item() {
     }
@@ -30,5 +36,13 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ShoppingList getShoppingList() {
+        return shoppingList;
+    }
+
+    public void setShoppingList(ShoppingList shoppingList) {
+        this.shoppingList = shoppingList;
     }
 }

@@ -1,10 +1,12 @@
-import {Button, SafeAreaView, Text, View} from 'react-native';
+import {Button, Pressable, SafeAreaView, Text, View} from 'react-native';
 import {useState} from 'react';
 import {STYLESHEET, TYPO} from '../../../resources/styles/STYLESHEET';
 import {CustomButton} from '../../shared/components/CustomButton';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export interface IShoppingListItem {
   shoppingItem: string;
+  onRemoveItem: (item: string) => any;
 }
 export const ShoppingListItem = (props: IShoppingListItem) => {
   const {shoppingItem} = props;
@@ -21,7 +23,9 @@ export const ShoppingListItem = (props: IShoppingListItem) => {
       }}>
       <Text style={TYPO.paragraph}>{shoppingItem}</Text>
 
-      <Button title={'delete'} />
+      <Pressable onPress={props.onRemoveItem}>
+        <Icon name={'times'} color={'red'} size={30} />
+      </Pressable>
     </View>
   );
 };

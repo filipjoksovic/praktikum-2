@@ -2,6 +2,7 @@ import {UserAuthDTO} from '../models/UserAuthDTO';
 import {ApiError} from '../models/ApiError';
 import {User} from '../models/User';
 import {Environment} from '../environment';
+import {LocalStorageService} from './LocalStorageService';
 
 export const isUser = (obj: User): obj is User => {
   return (obj as User).id !== undefined;
@@ -17,11 +18,12 @@ export class AuthService {
       body: JSON.stringify(authRequest),
     })
       .then(response => response.json())
-      .then((user: User) => {
+      .then(async (user: User) => {
         if (!isUser(user)) {
           console.log('Problem', user);
           throw new Error((user as ApiError).message);
         }
+        await LocalStorageService.saveUserToLocalStorage(user).then();
         return user;
       });
   }

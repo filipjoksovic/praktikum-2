@@ -36,6 +36,7 @@ export const LoginPage = ({navigation}: any) => {
     try {
       //TODO handle result storage
       const result = await AuthService.login(userAuth);
+      console.log(result);
       navigation.navigate('Home');
     } catch (error) {
       if (error instanceof Error) {

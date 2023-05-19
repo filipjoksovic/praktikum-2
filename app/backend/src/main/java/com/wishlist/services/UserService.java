@@ -77,9 +77,6 @@ public class UserService implements IUserService, IAuth {
             throw new UserAlreadyExistsException();
         }
         else {
-            Map<String, String> jwt = jwtGenerator.generateToken(found.get());
-            logger.info("Generated JWT: " + jwt);
-//            String refreshToken = jwtGenerator.generateRefreshToken(AuthRequestDTO.toUser(dto));
         }
         return userRepository.save(AuthRequestDTO.toUser(dto));
     }

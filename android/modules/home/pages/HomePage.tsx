@@ -32,6 +32,17 @@ export const HomePage = () => {
     }
   };
 
+  const cancel = () => {
+    console.log('Cancelling');
+    setIsCreating(true);
+    setShoppingItems([]);
+  };
+  const createList = () => {
+    ShoppingListService.createList(shoppingItems).then(result =>
+      setIsCreating(true),
+    );
+  };
+
   return (
     <SafeAreaView style={LAYOUT.container}>
       {isCreating ? (
@@ -57,7 +68,11 @@ export const HomePage = () => {
         </>
       ) : (
         <>
-          <CreateShoppingListPage shoppingList={shoppingItems} />
+          <CreateShoppingListPage
+            shoppingList={shoppingItems}
+            cancelListCreate={cancel}
+            createList={createList}
+          />
         </>
       )}
     </SafeAreaView>
