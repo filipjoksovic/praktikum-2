@@ -1,20 +1,17 @@
 package com.wishlist.models;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.*;
 
-@Entity
-@Table(name = "roles")
-public class Role {
 
+@Document
+public class Role {
     @Id
     private String id;
-
-    @Enumerated(EnumType.STRING)
     private UserRoleEnum name;
-
     public Role() {
     }
-
     public String getId() {
         return id;
     }
@@ -30,6 +27,5 @@ public class Role {
     public void setName(UserRoleEnum role) {
         this.name = role;
     }
-
 
 }
