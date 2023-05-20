@@ -3,24 +3,25 @@ package com.wishlist.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 @Document
 public class ShoppingList {
     @Id
     private String id;
-
-    @OneToMany(mappedBy = "shoppingList")
     private List<Item> itemList;
-    @ManyToOne
-    @JoinColumn(name = "userId")
     private User user;
+    private String familyId;
 
     public ShoppingList() {
+    }
+
+    public String getFamilyId() {
+        return familyId;
+    }
+
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
     }
 
     public ShoppingList(List<Item> itemList) {

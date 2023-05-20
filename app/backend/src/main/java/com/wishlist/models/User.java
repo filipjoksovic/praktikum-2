@@ -1,11 +1,9 @@
 package com.wishlist.models;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,15 +14,11 @@ public class User {
     private String id;
     private String name;
     private String surname;
-    @Indexed(unique = true)
     private String email;
     private String password;
     private LocalDate dob;
-    @OneToMany(mappedBy = "user")
+    private String familyId;
     private List<ShoppingList> shoppingLists;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -97,4 +91,12 @@ public class User {
     public void setDob(LocalDate dob) {
         this.dob = dob;
     }
+    public String getFamilyId() {
+        return familyId;
+    }
+
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
+    }
+
 }
