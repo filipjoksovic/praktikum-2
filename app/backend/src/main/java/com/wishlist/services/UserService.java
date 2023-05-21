@@ -1,10 +1,7 @@
 package com.wishlist.services;
 
 import com.wishlist.dto.*;
-import com.wishlist.exceptions.AccountSetupFailedException;
-import com.wishlist.exceptions.RefreshTokenHasExpiredException;
-import com.wishlist.exceptions.UserAlreadyExistsException;
-import com.wishlist.exceptions.UserLoginException;
+import com.wishlist.exceptions.*;
 import com.wishlist.models.User;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
@@ -14,8 +11,13 @@ import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -45,6 +47,7 @@ public class UserService implements IUserService, IAuth {
     public User getUserById(String id) {
         return userRepository.findById(id).get();
     }
+
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).get();
     }
@@ -75,10 +78,14 @@ public class UserService implements IUserService, IAuth {
 
         if (found.isPresent()) {
             throw new UserAlreadyExistsException();
-        }
-        else {
+        } else {
         }
         return userRepository.save(AuthRequestDTO.toUser(dto));
+    }
+
+    @Override
+    public User doesExist(String id) throws UserDoesNotExistException {
+        return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
     public TokenRefreshResponseDTO refreshTokenFunction(TokenRefreshRequestDTO tokenRefreshRequestDTO) throws Exception {
@@ -110,7 +117,8 @@ public class UserService implements IUserService, IAuth {
         User user = found.get();
         user.setName(dto.getFirstName());
         user.setSurname(dto.getLastName());
-        user.setDob(LocalDate.parse(dto.getDob()));
+
+        user.setDob(dto.getDob());
         userRepository.save(user);
         emailSender.sendNewAccountEmail(user.getEmail(), user.getName(), user.getSurname());
         return FullUserDetailsDTO.to(user);

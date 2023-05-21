@@ -45,4 +45,46 @@ export class AuthService {
         return user;
       });
   }
+
+  static async checkIfExists() {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      return;
+    }
+    return await fetch(`${Environment.BACKEND_URL}/auth/doesExist/${user.id}`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('User does not exist');
+    });
+  }
+
+  static async setupAccount(param: {
+    firstName: string;
+    lastName: string;
+    dob: Date;
+  }) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+
+    return await fetch(`${Environment.BACKEND_URL}/users/account`, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({...param, id: user.id}),
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Account setup failed');
+    });
+  }
 }

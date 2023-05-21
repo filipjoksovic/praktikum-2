@@ -1,8 +1,6 @@
 import {Environment} from '../environment';
-import {User} from '../models/User';
-import {ApiError} from '../models/ApiError';
-import {isUser} from './AuthService';
 import {LocalStorageService} from './LocalStorageService';
+import {IShoppingListsResponseDTO} from '../models/IShoppingListsResponseDTO';
 
 export interface IPromptRequest {
   prompt: string;
@@ -47,5 +45,19 @@ export class ShoppingListService {
           console.log(response);
         });
     }
+  }
+
+  public static async getShoppingLists(): Promise<IShoppingListsResponseDTO[]> {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      console.error('No user logged in');
+      return [];
+    }
+    return await fetch(`${Environment.BACKEND_URL}/shoppingLists/${user.id}`, {
+      method: 'get',
+      headers: {'Content-Type': 'application/json', Bearer: user.accessToken},
+    })
+      .then(response => response.json())
+      .then(response => response as IShoppingListsResponseDTO[]);
   }
 }

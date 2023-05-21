@@ -1,6 +1,6 @@
 package com.wishlist.services;
 
-import com.wishlist.models.Item;
+import com.wishlist.models.ShoppingItem;
 import com.wishlist.repositories.ItemRepository;
 import com.wishlist.services.interfaces.IItemService;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class ItemService implements IItemService {
         this.itemRepository = itemRepository;
     }
 
-    public List<Item> getAll() {
+    public List<ShoppingItem> getAll() {
         return itemRepository.findAll();
     }
 

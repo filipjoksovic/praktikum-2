@@ -2,15 +2,16 @@ package com.wishlist.models;
 
 import org.springframework.data.annotation.Id;
 
-public class Item {
+public class ShoppingItem {
     @Id
     private String id;
     private String name;
+    private boolean checked;
 
-    public Item() {
+    public ShoppingItem() {
     }
 
-    public Item(String name) {
+    public ShoppingItem(String name) {
         this.name = name;
     }
 
@@ -30,4 +31,11 @@ public class Item {
         this.name = name;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 }

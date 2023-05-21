@@ -4,6 +4,7 @@ import {CreateShoppingListPage} from './CreateShoppingListPage';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import {ShoppingListService} from '../../../services/ShoppingListService';
+import {useFocusEffect} from '@react-navigation/native';
 
 export const PrepareShoppingListPage = () => {
   const theme = useTheme();

@@ -1,6 +1,7 @@
 package com.wishlist.controllers;
 
 import com.wishlist.dto.*;
+import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.models.User;
 import com.wishlist.security.IJWTGenerator;
 import com.wishlist.services.interfaces.IAuth;
@@ -8,10 +9,7 @@ import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
@@ -61,6 +59,16 @@ public class AuthController {
             return new ResponseEntity<>(tokenRefreshResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/doesExist/{userId}")
+    public ResponseEntity doesExist(@PathVariable String userId) {
+        try {
+            authService.doesExist(userId);
+            return new ResponseEntity(true, HttpStatus.OK);
+        } catch (UserDoesNotExistException e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

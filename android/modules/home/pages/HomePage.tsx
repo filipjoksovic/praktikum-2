@@ -1,26 +1,32 @@
-import {SafeAreaView, ToastAndroid} from 'react-native';
-import {INPUTS, LAYOUT, TYPO} from '../../../resources/styles/STYLESHEET';
-import {CustomButton} from '../../shared/components/CustomButton';
-import React, {useState} from 'react';
-import {ShoppingListService} from '../../../services/ShoppingListService';
-import {CreateShoppingListPage} from './CreateShoppingListPage';
+import React from 'react';
 import {BottomNavigation, useTheme} from 'react-native-paper';
-import {Text, TextInput, Button} from 'react-native-paper';
-import {LoginPage} from '../../auth/pages/LoginPage';
-import {RegisterPage} from '../../auth/pages/RegisterPage';
 import {AccountSetup} from '../../account/account/pages/AccountSetup';
 import {PrepareShoppingListPage} from './PrepareShoppingListPage';
+import {ShoppingListsPage} from '../../shopping-lists/pages/ShoppingListsPage';
+import {AuthService} from '../../../services/AuthService';
+import {useFocusEffect} from '@react-navigation/native';
+import {SettingsPage} from '../../settings/pages/SettingsPage';
 
-export const HomePage = () => {
+export const HomePage = ({navigation}) => {
   const theme = useTheme();
+  useFocusEffect(() => {
+    async function doesUserExist() {
+      try {
+        await AuthService.checkIfExists();
+      } catch (e) {
+        navigation.navigate('Login');
+      }
+    }
+    doesUserExist();
+  });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
       key: 'music',
-      title: 'Favorites',
-      focusedIcon: 'heart',
-      unfocusedIcon: 'heart-outline',
+      title: 'Home',
+      focusedIcon: 'home',
+      unfocusedIcon: 'home-outline',
     },
     {
       key: 'notifications',
@@ -28,10 +34,24 @@ export const HomePage = () => {
       focusedIcon: 'bell',
       unfocusedIcon: 'bell-outline',
     },
+    {
+      key: 'shoppingLists',
+      title: 'Shopping Lists',
+      focusedIcon: 'format-list-bulleted-square',
+      unfocusedIcon: 'format-list-checkbox',
+    },
+    {
+      key: 'settings',
+      title: 'Settings',
+      focusedIcon: 'cog',
+      unfocusedIcon: 'cog-outline',
+    },
   ]);
   const renderScene = BottomNavigation.SceneMap({
     music: PrepareShoppingListPage,
     notifications: AccountSetup,
+    shoppingLists: ShoppingListsPage,
+    settings: SettingsPage,
   });
 
   return (

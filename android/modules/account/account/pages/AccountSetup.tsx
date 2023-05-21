@@ -1,4 +1,4 @@
-import {ScrollView, Text, View} from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 import {
   LAYOUT,
   STYLESHEET,
@@ -8,59 +8,109 @@ import {CustomTextInput} from '../../../shared/components/CustomTextInput';
 import DatePicker from 'react-native-date-picker';
 import {CustomButton} from '../../../shared/components/CustomButton';
 import React from 'react';
+import {
+  Button,
+  Snackbar,
+  Surface,
+  Text,
+  TextInput,
+  useTheme,
+} from 'react-native-paper';
+import {AuthService} from '../../../../services/AuthService';
 
 export const AccountSetup = () => {
+  const [visible, setVisible] = React.useState(false);
+  const [snackbarLabel, setSnackbarLabel] = React.useState('');
+
+  const [setupState, setSetupState] = React.useState({
+    fname: '',
+    lname: '',
+    dob: new Date(),
+  });
+  const theme = useTheme();
   const handleChange = ({name, value}: {name: string; value: string}) => {};
-  const submitData = () => {};
+
+  const handleFnameUpdate = (value: string) => {
+    setSetupState(prevState => {
+      return {...prevState, fname: value};
+    });
+  };
+  const handleLnameUpdate = (value: string) => {
+    setSetupState(prevState => {
+      return {...prevState, lname: value};
+    });
+  };
+  const submitData = () => {
+    AuthService.setupAccount({
+      firstName: setupState.fname,
+      lastName: setupState.lname,
+      dob: setupState.dob,
+    })
+      .then(response => {})
+      .catch(error => {
+        setSnackbarLabel(error.message);
+        setVisible(true);
+        setTimeout(() => {
+          setVisible(false);
+        }, 2000);
+      });
+  };
+  const onDismissSnackBar = () => {};
   return (
-    <ScrollView style={{...LAYOUT.container}}>
+    <View
+      style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
       <View>
-        <Text style={{...TYPO.heading_one, ...TYPO.bold}}>
-          Welcome to WishList!
-        </Text>
-        <Text style={{...TYPO.heading_four, marginBottom: 10}}>
-          It's a pleasure to meet you.
-        </Text>
-        <Text style={TYPO.paragraph}>
+        <Text variant={'displaySmall'}>Welcome to WishList!</Text>
+        <Text style={{marginBottom: 10}}>It's a pleasure to meet you.</Text>
+        <Text>
           Though, before you begin using the application, we'll need you to tell
           us a bit about yourself
         </Text>
       </View>
       <View>
-        <CustomTextInput
-          labelText={'First name'}
-          value={''}
-          name={'fname'}
-          onChangeEmit={handleChange}
-          style={{marginBottom: 20, marginTop: 20}}
+        <TextInput
+          value={setupState.fname}
+          onChangeText={handleFnameUpdate}
+          mode={'outlined'}
+          placeholder={'First name'}
+          style={{marginVertical: 10}}
         />
-        <CustomTextInput
-          labelText={'Last name'}
-          value={'Last name'}
-          name={'lname'}
-          onChangeEmit={handleChange}
-          style={{marginBottom: 30}}
+        <TextInput
+          value={setupState.lname}
+          onChangeText={handleLnameUpdate}
+          mode={'outlined'}
+          placeholder={'Last name'}
+          style={{marginVertical: 10}}
         />
-        <View style={{width: '100%'}}>
-          <Text style={TYPO.heading_four}>Date of birth</Text>
 
+        <Surface
+          theme={{...theme, roundness: 20}}
+          style={{borderRadius: 20, padding: 20, marginTop: 20}}>
+          <Text>Date of birth</Text>
           <DatePicker
             date={new Date()}
             androidVariant={'nativeAndroid'}
             mode={'date'}
-            textColor={STYLESHEET.colors.text_light}
-            title={'Date of birth'}
-            style={{alignItems: 'center'}}
           />
-        </View>
+        </Surface>
       </View>
       <View style={{alignItems: 'center'}}>
-        <CustomButton
-          text={'Proceed'}
-          onPressHandler={submitData}
-          style={{width: '50%', marginTop: 20, marginBottom: 30}}
-        />
+        <Button mode={'contained'} style={{marginTop: 20}} onPress={submitData}>
+          Proceed
+        </Button>
       </View>
-    </ScrollView>
+
+      <Snackbar
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'Close',
+          onPress: () => {
+            // Do something
+          },
+        }}>
+        {snackbarLabel}
+      </Snackbar>
+    </View>
   );
 };

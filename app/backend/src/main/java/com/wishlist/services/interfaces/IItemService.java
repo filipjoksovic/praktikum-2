@@ -1,11 +1,11 @@
 package com.wishlist.services.interfaces;
 
-import com.wishlist.models.Item;
+import com.wishlist.models.ShoppingItem;
 
 import java.util.List;
 
 public interface IItemService {
 
-    List<Item> getAll();
+    List<ShoppingItem> getAll();
 
 }

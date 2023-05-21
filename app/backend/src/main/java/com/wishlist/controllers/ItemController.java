@@ -1,6 +1,6 @@
 package com.wishlist.controllers;
 
-import com.wishlist.models.Item;
+import com.wishlist.models.ShoppingItem;
 import com.wishlist.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public List<Item> getAll() {
+    public List<ShoppingItem> getAll() {
         return itemService.getAll();
     }
 

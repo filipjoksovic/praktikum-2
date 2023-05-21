@@ -9,23 +9,15 @@ import java.util.List;
 public class ShoppingList {
     @Id
     private String id;
-    private List<Item> itemList;
-    private User user;
-    private String familyId;
+
+    private String name;
+    private List<ShoppingItem> shoppingItemList;
 
     public ShoppingList() {
     }
 
-    public String getFamilyId() {
-        return familyId;
-    }
-
-    public void setFamilyId(String familyId) {
-        this.familyId = familyId;
-    }
-
-    public ShoppingList(List<Item> itemList) {
-        this.itemList = itemList;
+    public ShoppingList(List<ShoppingItem> shoppingItemList) {
+        this.shoppingItemList = shoppingItemList;
     }
 
     public String getId() {
@@ -36,19 +28,19 @@ public class ShoppingList {
         this.id = id;
     }
 
-    public List<Item> getItemList() {
-        return itemList;
+    public List<ShoppingItem> getItemList() {
+        return shoppingItemList;
     }
 
-    public void setItemList(List<Item> itemList) {
-        this.itemList = itemList;
+    public void setItemList(List<ShoppingItem> shoppingItemList) {
+        this.shoppingItemList = shoppingItemList;
     }
 
-    public User getUser() {
-        return user;
+    public String getName() {
+        return name;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setName(String name) {
+        this.name = name;
     }
 }
