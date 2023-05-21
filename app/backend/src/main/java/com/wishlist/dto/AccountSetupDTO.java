@@ -29,7 +29,7 @@ public class AccountSetupDTO {
         user.setId(dto.getId());
         user.setName(dto.getFirstName());
         user.setSurname(dto.getLastName());
-        user.setDob(LocalDate.parse(dto.getDob()));
+        user.setDob(dto.getDob());
         return user;
     }
 
