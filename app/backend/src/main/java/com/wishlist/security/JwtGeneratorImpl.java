@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 @Service
@@ -32,18 +33,20 @@ public class JwtGeneratorImpl implements IJWTGenerator {
     }
 
     @Override
+    public Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    @Override
     public Map<String, String> generateToken(User user) {
         String token = buildToken(user, jwtExpiration);
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
-        return tokenMap;
-    }
-
-    @Override
-    public Map<String, String> generateRefreshToken(User user) {
-        String token = buildToken(user, refreshExpiration);
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("refreshToken", token);
         return tokenMap;
     }
 
@@ -55,6 +58,14 @@ public class JwtGeneratorImpl implements IJWTGenerator {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    @Override
+    public Map<String, String> generateRefreshToken(User user) {
+        String token = buildToken(user, refreshExpiration);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("refreshToken", token);
+        return tokenMap;
     }
 
     @Override
