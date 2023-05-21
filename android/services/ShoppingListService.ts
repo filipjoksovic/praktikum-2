@@ -26,8 +26,9 @@ export class ShoppingListService {
       });
   }
 
-  public static async createList(shoppingItems: any[]) {
+  public static async createList(data: {name: string; items: string[]}) {
     const user = await LocalStorageService.getUserFromLocalStorage();
+    console.log();
     console.log('User:', user);
     if (user) {
       return await fetch(
@@ -38,7 +39,7 @@ export class ShoppingListService {
             'Content-Type': 'application/json',
             Bearer: user.accessToken,
           },
-          body: JSON.stringify({items: shoppingItems}),
+          body: JSON.stringify(data),
         },
       )
         .then(response => response.json())

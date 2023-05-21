@@ -1,16 +1,26 @@
-import {ScrollView, StyleSheet, ToastAndroid, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  ToastAndroid,
+  Touchable,
+  View,
+} from 'react-native';
 import {STYLESHEET} from '../../../resources/styles/STYLESHEET';
 import {AppLogo, IAppLogoContext} from '../../shared/AppLogo';
 import {CustomTextInput} from '../../shared/components/CustomTextInput';
 import {CustomButton} from '../../shared/components/CustomButton';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {AuthService} from '../../../services/AuthService';
-
+import {Text, TouchableRipple, useTheme} from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
+import {Link, useNavigation} from '@react-navigation/native';
+import {LocalStorageService} from '../../../services/LocalStorageService';
 export const LoginPage = ({navigation}: any) => {
   const [userAuth, setUserAuth] = React.useState<{
     email: string;
     password: string;
   }>({email: '', password: ''});
+  const theme = useTheme();
   const stylesheet = StyleSheet.create({
     container: {
       height: 100,
@@ -32,6 +42,8 @@ export const LoginPage = ({navigation}: any) => {
   };
 
   const submitForm = async () => {
+    console.log('submitting form');
+    console.log(userAuth);
     // @ts-ignore
     try {
       //TODO handle result storage
@@ -46,10 +58,22 @@ export const LoginPage = ({navigation}: any) => {
     }
   };
 
+  const setEmail = (value: string) => {
+    setUserAuth(prevState => {
+      return {...prevState, email: value};
+    });
+  };
+  const setPassword = (value: string) => {
+    setUserAuth(prevState => {
+      return {...prevState, password: value};
+    });
+  };
+
   return (
     <ScrollView
       style={{
         ...stylesheet.container,
+        backgroundColor: theme.colors.background,
         padding: 20,
 
         height: '100%',
@@ -58,28 +82,30 @@ export const LoginPage = ({navigation}: any) => {
       <AppLogo context={IAppLogoContext.LOGIN} />
 
       <View style={{width: '100%', padding: 10, gap: 40}}>
-        <CustomTextInput
-          labelText={'Email'}
-          onChangeEmit={handleChange}
-          name={'email'}
+        <TextInput
+          mode={'outlined'}
+          label={'Email'}
           value={userAuth.email}
-          autoCapitalize={'none'}
-          textContentType={'emailAddress'}
+          onChangeText={setEmail}
         />
-        <CustomTextInput
-          labelText={'Password'}
-          onChangeEmit={handleChange}
-          name={'password'}
-          value={userAuth.password}
-          autoCapitalize={'none'}
-          textContentType={'password'}
+        <TextInput
+          mode={'outlined'}
+          label={'Password'}
+          onChangeText={setPassword}
         />
       </View>
-      <CustomButton
-        text={'Login'}
-        onPressHandler={submitForm}
-        style={{marginBottom: 30, marginTop: 10}}
-      />
+
+      <Button
+        mode={'contained'}
+        compact={false}
+        rippleColor={'red'}
+        onPress={submitForm}>
+        Log in
+      </Button>
+
+      <Text style={{marginTop: 20}}>
+        No account? Register <Link to={'/Register'}>here</Link>
+      </Text>
     </ScrollView>
   );
 };

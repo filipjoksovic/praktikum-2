@@ -13,6 +13,13 @@ import {LoginPage} from './modules/auth/pages/LoginPage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {HomePage} from './modules/home/pages/HomePage';
 import {AccountSetup} from './modules/account/account/pages/AccountSetup';
+import {
+  BottomNavigation,
+  DefaultTheme,
+  PaperProvider,
+  useTheme,
+} from 'react-native-paper';
+import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 
 const TabNavigation = () => {
   const Tab = createBottomTabNavigator();
@@ -77,7 +84,23 @@ const TabNavigation = () => {
   );
 };
 
+const StackNavigation = () => {
+  const Stack = createNativeStackNavigator();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Home" component={HomePage} />
+      <Stack.Screen name="Login" component={LoginPage} />
+      <Stack.Screen name="Register" component={RegisterPage} />
+    </Stack.Navigator>
+  );
+};
+
 function App(): JSX.Element {
+  const theme = useTheme();
   const isDarkMode = useColorScheme() === 'dark';
 
   const stylesheet = StyleSheet.create({
@@ -88,17 +111,17 @@ function App(): JSX.Element {
   });
 
   return (
-    <SafeAreaView style={stylesheet.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={STYLESHEET.colors.bg_light}
-      />
-      <NavigationContainer>
-        {/*<LoginPage />*/}
-        {/*<RegisterPage />*/}
-        <TabNavigation />
-      </NavigationContainer>
-    </SafeAreaView>
+    <PaperProvider>
+      <SafeAreaView style={stylesheet.container}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={theme.colors.secondary}
+        />
+        <NavigationContainer>
+          <StackNavigation />
+        </NavigationContainer>
+      </SafeAreaView>
+    </PaperProvider>
   );
 }
 

@@ -35,8 +35,10 @@ public class AuthController {
         logger.info("Received a login request with email: " + requestDTO.getEmail() + " and password: " + requestDTO.getPassword());
         try {
             AuthResponseDTO loggedIn = authService.login(requestDTO);
+            logger.info("User with id " + loggedIn.id + " found. Sending 200 OK");
             return new ResponseEntity<>(loggedIn, HttpStatus.OK);
         } catch (Exception e) {
+            logger.info("User with NOT found. Sending 500 INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -53,8 +55,7 @@ public class AuthController {
 
 
     @PostMapping("/refresh-token")
-    public ResponseEntity refreshToken(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO)
-    {
+    public ResponseEntity refreshToken(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO) {
         try {
             TokenRefreshResponseDTO tokenRefreshResponseDTO = userService.refreshTokenFunction(tokenRefreshRequestDTO);
             return new ResponseEntity<>(tokenRefreshResponseDTO, HttpStatus.OK);

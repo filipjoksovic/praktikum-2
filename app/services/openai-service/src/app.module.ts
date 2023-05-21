@@ -8,9 +8,12 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(`mongodb://rootuser:rootpass@mongodb:27017/OpenAi`, {
-      authSource: 'admin',
-    }),
+    MongooseModule.forRoot(
+      `mongodb://rootuser:rootpass@127.0.0.1:27017/OpenAi`,
+      {
+        authSource: 'admin',
+      },
+    ),
     MongooseModule.forFeature([
       {
         name: Transcript.name,

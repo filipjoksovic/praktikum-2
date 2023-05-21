@@ -6,8 +6,11 @@ import {CustomButton} from '../../shared/components/CustomButton';
 import React, {useState} from 'react';
 import {UserAuthDTO} from '../../../models/UserAuthDTO';
 import {AuthService} from '../../../services/AuthService';
+import {Button, Text, TextInput, useTheme} from 'react-native-paper';
+import {Link} from '@react-navigation/native';
 
 export const RegisterPage = ({navigation}: any) => {
+  const theme = useTheme();
   const [userAuth, setUserAuth] = useState<UserAuthDTO>({
     email: '',
     password: '',
@@ -41,11 +44,22 @@ export const RegisterPage = ({navigation}: any) => {
       }
     }
   };
+  const setEmail = (value: string) => {
+    setUserAuth(prevState => {
+      return {...prevState, email: value};
+    });
+  };
+  const setPassword = (value: string) => {
+    setUserAuth(prevState => {
+      return {...prevState, password: value};
+    });
+  };
 
   return (
     <ScrollView
       style={{
         ...stylesheet.container,
+        backgroundColor: theme.colors.background,
         padding: 20,
 
         height: '100%',
@@ -54,26 +68,30 @@ export const RegisterPage = ({navigation}: any) => {
       <AppLogo context={IAppLogoContext.REGISTER} />
 
       <View style={{width: '100%', padding: 10, gap: 40}}>
-        <CustomTextInput
-          labelText={'Email'}
-          textContentType={'emailAddress'}
+        <TextInput
+          mode={'outlined'}
+          label={'Email'}
           value={userAuth.email}
-          onChangeEmit={handleChange}
-          name={'email'}
+          onChangeText={setEmail}
         />
-        <CustomTextInput
-          labelText={'Password'}
-          textContentType={'password'}
-          value={userAuth.password}
-          onChangeEmit={handleChange}
-          name={'password'}
+        <TextInput
+          mode={'outlined'}
+          label={'Password'}
+          onChangeText={setPassword}
         />
       </View>
-      <CustomButton
-        text={'Register'}
-        style={{marginBottom: 30, marginTop: 10}}
-        onPressHandler={submitForm}
-      />
+
+      <Button
+        mode={'contained'}
+        compact={false}
+        rippleColor={'red'}
+        onPress={submitForm}>
+        Log in
+      </Button>
+
+      <Text style={{marginTop: 20}}>
+        Already have an account? Login <Link to={'/Login'}>here</Link>
+      </Text>
     </ScrollView>
   );
 };
