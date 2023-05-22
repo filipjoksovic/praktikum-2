@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FamilyRepository extends MongoRepository<Family, String> {
+    Family findByInviteCode(String inviteCode);
 }

@@ -29,6 +29,10 @@ public class User implements UserDetails {
     public User() {
     }
 
+    public User(String id) {
+        this.id = id;
+    }
+
     public User(String name, String surname, String email, String password) {
         this.name = name;
         this.surname = surname;

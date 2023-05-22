@@ -21,6 +21,7 @@ public class AuthController {
     private final IJWTGenerator jwtGenerator;
     private final IUserService userService;
 
+
     @Autowired
     public AuthController(IAuth authService, IJWTGenerator ijwtGenerator, IUserService userService) {
         this.authService = authService;

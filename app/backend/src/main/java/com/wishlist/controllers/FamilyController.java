@@ -1,5 +1,8 @@
 package com.wishlist.controllers;
 
+import com.wishlist.dto.ApiError;
+import com.wishlist.exceptions.InvalidInviteCodeException;
+import com.wishlist.exceptions.InvalidInviteCodeFormatException;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ public class FamilyController {
 
     public FamilyController(FamilyService familyService) {
         this.familyService = familyService;
+
     }
 
     @GetMapping
@@ -54,7 +58,7 @@ public class FamilyController {
         Optional<Family> familyOptional = Optional.ofNullable(familyService.findById(id));
         if (familyOptional.isPresent()) {
             Family existingFamily = familyOptional.get();
-            existingFamily.setUsersList(updatedFamily.getUsersList());
+            existingFamily.setUsers(updatedFamily.getUsers());
             existingFamily.setShoppingList(updatedFamily.getShoppingList());
             Family updatedFamilyResult = familyService.save(existingFamily);
             return ResponseEntity.ok(updatedFamilyResult);
@@ -62,5 +66,29 @@ public class FamilyController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/join/{inviteCode}/{userId}")
+    public ResponseEntity<Family> joinFamily(@PathVariable("inviteCode") String inviteCode, @PathVariable("userId") String userId) throws InvalidInviteCodeException, InvalidInviteCodeFormatException {
+        try {
+            Family family = familyService.addUserToFamily(inviteCode, userId);
+            return new ResponseEntity<>(family, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+//    @PostMapping("/leave/{familyId}/{userId}")
+//    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId){
+//        try {
+////            Family family = familyService.removeUserFromFamily(familyId, userId);
+//            return new ResponseEntity<>(family, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
+
+
 
 }
