@@ -8,11 +8,12 @@ RUN apt-get install maven -y;
 
 RUN apt-get update && apt-get install -y netcat
 
-VOLUME /tmp
-
 COPY wait-for-it.sh /app/wait-for-it.sh
 RUN chmod +x /app/wait-for-it.sh
 
-COPY . /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
 
 ENTRYPOINT ["/app/wait-for-it.sh", "mongodb 27017", "--", "mvn", "-f", "/app", "spring-boot:run"]
