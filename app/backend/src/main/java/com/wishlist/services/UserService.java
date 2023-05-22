@@ -9,15 +9,12 @@ import com.wishlist.services.interfaces.IAuth;
 import com.wishlist.services.interfaces.IEmailSender;
 import com.wishlist.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -25,15 +22,18 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
+    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final IJWTGenerator jwtGenerator;
     private final IEmailSender emailSender;
+    private final AuthenticationManager authenticationManager;
     Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
-    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender) {
+    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.jwtGenerator = jwtGenerator;
         this.emailSender = emailSender;
+        this.authenticationManager = authenticationManager;
     }
 
     public List<User> getAllUsers() {
@@ -61,17 +61,24 @@ public class UserService implements IUserService, IAuth {
     }
 
     public AuthResponseDTO login(AuthRequestDTO dto) throws Exception {
-        Optional<User> user = userRepository.findUserByEmailAndPassword(dto.getEmail(), dto.getPassword());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        dto.getEmail(),
+                        dto.getPassword()
+                )
+        );
+        Optional<User> user = userRepository.findUserByEmail(dto.getEmail());
         if (user.isPresent()) {
-            Map<String, String> jwt = jwtGenerator.generateToken(user.get());
-            Map<String, String> jwtRefresh = jwtGenerator.generateRefreshToken(user.get());
-            logger.info("Generated JWT: " + jwt);
-            return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"));
-        } else {
-            throw new Exception("Invalid credentials");
+            if (passwordEncoder.matches(dto.getPassword(), user.get().getPassword())) {
+                Map<String, String> jwt = jwtGenerator.generateToken(user.get());
+                Map<String, String> jwtRefresh = jwtGenerator.generateRefreshToken(user.get());
+                logger.info("Generated JWT: " + jwt);
+                return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"));
+            }
         }
-
+        throw new Exception("Invalid credentials");
     }
+
 
     public User register(AuthRequestDTO dto) throws Exception {
         Optional<User> found = userRepository.findUserByEmail(dto.getEmail());
