@@ -74,7 +74,6 @@ public class JwtGeneratorImpl implements IJWTGenerator {
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             return claims.getSubject();
         } catch (JwtException e) {
-            // Handle the exception if the token is invalid or has expired
             throw new JwtException("Invalid token");
         }
     }

@@ -34,15 +34,10 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-
-        // Bypass the JWT filter for requests made to "/api/auth/**"
         if (requestURI.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
-
-
-        System.out.println("brt");
         final String authHeader = request.getHeader("authorization");
         final String userEmail;
         if ("OPTIONS".equals(request.getMethod())) {
