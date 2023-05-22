@@ -3,8 +3,6 @@ package com.wishlist.controllers;
 import com.wishlist.dto.ApiError;
 import com.wishlist.exceptions.InvalidInviteCodeException;
 import com.wishlist.exceptions.InvalidInviteCodeFormatException;
-import com.wishlist.facade.FamilyFacade;
-import com.wishlist.facade.IFamilyFacade;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import org.springframework.http.HttpStatus;
@@ -18,11 +16,10 @@ import java.util.Optional;
 @RequestMapping("api/families")
 public class FamilyController {
     private final FamilyService familyService;
-    private final IFamilyFacade familyFacade;
 
-    public FamilyController(FamilyService familyService, FamilyFacade familyFacade) {
+    public FamilyController(FamilyService familyService) {
         this.familyService = familyService;
-        this.familyFacade = familyFacade;
+
     }
 
     @GetMapping
@@ -73,12 +70,23 @@ public class FamilyController {
     @PostMapping("/join/{inviteCode}/{userId}")
     public ResponseEntity<Family> joinFamily(@PathVariable("inviteCode") String inviteCode, @PathVariable("userId") String userId) throws InvalidInviteCodeException, InvalidInviteCodeFormatException {
         try {
-            Family family = familyFacade.addUserToFamily(inviteCode, userId);
+            Family family = familyService.addUserToFamily(inviteCode, userId);
             return new ResponseEntity<>(family, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @PostMapping("/leave/{familyId}/{userId}")
+//    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId){
+//        try {
+////            Family family = familyService.removeUserFromFamily(familyId, userId);
+//            return new ResponseEntity<>(family, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
 
 
 

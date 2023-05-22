@@ -2,7 +2,6 @@ package com.wishlist.controllers;
 
 import com.wishlist.dto.*;
 import com.wishlist.exceptions.UserDoesNotExistException;
-import com.wishlist.facade.FamilyFacade;
 import com.wishlist.models.User;
 import com.wishlist.security.IJWTGenerator;
 import com.wishlist.services.interfaces.IAuth;
@@ -24,7 +23,7 @@ public class AuthController {
 
 
     @Autowired
-    public AuthController(IAuth authService, IJWTGenerator ijwtGenerator, IUserService userService, FamilyFacade familyFacade) {
+    public AuthController(IAuth authService, IJWTGenerator ijwtGenerator, IUserService userService) {
         this.authService = authService;
         this.jwtGenerator = ijwtGenerator;
         this.userService = userService;
