@@ -10,6 +10,6 @@ public interface IFamilyService {
     Family findById(String id);
     boolean delete(String id);
     Family save(Family family);
-    String generateRandomString();
+    String generateInviteCode();
 
 }

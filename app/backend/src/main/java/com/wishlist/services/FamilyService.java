@@ -43,7 +43,7 @@ public class FamilyService implements IFamilyService {
         return familyRepository.save(family);
     }
 
-    public String generateRandomString() {
+    public String generateInviteCode() {
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         final int LENGTH = 8;
         SecureRandom random = new SecureRandom();
