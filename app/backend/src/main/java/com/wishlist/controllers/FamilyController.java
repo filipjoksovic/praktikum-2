@@ -77,15 +77,15 @@ public class FamilyController {
         }
     }
 
-//    @PostMapping("/leave/{familyId}/{userId}")
-//    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId){
-//        try {
-////            Family family = familyService.removeUserFromFamily(familyId, userId);
-//            return new ResponseEntity<>(family, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PostMapping("/leave/{familyId}/{userId}")
+    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId){
+        try {
+            Family family = familyService.removeUserFromFamily(familyId, userId);
+            return new ResponseEntity<>(family, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

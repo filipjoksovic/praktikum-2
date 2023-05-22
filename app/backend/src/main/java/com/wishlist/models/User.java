@@ -155,6 +155,19 @@ public class User implements UserDetails {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", dob='" + dob + '\'' +
+                ", familyId='" + familyId + '\'' +
+                ", shoppingLists=" + shoppingLists +
+                ", roles=" + roles +
+                ", role=" + role +
+                '}';
+    }
 }
