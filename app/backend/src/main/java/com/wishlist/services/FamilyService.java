@@ -1,8 +1,6 @@
 package com.wishlist.services;
 
-import com.wishlist.exceptions.InvalidInviteCodeException;
-import com.wishlist.exceptions.InvalidInviteCodeFormatException;
-import com.wishlist.exceptions.UserAlreadyHasAFamilyException;
+import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.User;
 import com.wishlist.repositories.FamilyRepository;
@@ -11,13 +9,17 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class FamilyService implements IFamilyService {
 
     private final FamilyRepository familyRepository;
     private final UserService userService;
+    Logger logger = Logger.getLogger(FamilyService.class.getName());
+
 
     public FamilyService(FamilyRepository familyRepository, UserService userService) {
         this.familyRepository = familyRepository;
@@ -88,11 +90,33 @@ public class FamilyService implements IFamilyService {
             }
         }
         throw new InvalidInviteCodeException();
+    }
+
+    public Family removeUserFromFamily(String familyId, String userId) throws Exception {
+        Optional<Family> familyOptional = familyRepository.findById(familyId);
+        User user = userService.getUserById(userId);
+        if (!familyOptional.isPresent()) {
+            throw new FamilyNotFoundException();
+        }
+        if (user == null) {
+            throw new UserDoesNotExistException();
+        }
+        Family family = familyOptional.get();
+        List<User> familyUsers = family.getUsers();
+        for (User currentUser : familyUsers) {
+            if (Objects.equals(currentUser.getId(), userId)) {
+                familyUsers.remove(currentUser);
+                user.setFamilyId(null);
+                familyRepository.save(family);
+                userService.updateUser(user);
+                return family;
+            }
+        }
+        throw new Exception("Failed to delete user from family");
+    }
+
+
+
+
+
 }
-
-
-
-
-
-
-     }
