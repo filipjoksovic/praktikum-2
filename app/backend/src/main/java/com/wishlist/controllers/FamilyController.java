@@ -1,5 +1,10 @@
 package com.wishlist.controllers;
 
+import com.wishlist.dto.ApiError;
+import com.wishlist.exceptions.InvalidInviteCodeException;
+import com.wishlist.exceptions.InvalidInviteCodeFormatException;
+import com.wishlist.facade.FamilyFacade;
+import com.wishlist.facade.IFamilyFacade;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import org.springframework.http.HttpStatus;
@@ -13,9 +18,11 @@ import java.util.Optional;
 @RequestMapping("api/families")
 public class FamilyController {
     private final FamilyService familyService;
+    private final IFamilyFacade familyFacade;
 
-    public FamilyController(FamilyService familyService) {
+    public FamilyController(FamilyService familyService, FamilyFacade familyFacade) {
         this.familyService = familyService;
+        this.familyFacade = familyFacade;
     }
 
     @GetMapping
@@ -54,7 +61,7 @@ public class FamilyController {
         Optional<Family> familyOptional = Optional.ofNullable(familyService.findById(id));
         if (familyOptional.isPresent()) {
             Family existingFamily = familyOptional.get();
-            existingFamily.setUsersList(updatedFamily.getUsersList());
+            existingFamily.setUsers(updatedFamily.getUsers());
             existingFamily.setShoppingList(updatedFamily.getShoppingList());
             Family updatedFamilyResult = familyService.save(existingFamily);
             return ResponseEntity.ok(updatedFamilyResult);
@@ -62,5 +69,18 @@ public class FamilyController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/join/{inviteCode}/{userId}")
+    public ResponseEntity<Family> joinFamily(@PathVariable("inviteCode") String inviteCode, @PathVariable("userId") String userId) throws InvalidInviteCodeException, InvalidInviteCodeFormatException {
+        try {
+            Family family = familyFacade.addUserToFamily(inviteCode, userId);
+            return new ResponseEntity<>(family, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 
 }
