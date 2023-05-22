@@ -113,6 +113,7 @@ public class FamilyService implements IFamilyService {
             }
         }
         throw new Exception("Failed to delete user from family");
+
     }
 
 
