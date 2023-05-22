@@ -8,8 +8,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(
-      `mongodb://rootuser:rootpass@127.0.0.1:27017/OpenAi`,
+      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
       {
         authSource: 'admin',
       },
@@ -26,7 +27,6 @@ import { ConfigModule } from '@nestjs/config';
         collection: 'summaries',
       },
     ]),
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
