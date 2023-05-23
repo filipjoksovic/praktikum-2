@@ -20,4 +20,8 @@ public class ItemService implements IItemService {
         return itemRepository.findAll();
     }
 
+    public ShoppingItem save(ShoppingItem item) {
+        return itemRepository.save(item);
+    }
+
 }

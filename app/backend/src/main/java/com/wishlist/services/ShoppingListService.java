@@ -3,11 +3,11 @@ package com.wishlist.services;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.ListDoesNotExistException;
 import com.wishlist.exceptions.UserDoesNotExistException;
+import com.wishlist.exceptions.UserHasNoShoppingListsException;
 import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
-import com.wishlist.models.User;
 import com.wishlist.repositories.ShoppingListRepository;
-import com.wishlist.repositories.UserRepository;
+import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,13 @@ import java.util.Optional;
 public class ShoppingListService implements IShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
-    private final UserRepository userRepository;
+    private final IItemService itemService;
+    private final UserService userService;
 
-    public ShoppingListService(ShoppingListRepository shoppingListRepository, UserRepository userRepository) {
+    public ShoppingListService(ShoppingListRepository shoppingListRepository, IItemService itemService, UserService userService) {
         this.shoppingListRepository = shoppingListRepository;
-        this.userRepository = userRepository;
+        this.itemService = itemService;
+        this.userService = userService;
     }
 
     public List<ShoppingList> getAll() {
@@ -43,49 +45,51 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public List<ShoppingList> getShoppingListForUser(String userId) throws UserDoesNotExistException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return user.get().getShoppingLists();
+    public List<ShoppingList> getShoppingListForUser(String userId) throws UserDoesNotExistException, UserHasNoShoppingListsException {
+        List<ShoppingList> shoppingListsforUser = shoppingListRepository.findByUserId(userId);
+        if (shoppingListsforUser.isEmpty()) {
+            throw new UserHasNoShoppingListsException();
         } else {
-            throw new UserDoesNotExistException();
+            return shoppingListsforUser;
         }
     }
 
     @Override
-    public List<ShoppingList> deleteList(String userId, String listId) throws ListDoesNotExistException, UserDoesNotExistException {
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()){
-            throw new UserDoesNotExistException();
+    public ShoppingList deleteList(String listId) throws ListDoesNotExistException {
+
+        Optional<ShoppingList> optionalList = shoppingListRepository.findById(listId);
+        if (!optionalList.isPresent()) {
+            throw new ListDoesNotExistException();
         }
-        //TODO refactor with proper relationships
-        User found = user.get();
-        found.getShoppingLists().remove(Integer.parseInt(listId));
-        userRepository.save(found);
-        return found.getShoppingLists();
+
+        ShoppingList list = optionalList.get();
+        shoppingListRepository.deleteById(listId);
+
+        return list;
     }
 
-    public ShoppingList createShoppingList(String userId, ShoppingListDTO dto) throws Exception {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
 
-            List<ShoppingItem> listShoppingItems = dto.items.stream().map(ShoppingItem::new).toList();
-            User found = user.get();
-            ShoppingList list = new ShoppingList();
-            list.setName(dto.name.isBlank() ? "No name" : dto.name);
-            list.setItemList(listShoppingItems);
-            List<ShoppingList> userShoppingLists = found.getShoppingLists();
-            if (userShoppingLists == null) {
-                userShoppingLists = new ArrayList<>();
-            }
-            userShoppingLists.add(list);
-            found.setShoppingLists(userShoppingLists);
-            userRepository.save(found);
-            return list;
-        } else {
-            throw new Exception("User doesn't exist");
+    public ShoppingList createShoppingList(String userId, ShoppingListDTO dto) throws UserDoesNotExistException {
+        // TODO ADD THE LOGIC FOR USER IF NOT EXISTING
+        ShoppingList list = new ShoppingList("My Shopping List");
+
+        list.setName(dto.name.isBlank() ? "No name" : dto.name);
+        list.setUserId(userId);
+        List<ShoppingItem> newItems = new ArrayList<>();
+
+        for (String itemName : dto.items) {
+            ShoppingItem itemForDb = new ShoppingItem(itemName);
+            itemService.save(itemForDb);
+            newItems.add(itemForDb);
         }
+
+        list.setItemList(newItems);
+        shoppingListRepository.save(list);
+
+        return list;
     }
+
+
 
 
 }

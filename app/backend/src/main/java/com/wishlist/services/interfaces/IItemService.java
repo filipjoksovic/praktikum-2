@@ -7,5 +7,6 @@ import java.util.List;
 public interface IItemService {
 
     List<ShoppingItem> getAll();
+    ShoppingItem save(ShoppingItem item);
 
 }

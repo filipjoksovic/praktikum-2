@@ -11,12 +11,18 @@ public class ShoppingList {
     private String id;
 
     private String name;
+    private String userId;
     private List<ShoppingItem> shoppingItemList;
 
     public ShoppingList() {
     }
 
-    public ShoppingList(List<ShoppingItem> shoppingItemList) {
+    public ShoppingList(String name) {
+        this.name = name;
+    }
+    public ShoppingList(String name, String userId, List<ShoppingItem> shoppingItemList) {
+        this.name = name;
+        this.userId = userId;
         this.shoppingItemList = shoppingItemList;
     }
 
@@ -38,6 +44,14 @@ public class ShoppingList {
 
     public String getName() {
         return name;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setName(String name) {
