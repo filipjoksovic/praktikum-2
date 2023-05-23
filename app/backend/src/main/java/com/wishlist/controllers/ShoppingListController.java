@@ -4,10 +4,9 @@ import com.wishlist.dto.ApiError;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.ListDoesNotExistException;
 import com.wishlist.exceptions.UserDoesNotExistException;
+import com.wishlist.exceptions.UserHasNoShoppingListsException;
 import com.wishlist.models.ShoppingList;
-import com.wishlist.models.User;
-import com.wishlist.services.ShoppingListService;
-import org.apache.coyote.Response;
+import com.wishlist.services.interfaces.IShoppingListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +19,9 @@ import java.util.logging.Logger;
 @RequestMapping("api/shoppingLists")
 public class ShoppingListController {
     private final Logger log = Logger.getLogger(ShoppingListController.class.getName());
-    private final ShoppingListService shoppingListService;
+    private final IShoppingListService shoppingListService;
 
-    public ShoppingListController(ShoppingListService shoppingListService) {
+    public ShoppingListController(IShoppingListService shoppingListService) {
         this.shoppingListService = shoppingListService;
     }
 
@@ -49,7 +48,7 @@ public class ShoppingListController {
         log.info("Get shopping lists for user " + userId);
         try {
             return new ResponseEntity(shoppingListService.getShoppingListForUser(userId), HttpStatus.OK);
-        } catch (UserDoesNotExistException e) {
+        } catch (UserDoesNotExistException | UserHasNoShoppingListsException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -65,16 +64,14 @@ public class ShoppingListController {
         }
     }
 
-    @DeleteMapping("/{userId}/{listId}")
-    public ResponseEntity deleteShoppingList(@PathVariable String userId, @PathVariable String listId) {
-        log.info("DELETE deleteShoppingList for uid: " + userId + " lid: " + listId);
+    @DeleteMapping("/{listId}")
+    public ResponseEntity deleteShoppingList(@PathVariable String listId) {
+        log.info("DELETE deleteShoppingList for uid: " + " lid: " + listId);
         try {
-            return new ResponseEntity(shoppingListService.deleteList(userId, listId), HttpStatus.OK);
+            return new ResponseEntity(shoppingListService.deleteList(listId), HttpStatus.OK);
         } catch (ListDoesNotExistException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
-        } catch (UserDoesNotExistException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

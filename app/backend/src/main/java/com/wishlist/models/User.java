@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,6 @@ public class User implements UserDetails {
     private String password;
     private String dob;
     private String familyId;
-    private List<ShoppingList> shoppingLists;
     private Set<Role> roles = new HashSet<>();
     private UserRoleEnum role;
 
@@ -111,14 +109,6 @@ public class User implements UserDetails {
         this.familyId = familyId;
     }
 
-    public List<ShoppingList> getShoppingLists() {
-        return shoppingLists;
-    }
-
-    public void setShoppingLists(List<ShoppingList> shoppingLists) {
-        this.shoppingLists = shoppingLists;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -165,7 +155,6 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", dob='" + dob + '\'' +
                 ", familyId='" + familyId + '\'' +
-                ", shoppingLists=" + shoppingLists +
                 ", roles=" + roles +
                 ", role=" + role +
                 '}';
