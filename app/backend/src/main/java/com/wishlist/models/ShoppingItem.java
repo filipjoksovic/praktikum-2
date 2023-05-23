@@ -38,4 +38,5 @@ public class ShoppingItem {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
 }
