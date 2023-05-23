@@ -22,10 +22,11 @@ import java.util.regex.Pattern;
 public class OpenAiService implements IOpenAiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String instruction_text = "Based on the input provided to you analyze the context and detect items which the user wants to buy, then provide a shopping list in the format: [{\"nameOfItem1\":quantityOfItem1}, {\"nameOfItem2\":quantityOfItem2}...]. Prompt:";
+    private final String instruction_text = "Based on the input provided to you analyze the context and detect items which the user wants to buy, then provide a shopping list in the format: [\"itemName1\", \"itemName2\"...]. Prompt:";
 
     @Override
     public String processText(String text) throws Exception {
+        System.out.println(text);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String fullText = instruction_text + " " + text;
@@ -37,11 +38,13 @@ public class OpenAiService implements IOpenAiService {
 
         String response = restTemplate.postForObject("http://openai-service:3000/text-summary", request, String.class);
 
-        Pattern pattern = Pattern.compile("(\\[\\{.*?:.*?\\}(, \\{.*?:.*?\\})*\\])");
+        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
         Matcher matcher = pattern.matcher(response);
 
         if (matcher.find()) {
-            return matcher.group(1);
+            String matchedString = matcher.group(0);
+            String unescapedString = matchedString.replace("\\\"", "\"");
+            return unescapedString;
         } else {
             return null;
         }

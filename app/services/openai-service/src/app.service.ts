@@ -22,6 +22,8 @@ export class AppService {
 
       // read the buffer property of the passed file
       const buffer = file.buffer;
+      console.log(file);
+      console.log(buffer);
 
       // assign a name to the buffer - necessary for the openai wrapper to work
       buffer.name = 'test.wav';

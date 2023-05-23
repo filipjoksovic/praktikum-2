@@ -19,9 +19,12 @@ public class OpenAiController {
     @PostMapping("/text")
     public ResponseEntity<String> uploadText(@RequestBody TextUploadRequestDTO textRequest) {
         try {
-            String response = openAiService.processText(textRequest.getText());
+            System.out.println(textRequest);
+            String response = "{\"summary\":" + openAiService.processText(textRequest.getText()) + "}";
+            System.out.println(response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -29,7 +32,7 @@ public class OpenAiController {
     @PostMapping("/wav")
     public ResponseEntity<String> uploadWav(@RequestParam("file") MultipartFile file) {
         try {
-            String response = openAiService.processWavFile(file);
+            String response = "{\"transcript\":\"" + openAiService.processWavFile(file) + "\"}";
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
