@@ -1,6 +1,7 @@
 package com.wishlist.services;
 
 import com.wishlist.services.interfaces.IOpenAiService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -24,6 +25,9 @@ public class OpenAiService implements IOpenAiService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final String instruction_text = "Based on the input provided to you analyze the context and detect items which the user wants to buy, then provide a shopping list in the format: [\"itemName1\", \"itemName2\"...]. Prompt:";
 
+    @Value("${openai-url}")
+    private String url;
+
     @Override
     public String processText(String text) throws Exception {
         System.out.println(text);
@@ -36,7 +40,7 @@ public class OpenAiService implements IOpenAiService {
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(map, headers);
 
-        String response = restTemplate.postForObject("http://openai-service:3000/text-summary", request, String.class);
+        String response = restTemplate.postForObject(url + "/text-summary", request, String.class);
 
         Pattern pattern = Pattern.compile("\\[(.*?)\\]");
         Matcher matcher = pattern.matcher(response);
@@ -71,7 +75,7 @@ public class OpenAiService implements IOpenAiService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        return restTemplate.postForObject("http://openai-service:3000/audio-transcript", requestEntity, String.class);
+        return restTemplate.postForObject(url + "/audio-transcript", requestEntity, String.class);
     }
 }
 
