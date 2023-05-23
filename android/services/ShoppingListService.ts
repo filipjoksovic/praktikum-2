@@ -1,27 +1,64 @@
 import {Environment} from '../environment';
 import {LocalStorageService} from './LocalStorageService';
 import {IShoppingListsResponseDTO} from '../models/IShoppingListsResponseDTO';
+import { Platform } from 'react-native';
+import RNFS from 'react-native-fs';
 
 export interface IPromptRequest {
-  prompt: string;
+  text: string;
 }
 
 export class ShoppingListService {
   public static async createRequest(promptRequest: IPromptRequest) {
-    promptRequest.prompt = Environment.MODEL_PROMPT + promptRequest.prompt;
-    return await fetch(`${Environment.OPENAI_URL}/text-summary`, {
+    //TESTING ONLY! REPLACE WITH LOCAL STORAGE LATER!
+    const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZW5pQHRlc3QuY29tIiwiaWF0IjoxNjg0ODY3NTMzLCJleHAiOjE2ODQ5Njc1MzN9.Lh5CudKARX-yP8ukaFIUu6trVEl1RP1kdkDAdt1okFo";
+    console.log(promptRequest);
+    return await fetch(`${Environment.BACKEND_URL}/uploads/text`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token,
       },
       body: JSON.stringify(promptRequest),
-    })
-      .then(response => response.json())
+    }).then(response => response.json())
       .then(response => {
-        response.summary = response.summary.split(',');
         console.log(response);
         return response;
-      });
+    })
+    .catch((error) => {
+      console.log('Error in createTranscript: ', error);
+    });
+  }
+
+  public static async createTranscriptRequest(path: string){
+
+    //TESTING ONLY! REPLACE WITH LOCAL STORAGE LATER!
+    const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiZW5pQHRlc3QuY29tIiwiaWF0IjoxNjg0ODY3NTMzLCJleHAiOjE2ODQ5Njc1MzN9.Lh5CudKARX-yP8ukaFIUu6trVEl1RP1kdkDAdt1okFo";
+    console.log(path);
+    const data = new FormData();
+    const file = {
+      uri: path,
+      type: 'audio/wav',
+      name: 'my-file.wav',
+    };
+    console.log(file);
+    data.append('file', file);
+    return await fetch(`${Environment.BACKEND_URL}/uploads/wav`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: token,
+      },
+      body: data,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data.transcript;
+    })
+    .catch((error) => {
+      console.log('Error in createTranscriptRequest: ', error);
+    });
   }
 
   public static async createList(data: {name: string; items: string[]}) {
