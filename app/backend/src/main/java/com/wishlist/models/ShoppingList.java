@@ -56,4 +56,14 @@ public class ShoppingList {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "ShoppingList{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", shoppingItemList=" + shoppingItemList +
+                '}';
+    }
 }

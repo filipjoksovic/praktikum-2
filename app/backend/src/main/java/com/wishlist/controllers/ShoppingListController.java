@@ -5,7 +5,9 @@ import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.ListDoesNotExistException;
 import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.exceptions.UserHasNoShoppingListsException;
+import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
+import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,11 @@ import java.util.logging.Logger;
 public class ShoppingListController {
     private final Logger log = Logger.getLogger(ShoppingListController.class.getName());
     private final IShoppingListService shoppingListService;
+    private final IItemService itemService;
 
-    public ShoppingListController(IShoppingListService shoppingListService) {
+    public ShoppingListController(IShoppingListService shoppingListService, IItemService itemService) {
         this.shoppingListService = shoppingListService;
+        this.itemService = itemService;
     }
 
     @GetMapping
@@ -75,9 +79,34 @@ public class ShoppingListController {
         }
     }
 
+    @PostMapping("/createItem/{listId}")
+    public ResponseEntity<ShoppingList> createShoppingListItem(@PathVariable String listId, @RequestBody ShoppingItem item) { // TODO ADD ITEM TO A CERTAIN SHOPPING LIST
+        try {
+            ShoppingList createdShoppingList = shoppingListService.addItemToShoppingList(item,listId);
+            return new ResponseEntity<>(createdShoppingList, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{userId}/{listId}/{itemId}")
     public ResponseEntity deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId) {
-        return new ResponseEntity(null, HttpStatus.OK);
+        try {
+            boolean success = shoppingListService.deleteItemFromShoppingList(userId,listId,itemId);
+            return new ResponseEntity<>(success,HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{listId}/{itemId}")
+    public ResponseEntity<ShoppingItem> update(@PathVariable String listId,@PathVariable String itemId, @RequestBody ShoppingItem item) {
+        try {
+            ShoppingItem updatedShoppingItem = shoppingListService.updateShoppingItem(listId, itemId, item);
+            return new ResponseEntity<>(updatedShoppingItem, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
