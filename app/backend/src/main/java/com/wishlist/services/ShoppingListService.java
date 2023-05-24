@@ -56,7 +56,7 @@ public class ShoppingListService implements IShoppingListService {
 
     @Override
     public ShoppingList deleteList(String listId) throws ListDoesNotExistException {
-
+        // TODO CHECK THE USER AND LIST BEFORE DELETING
         Optional<ShoppingList> optionalList = shoppingListRepository.findById(listId);
         if (!optionalList.isPresent()) {
             throw new ListDoesNotExistException();

@@ -9,7 +9,6 @@ import java.util.List;
 public class ShoppingList {
     @Id
     private String id;
-
     private String name;
     private String userId;
     private List<ShoppingItem> shoppingItemList;

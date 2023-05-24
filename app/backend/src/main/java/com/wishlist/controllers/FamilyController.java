@@ -19,7 +19,6 @@ public class FamilyController {
 
     public FamilyController(FamilyService familyService) {
         this.familyService = familyService;
-
     }
 
     @GetMapping
