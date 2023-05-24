@@ -39,4 +39,12 @@ public class ShoppingItem {
         this.checked = checked;
     }
 
+    @Override
+    public String toString() {
+        return "ShoppingItem{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", checked=" + checked +
+                '}';
+    }
 }

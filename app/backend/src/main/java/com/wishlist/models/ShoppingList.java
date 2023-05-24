@@ -9,7 +9,6 @@ import java.util.List;
 public class ShoppingList {
     @Id
     private String id;
-
     private String name;
     private String userId;
     private List<ShoppingItem> shoppingItemList;
@@ -56,5 +55,15 @@ public class ShoppingList {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingList{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", shoppingItemList=" + shoppingItemList +
+                '}';
     }
 }
