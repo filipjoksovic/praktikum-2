@@ -20,10 +20,15 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
         props.wholeListLongPressEmitter(list);
       }}
       left={props => <List.Icon {...props} icon="cart" />}
-      title={list.shoppingList.name ? list.shoppingList.name : 'No name'}>
+      title={list.shoppingList.name ? list.shoppingList.name : 'No name'}
+      titleStyle={{
+        textDecorationLine: !list.allChecked ? 'line-through' : 'none',
+        textDecorationStyle: 'solid',
+      }}>
       {list.shoppingList.itemList.map(item => (
         <List.Item
           title={item.name}
+          key={item.id}
           titleStyle={{
             textDecorationLine: item.checked ? 'line-through' : 'none',
             textDecorationStyle: 'solid',

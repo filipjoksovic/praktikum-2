@@ -6,6 +6,7 @@ import {ShoppingListsPage} from '../../shopping-lists/pages/ShoppingListsPage';
 import {AuthService} from '../../../services/AuthService';
 import {useFocusEffect} from '@react-navigation/native';
 import {SettingsPage} from '../../settings/pages/SettingsPage';
+import {TabNavigation} from '../../../App';
 
 export const HomePage = ({navigation}) => {
   const theme = useTheme();
@@ -55,11 +56,5 @@ export const HomePage = ({navigation}) => {
     settings: SettingsPage,
   });
 
-  return (
-    <BottomNavigation
-      navigationState={{index, routes}}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-    />
-  );
+  return <TabNavigation></TabNavigation>;
 };

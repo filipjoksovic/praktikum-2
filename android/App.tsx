@@ -15,55 +15,44 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {SettingsPage} from './modules/settings/pages/SettingsPage';
+import {PrepareShoppingListPage} from './modules/home/pages/PrepareShoppingListPage';
+import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPage';
 
-const TabNavigation = () => {
-  const Tab = createBottomTabNavigator();
-
+export const TabNavigation = () => {
+  const Tab = createMaterialBottomTabNavigator();
+  const theme = useTheme();
   return (
     <Tab.Navigator
+      barStyle={{backgroundColor: theme.colors.background}}
       screenOptions={({route, navigation}) => {
         return {
           headerShown: false,
-          // tabBarIcon: props => {
-          //   return <Icon name={'rocket'} color={'#900'} size={30} />;
-          // },
-          tabBarLabelStyle: {
-            marginBottom: 5,
-          },
-
-          tabBarStyle: {
-            height: 60,
-          },
-          tabBarLabel: () => {
-            return null;
-          },
         };
       }}>
       <Tab.Screen
-        name={'Login'}
-        component={LoginPage}
+        name={'Shopping list'}
+        component={PrepareShoppingListPage}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'rocket'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'plus'} color={theme.colors.tertiary} size={20} />
+            );
           },
+          tabBarLabel: 'New list',
         }}
       />
       <Tab.Screen
-        name={'Register'}
-        component={RegisterPage}
+        name={'ShoppingLists'}
+        component={ShoppingListsPage}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'rocket'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'list-ul'} color={theme.colors.tertiary} size={20} />
+            );
           },
-        }}
-      />
-      <Tab.Screen
-        name={'Home'}
-        component={HomePage}
-        options={{
-          tabBarIcon: ({color, size}) => {
-            return <Icon name={'home'} color={'#900'} size={30} />;
-          },
+          tabBarLabel: 'Shopping lists',
         }}
       />
       <Tab.Screen
@@ -71,8 +60,23 @@ const TabNavigation = () => {
         component={AccountSetup}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'times'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
+            );
           },
+          tabBarLabel: 'Account setup',
+        }}
+      />
+      <Tab.Screen
+        name={'Settings'}
+        component={SettingsPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
+            );
+          },
+          tabBarLabel: 'Settings',
         }}
       />
     </Tab.Navigator>

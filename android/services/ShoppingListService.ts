@@ -90,13 +90,19 @@ export class ShoppingListService {
       console.error('No user logged in');
       return [];
     }
-    return await fetch(`${Environment.BACKEND_URL}/shoppingLists/${user.id}`, {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.accessToken}`,
+    console.log(
+      `Sending a request at: ${Environment.BACKEND_URL}/shoppingLists/user/${user.id}`,
+    );
+    return await fetch(
+      `${Environment.BACKEND_URL}/shoppingLists/user/${user.id}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
       },
-    })
+    )
       .then(response => response.json())
       .then(response => response as IShoppingListsResponse);
   }

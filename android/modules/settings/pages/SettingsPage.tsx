@@ -21,7 +21,7 @@ export const SettingsPage = ({navigation}) => {
     <View
       style={{
         ...LAYOUT.container,
-        backgroundColor: theme.colors,
+        backgroundColor: theme.colors.background,
       }}>
       <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
         Settings

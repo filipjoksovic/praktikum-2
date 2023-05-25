@@ -48,6 +48,7 @@ export const LoginPage = ({navigation}: any) => {
     try {
       const result = await AuthService.login(userAuth);
       console.log(result);
+      console.log('Navigating home');
       navigation.navigate('Home');
     } catch (error) {
       if (error instanceof Error) {
