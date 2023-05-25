@@ -39,6 +39,8 @@ public class InvitationService implements IInvitationService {
 
     @Override
     public Invitation save(Invitation invitation) throws InvitationFailedException {
+
+        logger.info(invitation.toString());
         String userToId = invitation.getUserId();
         String familyId = invitation.getFamilyId();
 

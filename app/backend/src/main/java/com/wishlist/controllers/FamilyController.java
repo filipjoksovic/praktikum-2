@@ -1,8 +1,6 @@
 package com.wishlist.controllers;
 
 import com.wishlist.dto.ApiError;
-import com.wishlist.exceptions.InvalidInviteCodeException;
-import com.wishlist.exceptions.InvalidInviteCodeFormatException;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import org.springframework.http.HttpStatus;
@@ -63,16 +61,6 @@ public class FamilyController {
             return ResponseEntity.ok(updatedFamilyResult);
         } else {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/join/{inviteCode}/{userId}")
-    public ResponseEntity<Family> joinFamily(@PathVariable("inviteCode") String inviteCode, @PathVariable("userId") String userId) throws InvalidInviteCodeException, InvalidInviteCodeFormatException {
-        try {
-            Family family = familyService.addUserToFamily(inviteCode, userId);
-            return new ResponseEntity<>(family, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

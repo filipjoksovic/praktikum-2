@@ -2,23 +2,23 @@ package com.wishlist.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import javax.persistence.Id;
 
 @Document
-public class Invitation {
+public class RequestJoin {
+    @Id
     private String id;
     private String familyId;
+    private String inviteCode;
     private String userId;
-    private Date expirationDate;
 
-    public Invitation() {
+    public RequestJoin() {
     }
 
-    public Invitation(String id, String familyId, String userId, Date expirationDate) {
+    public RequestJoin(String id, String familyId, String userId) {
         this.id = id;
         this.familyId = familyId;
         this.userId = userId;
-        this.expirationDate = expirationDate;
     }
 
     public String getId() {
@@ -45,21 +45,11 @@ public class Invitation {
         this.userId = userId;
     }
 
-    public Date getExpirationDate() {
-        return expirationDate;
+    public String getInviteCode() {
+        return inviteCode;
     }
 
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Invitation{" +
-                "id='" + id + '\'' +
-                ", familyId='" + familyId + '\'' +
-                ", userId='" + userId + '\'' +
-                ", expirationDate=" + expirationDate +
-                '}';
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 }

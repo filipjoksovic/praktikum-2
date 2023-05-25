@@ -61,35 +61,21 @@ public class FamilyService implements IFamilyService {
         return sb.toString();
     }
 
-    private boolean isValidInviteCode(String inviteCode) throws InvalidInviteCodeFormatException, InvalidInviteCodeException {
+    public boolean isValidInviteCode(String inviteCode) throws InvalidInviteCodeFormatException, InvalidInviteCodeException {
+        // TODO ADD IF USER ALREADY SENT AN INVITE CODE TO THAT FAMILY
         if (inviteCode.length() != 8) {
             throw new InvalidInviteCodeFormatException();
-        } else {
-            Family family = familyRepository.findByInviteCode(inviteCode);
-            if (family == null) {
-                throw new InvalidInviteCodeException();
-            }
-            else return true;
         }
+        Family family = familyRepository.findByInviteCode(inviteCode);
+        if (family == null) {
+            throw new InvalidInviteCodeException();
+        }
+        return true;
     }
 
-    public Family addUserToFamily(String inviteCode, String userId) throws InvalidInviteCodeException, UserAlreadyHasAFamilyException, InvalidInviteCodeFormatException {
-        if (isValidInviteCode(inviteCode)) {
-            Family family = familyRepository.findByInviteCode(inviteCode);
-            if (family != null) {
-                User user = userService.getUserById(userId);
-                if (user.getFamilyId() != null) {
-                    throw new UserAlreadyHasAFamilyException();
-                }
-                List<User> users = family.getUsers();
-                users.add(user);
-                user.setFamilyId(family.getId());
-                userService.updateUser(user);
-                familyRepository.save(family);
-                return family;
-            }
-        }
-        throw new InvalidInviteCodeException();
+    @Override
+    public Family findByInviteCode(String inviteCode) {
+        return familyRepository.findByInviteCode(inviteCode);
     }
 
     public Family removeUserFromFamily(String familyId, String userId) throws Exception {
