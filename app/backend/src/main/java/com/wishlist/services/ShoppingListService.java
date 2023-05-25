@@ -47,7 +47,7 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public List<ShoppingList> getShoppingListForUser(String userId) throws UserDoesNotExistException, UserHasNoShoppingListsException {
+    public List<ShoppingList> getShoppingListForUser(String userId) throws UserHasNoShoppingListsException {
         List<ShoppingList> shoppingListsforUser = shoppingListRepository.findByUserId(userId);
         if (shoppingListsforUser.isEmpty()) {
             throw new UserHasNoShoppingListsException();
@@ -137,7 +137,7 @@ public class ShoppingListService implements IShoppingListService {
     public ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception {
         Optional<ShoppingItem> shoppingItemOptional = itemService.findById(itemId);
         if (shoppingItemOptional.isEmpty()) {
-            throw new ShoppingItemDoesNotExist();
+            throw new ShoppingItemDoesNotExistException();
         }
         ShoppingItem foundItem = shoppingItemOptional.get();
         foundItem.setName(item.getName());

@@ -1,8 +1,7 @@
 package com.wishlist.controllers;
 
-import com.wishlist.dto.ApiError;
 import com.wishlist.models.Invitation;
-import com.wishlist.services.InvitationService;
+import com.wishlist.services.interfaces.IInvitationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +12,9 @@ import java.util.List;
 @RequestMapping("api/invitations")
 public class InvitationController {
 
-    private final InvitationService invitationService;
+    private final IInvitationService invitationService;
 
-    public InvitationController(InvitationService invitationService) {
+    public InvitationController(IInvitationService invitationService) {
         this.invitationService = invitationService;
     }
 
@@ -44,14 +43,5 @@ public class InvitationController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Invitation> create(@RequestBody Invitation invitation) {
-        try {
-            Invitation createdInvitation = invitationService.save(invitation);
-            return new ResponseEntity<>(createdInvitation, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
 }
