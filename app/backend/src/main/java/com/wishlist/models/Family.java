@@ -11,15 +11,13 @@ public class Family {
     private String name;
     @DBRef
     private List<User> users;
-    private ShoppingList shoppingList;
     private String inviteCode;
     public Family() {
 
     }
-    public Family(String name, List<User> users, ShoppingList shoppingList, String inviteCode) {
+    public Family(String name, List<User> users, String inviteCode) {
         this.name = name;
         this.users = users;
-        this.shoppingList = shoppingList;
         this.inviteCode = inviteCode;
     }
 
@@ -55,11 +53,4 @@ public class Family {
         this.inviteCode = inviteCode;
     }
 
-    public ShoppingList getShoppingList() {
-        return shoppingList;
-    }
-
-    public void setShoppingList(ShoppingList shoppingList) {
-        this.shoppingList = shoppingList;
-    }
 }
