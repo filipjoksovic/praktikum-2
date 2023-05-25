@@ -22,4 +22,14 @@ export class LocalStorageService {
       console.log(exception);
     }
   }
+
+  static async removeUserFromLocalStorage() {
+    try {
+      await AsyncStorage.removeItem('user');
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log('[removeUserFromLocalStorage]: Error occurred:', err);
+      }
+    }
+  }
 }

@@ -22,4 +22,8 @@ public interface IShoppingListService {
     ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId) throws ShoppingListDoesNotExistException;
     boolean deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception;
     ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception;
+
+    ShoppingList completeWholeList(String id) throws ShoppingListDoesNotExistException;
+
+    ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
 }

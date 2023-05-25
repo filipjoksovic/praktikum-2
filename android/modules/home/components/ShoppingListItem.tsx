@@ -1,4 +1,4 @@
-import {Modal, Pressable, SafeAreaView, Text, View} from 'react-native';
+import {Modal, Pressable, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {STYLESHEET, TYPO} from '../../../resources/styles/STYLESHEET';
 import {CustomButton} from '../../shared/components/CustomButton';

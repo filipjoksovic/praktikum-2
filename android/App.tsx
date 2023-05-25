@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import {StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {STYLESHEET} from './resources/styles/STYLESHEET';
 import {RegisterPage} from './modules/auth/pages/RegisterPage';
 import {NavigationContainer} from '@react-navigation/native';
@@ -112,7 +107,7 @@ function App(): JSX.Element {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={stylesheet.container}>
+      <View style={stylesheet.container}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={theme.colors.secondary}
@@ -120,7 +115,7 @@ function App(): JSX.Element {
         <NavigationContainer>
           <StackNavigation />
         </NavigationContainer>
-      </SafeAreaView>
+      </View>
     </PaperProvider>
   );
 }

@@ -2,6 +2,8 @@ package com.wishlist.controllers;
 
 import com.wishlist.dto.ApiError;
 import com.wishlist.dto.ShoppingListDTO;
+import com.wishlist.dto.ShoppingListResponseDTO;
+import com.wishlist.dto.ShoppingListsResponseDTO;
 import com.wishlist.exceptions.ListDoesNotExistException;
 import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.exceptions.UserHasNoShoppingListsException;
@@ -9,18 +11,19 @@ import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
 import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/shoppingLists")
 public class ShoppingListController {
-    private final Logger log = Logger.getLogger(ShoppingListController.class.getName());
+    private final Logger log = LoggerFactory.getLogger(ShoppingListController.class);
     private final IShoppingListService shoppingListService;
     private final IItemService itemService;
 
@@ -47,13 +50,37 @@ public class ShoppingListController {
         }
     }
 
+    @PutMapping("/{id}/completeList")
+    public ResponseEntity copmpleteWholeList(@PathVariable String id) {
+        log.info("PUT completeList for lid {}", id);
+        try {
+            log.info("PUT completeList return HTTP OK for lid {}", id);
+            return new ResponseEntity(shoppingListService.completeWholeList(id), HttpStatus.OK);
+        } catch (Exception e) {
+            log.info("PUT completeList return HTTP INTERNAL_SERVER_ERROR for lid {}", id);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{listId}/{itemId}/completeItem")
+    public ResponseEntity completeListItem(@PathVariable String listId, @PathVariable String itemId) {
+        try {
+            log.info("PUT completeListItem for lid {} iid {}", listId, itemId);
+            return new ResponseEntity(shoppingListService.completeListItem(listId, itemId), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("PUT completeListItem for lid {} iid {} FAIL", listId, itemId);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity getForUser(@PathVariable String userId) {
-        log.info("Get shopping lists for user " + userId);
         try {
-            return new ResponseEntity(shoppingListService.getShoppingListForUser(userId), HttpStatus.OK);
+            log.info("GET slis for uid {}", userId);
+            return new ResponseEntity(new ShoppingListsResponseDTO(shoppingListService.getShoppingListForUser(userId).stream().map(shoppingList -> new ShoppingListResponseDTO(shoppingList)).toList()), HttpStatus.OK);
         } catch (UserDoesNotExistException | UserHasNoShoppingListsException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("GET slis for uid {} fail", userId);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,6 +89,7 @@ public class ShoppingListController {
         log.info("POST createShoppingList for uid:" + userId);
         try {
             ShoppingList shoppingList = shoppingListService.createShoppingList(userId, shoppingListDTO);
+            log.info("POST createShoppingList 200 OK for uid {}", userId);
             return new ResponseEntity(shoppingList, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,7 +110,7 @@ public class ShoppingListController {
     @PostMapping("/createItem/{listId}")
     public ResponseEntity<ShoppingList> createShoppingListItem(@PathVariable String listId, @RequestBody ShoppingItem item) { // TODO ADD ITEM TO A CERTAIN SHOPPING LIST
         try {
-            ShoppingList createdShoppingList = shoppingListService.addItemToShoppingList(item,listId);
+            ShoppingList createdShoppingList = shoppingListService.addItemToShoppingList(item, listId);
             return new ResponseEntity<>(createdShoppingList, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -92,15 +120,15 @@ public class ShoppingListController {
     @DeleteMapping("/{userId}/{listId}/{itemId}")
     public ResponseEntity deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId) {
         try {
-            boolean success = shoppingListService.deleteItemFromShoppingList(userId,listId,itemId);
-            return new ResponseEntity<>(success,HttpStatus.NO_CONTENT);
+            boolean success = shoppingListService.deleteItemFromShoppingList(userId, listId, itemId);
+            return new ResponseEntity<>(success, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{listId}/{itemId}")
-    public ResponseEntity<ShoppingItem> update(@PathVariable String listId,@PathVariable String itemId, @RequestBody ShoppingItem item) {
+    public ResponseEntity<ShoppingItem> update(@PathVariable String listId, @PathVariable String itemId, @RequestBody ShoppingItem item) {
         try {
             ShoppingItem updatedShoppingItem = shoppingListService.updateShoppingItem(listId, itemId, item);
             return new ResponseEntity<>(updatedShoppingItem, HttpStatus.CREATED);
@@ -108,6 +136,5 @@ public class ShoppingListController {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }

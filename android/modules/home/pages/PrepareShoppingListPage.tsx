@@ -2,10 +2,15 @@ import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import {Button, Text, TextInput, useTheme} from 'react-native-paper';
 import {CreateShoppingListPage} from './CreateShoppingListPage';
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 import {useFocusEffect} from '@react-navigation/native';
-import AudioRecorderPlayer, { AVEncoderAudioQualityIOSType, AVEncodingOption, AudioEncoderAndroidType, AudioSourceAndroidType } from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, {
+  AVEncoderAudioQualityIOSType,
+  AVEncodingOption,
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import AudioService from '../../../services/AudioService';
 
@@ -34,7 +39,7 @@ export const PrepareShoppingListPage = () => {
   const onStartRecord = async () => {
     const dirPath = RNFS.ExternalDirectoryPath;
     const path = `${dirPath}/hello.wav`;
-    
+
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
       AudioSourceAndroid: AudioSourceAndroidType.MIC,
@@ -47,13 +52,15 @@ export const PrepareShoppingListPage = () => {
     try {
       const path = await audioRecorderPlayer.stopRecorder();
       audioRecorderPlayer.removeRecordBackListener();
-      console.log("path: " + path);
-      const transcript = await ShoppingListService.createTranscriptRequest(path);
-      if (transcript){
+      console.log('path: ' + path);
+      const transcript = await ShoppingListService.createTranscriptRequest(
+        path,
+      );
+      if (transcript) {
         setShoppingListPrompt(transcript);
       }
     } catch (error) {
-      console.log("Error in stopping the recorder: ", error);
+      console.log('Error in stopping the recorder: ', error);
     }
   };
 
@@ -87,7 +94,7 @@ export const PrepareShoppingListPage = () => {
     }).then(result => setIsCreating(true));
   };
   return (
-    <SafeAreaView
+    <ScrollView
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
       {isCreating ? (
         <>
@@ -126,6 +133,6 @@ export const PrepareShoppingListPage = () => {
           />
         </>
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 };

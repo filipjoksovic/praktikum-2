@@ -1,6 +1,6 @@
 import {Environment} from '../environment';
 import {LocalStorageService} from './LocalStorageService';
-import {IShoppingListsResponseDTO} from '../models/IShoppingListsResponseDTO';
+import {IShoppingListsResponseshoppingList} from '../models/IShoppingListsResponseDTO';
 import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
@@ -65,8 +65,6 @@ export class ShoppingListService {
 
   public static async createList(data: {name: string; items: string[]}) {
     const user = await LocalStorageService.getUserFromLocalStorage();
-    console.log();
-    console.log('User:', user);
     if (user) {
       return await fetch(
         `${Environment.BACKEND_URL}/shoppingLists/${user.id}`,
@@ -86,7 +84,7 @@ export class ShoppingListService {
     }
   }
 
-  public static async getShoppingLists(): Promise<IShoppingListsResponseDTO[]> {
+  public static async getShoppingLists(): Promise<IShoppingListsResponse> {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (!user) {
       console.error('No user logged in');
@@ -100,6 +98,54 @@ export class ShoppingListService {
       },
     })
       .then(response => response.json())
-      .then(response => response as IShoppingListsResponseDTO[]);
+      .then(response => response as IShoppingListsResponse);
+  }
+  public static async checkOffList(listId: string) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    return await fetch(
+      `${Environment.BACKEND_URL}/shoppingLists/${listId}/completeList`,
+      {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      },
+    ).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error while checking off list');
+      }
+    });
+  }
+  public static async checkOffListItem(listId: string, itemId: string) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    console.log('here');
+    console.log(
+      `${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}/completeItem`,
+    );
+    return await fetch(
+      `${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}/completeItem`,
+      {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      },
+    ).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error while checking off list');
+      }
+    });
   }
 }

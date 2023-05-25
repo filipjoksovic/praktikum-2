@@ -14,10 +14,11 @@ export const HomePage = ({navigation}) => {
       try {
         await AuthService.checkIfExists();
       } catch (e) {
+        console.log('[HomePage]: Error occured. Sending to login', e);
         navigation.navigate('Login');
       }
     }
-    doesUserExist();
+    const exists = doesUserExist();
   });
 
   const [index, setIndex] = React.useState(0);
