@@ -56,7 +56,6 @@ public class FamilyController {
         if (familyOptional.isPresent()) {
             Family existingFamily = familyOptional.get();
             existingFamily.setUsers(updatedFamily.getUsers());
-            existingFamily.setShoppingList(updatedFamily.getShoppingList());
             Family updatedFamilyResult = familyService.save(existingFamily);
             return ResponseEntity.ok(updatedFamilyResult);
         } else {

@@ -39,6 +39,7 @@ public class ShoppingListService implements IShoppingListService {
         return shoppingListRepository.save(shoppingList);
     }
 
+
     public ShoppingList getShoppingList(String id) {
         return shoppingListRepository.findById(id).get();
     }
@@ -57,6 +58,15 @@ public class ShoppingListService implements IShoppingListService {
         }
     }
 
+    @Override
+    public List<ShoppingList> getShoppingListForFamily(String familyId) throws Exception {
+        List<ShoppingList> shoppingListsforFamily = shoppingListRepository.findByFamilyId(familyId);
+        if (shoppingListsforFamily.isEmpty()) {
+            throw new Exception();
+        } else {
+            return shoppingListsforFamily;
+        }
+    }
 
     @Override
     public ShoppingList deleteList(String listId) throws ListDoesNotExistException {
@@ -72,13 +82,26 @@ public class ShoppingListService implements IShoppingListService {
         return list;
     }
 
-
-    public ShoppingList createShoppingList(String userId, ShoppingListDTO dto) throws UserDoesNotExistException {
-        // TODO ADD THE LOGIC FOR USER IF NOT EXISTING
+    @Override
+    public ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto) throws Exception {
+        // TODO ADD THE LOGIC FOR FAMILY IF NOT EXISTING
         ShoppingList list = new ShoppingList("My Shopping List");
 
         list.setName(dto.name.isBlank() ? "No name" : dto.name);
+        list.setFamilyId(familyId);
+        return getShoppingList(dto, list);
+    }
+
+    public ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws Exception {
+        // TODO ADD THE LOGIC FOR USER IF NOT EXISTING
+        ShoppingList list = new ShoppingList();
+
+        list.setName(dto.name.isBlank() ? "No name" : dto.name);
         list.setUserId(userId);
+        return getShoppingList(dto, list);
+    }
+
+    private ShoppingList getShoppingList(ShoppingListDTO dto, ShoppingList list) {
         List<ShoppingItem> newItems = new ArrayList<>();
 
         for (String itemName : dto.items) {
@@ -86,10 +109,8 @@ public class ShoppingListService implements IShoppingListService {
             itemService.save(itemForDb);
             newItems.add(itemForDb);
         }
-
         list.setItemList(newItems);
         shoppingListRepository.save(list);
-
         return list;
     }
 
