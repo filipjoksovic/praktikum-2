@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ShoppingListRepository extends MongoRepository<ShoppingList, String> {
     List<ShoppingList> findByUserId(String userId);
+    List<ShoppingList> findByFamilyId(String familyId);
 }

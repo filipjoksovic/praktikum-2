@@ -14,7 +14,8 @@ public interface IShoppingListService {
 
     List<ShoppingList> getAll();
     ShoppingList updateShoppingList(ShoppingList shoppingList);
-    ShoppingList createShoppingList(String userId, ShoppingListDTO dto) throws UserDoesNotExistException;
+    ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws Exception;
+    ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto) throws Exception;
     ShoppingList getShoppingList(String id);
     ShoppingList save(ShoppingList shoppingList);
     List<ShoppingList> getShoppingListForUser(String userId) throws UserDoesNotExistException, UserHasNoShoppingListsException;
@@ -22,4 +23,5 @@ public interface IShoppingListService {
     ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId) throws ShoppingListDoesNotExistException;
     boolean deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception;
     ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception;
+    List<ShoppingList> getShoppingListForFamily(String familyId) throws Exception;
 }

@@ -47,26 +47,48 @@ public class ShoppingListController {
         }
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity getForUser(@PathVariable String userId) {
         log.info("Get shopping lists for user " + userId);
         try {
             return new ResponseEntity(shoppingListService.getShoppingListForUser(userId), HttpStatus.OK);
         } catch (UserDoesNotExistException | UserHasNoShoppingListsException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity createShoppingList(@PathVariable String userId, @RequestBody ShoppingListDTO shoppingListDTO) {
+    @GetMapping("/family/{familyId}")
+    public ResponseEntity getForFamily(@PathVariable String familyId) {
+        log.info("Get shopping lists for family " + familyId);
+        try {
+            return new ResponseEntity(shoppingListService.getShoppingListForFamily(familyId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PostMapping("user/{userId}")
+    public ResponseEntity createShoppingListForUser(@PathVariable String userId, @RequestBody ShoppingListDTO shoppingListDTO) {
         log.info("POST createShoppingList for uid:" + userId);
         try {
-            ShoppingList shoppingList = shoppingListService.createShoppingList(userId, shoppingListDTO);
+            ShoppingList shoppingList = shoppingListService.createShoppingListForUser(userId, shoppingListDTO);
             return new ResponseEntity(shoppingList, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("family/{familyId}")
+    public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody ShoppingListDTO shoppingListDTO) {
+        log.info("POST createShoppingList for family:" + familyId);
+        try {
+            ShoppingList shoppingList = shoppingListService.createShoppingListForFamily(familyId, shoppingListDTO);
+            return new ResponseEntity(shoppingList, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @DeleteMapping("/{listId}")
     public ResponseEntity deleteShoppingList(@PathVariable String listId) {
@@ -74,7 +96,7 @@ public class ShoppingListController {
         try {
             return new ResponseEntity(shoppingListService.deleteList(listId), HttpStatus.OK);
         } catch (ListDoesNotExistException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

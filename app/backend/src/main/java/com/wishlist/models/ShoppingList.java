@@ -11,6 +11,7 @@ public class ShoppingList {
     private String id;
     private String name;
     private String userId;
+    private String familyId;
     private List<ShoppingItem> shoppingItemList;
 
     public ShoppingList() {
@@ -23,6 +24,14 @@ public class ShoppingList {
         this.name = name;
         this.userId = userId;
         this.shoppingItemList = shoppingItemList;
+    }
+
+    public String getFamilyId() {
+        return familyId;
+    }
+
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
     }
 
     public String getId() {
