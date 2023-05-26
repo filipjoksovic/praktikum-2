@@ -1,13 +1,5 @@
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  List,
-  Portal,
-  Surface,
-  Text,
-} from 'react-native-paper';
-import {Pressable, RefreshControl, ScrollView, View} from 'react-native';
+import {Button, Dialog, Portal, Text} from 'react-native-paper';
+import {RefreshControl, ScrollView} from 'react-native';
 import React, {useEffect} from 'react';
 import {
   IShoppingListsResponse,
@@ -18,7 +10,11 @@ import {ShoppingListService} from '../../../services/ShoppingListService';
 import {ShoppingListComponent} from './ShoppingListComponent';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 
-export const ShoppingListsComponent = () => {
+export interface IShoppingListsComponentProps {
+  onListRecieved: any;
+}
+
+export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
   const [shoppingLists, setShoppingLists] = React.useState<
     IShoppingListResponse[]
   >([]);
@@ -144,8 +140,14 @@ export const ShoppingListsComponent = () => {
     }
   };
 
+  const handleWholeListPress = (list: IShoppingListResponse) => {
+    console.log('list pressed');
+    props.onListRecieved(list);
+  };
+
   return (
     <ScrollView
+      style={{height: '100%'}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
@@ -153,6 +155,7 @@ export const ShoppingListsComponent = () => {
         <ShoppingListComponent
           list={list}
           key={list.shoppingList.id}
+          wholeListPressedEmitter={handleWholeListPress}
           wholeListLongPressEmitter={handleWholeListLongPress}
           singleListItemLongPressEmitter={handleSingleListItemLongPress}
         />

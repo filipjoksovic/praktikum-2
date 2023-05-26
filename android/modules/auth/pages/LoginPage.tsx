@@ -7,14 +7,11 @@ import {
 } from 'react-native';
 import {STYLESHEET} from '../../../resources/styles/STYLESHEET';
 import {AppLogo, IAppLogoContext} from '../../shared/AppLogo';
-import {CustomTextInput} from '../../shared/components/CustomTextInput';
-import {CustomButton} from '../../shared/components/CustomButton';
 import React, {useEffect} from 'react';
 import {AuthService} from '../../../services/AuthService';
-import {Text, TouchableRipple, useTheme} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {TextInput, Button} from 'react-native-paper';
 import {Link, useNavigation} from '@react-navigation/native';
-import {LocalStorageService} from '../../../services/LocalStorageService';
 export const LoginPage = ({navigation}: any) => {
   const [userAuth, setUserAuth] = React.useState<{
     email: string;
@@ -34,17 +31,9 @@ export const LoginPage = ({navigation}: any) => {
     },
   });
 
-  const handleChange = ({name, value}: {name: string; value: string}) => {
-    console.log('Change occured', name, value);
-    setUserAuth(prevState => {
-      return {...prevState, [name]: value};
-    });
-  };
-
   const submitForm = async () => {
     console.log('submitting form');
     console.log(userAuth);
-    // @ts-ignore
     try {
       const result = await AuthService.login(userAuth);
       console.log(result);

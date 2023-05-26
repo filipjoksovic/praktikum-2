@@ -99,7 +99,6 @@ export const RecorderPage = (props: IRecorderPageProps) => {
       );
       if (transcript) {
         props.onTranscriptReceived(transcript);
-        // setShoppingListPrompt(transcript);
       }
     } catch (error) {
       console.log('Error in stopping the recorder: ', error);

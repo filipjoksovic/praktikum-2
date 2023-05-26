@@ -1,13 +1,7 @@
 import {useState} from 'react';
 import {ScrollView, View} from 'react-native';
-import {
-  AudioEncoderAndroidType,
-  AudioSourceAndroidType,
-} from 'react-native-audio-recorder-player';
 import {Button, Surface, Text, TextInput, useTheme} from 'react-native-paper';
-import AudioService from '../../../services/AudioService';
 import {ShoppingListService} from '../../../services/ShoppingListService';
-import {BigAssRecordButton} from '../components/BigAssRecordButton';
 import {RecorderPage} from './RecorderPage';
 
 export interface IShoppingListTranscriptPage {

@@ -1,8 +1,6 @@
 import {ScrollView, StyleSheet, ToastAndroid, View} from 'react-native';
 import {STYLESHEET} from '../../../resources/styles/STYLESHEET';
 import {AppLogo, IAppLogoContext} from '../../shared/AppLogo';
-import {CustomTextInput} from '../../shared/components/CustomTextInput';
-import {CustomButton} from '../../shared/components/CustomButton';
 import React, {useState} from 'react';
 import {UserAuthDTO} from '../../../models/UserAuthDTO';
 import {AuthService} from '../../../services/AuthService';
@@ -28,11 +26,6 @@ export const RegisterPage = ({navigation}: any) => {
     },
   });
 
-  const handleChange = ({name, value}: {name: string; value: string}) => {
-    setUserAuth(prevState => {
-      return {...prevState, [name]: value};
-    });
-  };
   const submitForm = async () => {
     try {
       const result = await AuthService.register(userAuth);

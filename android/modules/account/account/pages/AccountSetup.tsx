@@ -4,9 +4,7 @@ import {
   STYLESHEET,
   TYPO,
 } from '../../../../resources/styles/STYLESHEET';
-import {CustomTextInput} from '../../../shared/components/CustomTextInput';
 import DatePicker from 'react-native-date-picker';
-import {CustomButton} from '../../../shared/components/CustomButton';
 import React from 'react';
 import {
   Button,
@@ -28,7 +26,6 @@ export const AccountSetup = () => {
     dob: new Date(),
   });
   const theme = useTheme();
-  const handleChange = ({name, value}: {name: string; value: string}) => {};
 
   const handleFnameUpdate = (value: string) => {
     setSetupState(prevState => {

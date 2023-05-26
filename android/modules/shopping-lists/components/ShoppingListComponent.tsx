@@ -9,6 +9,7 @@ export interface IShoppingListComponentProps {
   list: IShoppingListResponse;
   wholeListLongPressEmitter: any;
   singleListItemLongPressEmitter: any;
+  wholeListPressedEmitter: any;
 }
 
 export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
@@ -16,6 +17,9 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
   console.log(list);
   return (
     <List.Accordion
+      onPress={() => {
+        props.wholeListPressedEmitter(list);
+      }}
       onLongPress={() => {
         props.wholeListLongPressEmitter(list);
       }}

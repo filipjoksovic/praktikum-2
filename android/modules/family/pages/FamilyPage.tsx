@@ -21,10 +21,6 @@ export const FamilyPage = () => {
       console.log('error occurred when getting user family', err);
     }
   };
-  // useFocusEffect(() => {
-  //   console.log('here1');
-  //   getFamilyForUser();
-  // });
 
   useFocusEffect(
     React.useCallback(() => {

@@ -1,10 +1,10 @@
 import {Checkbox, Surface, Text} from 'react-native-paper';
 import {Pressable} from 'react-native';
 import React from 'react';
-import {IShoppingListItem} from '../../../models/IShoppingListsResponseDTO';
+import {IListItem} from '../../../models/IShoppingListsResponseDTO';
 
 export interface IShoppingListItemComponentProps {
-  item: IShoppingListItem;
+  item: IListItem;
 }
 export const ShoppingListItemComponent = (
   props: IShoppingListItemComponentProps,

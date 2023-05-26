@@ -16,7 +16,6 @@ import {
   List,
 } from 'react-native-paper';
 import {inspect} from 'util';
-import colors = module;
 
 export interface IShoppingListItem {
   shoppingItem: string;
@@ -31,11 +30,6 @@ export const ShoppingListItem = (props: IShoppingListItem) => {
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20};
-
-  const editItem = () => {
-    setIsEdit(prevState => !prevState);
-  };
 
   return (
     <Surface theme={theme} style={{marginBottom: 20, borderRadius: 20}}>

@@ -13,7 +13,7 @@ import {AuthService} from '../../../services/AuthService';
 import {AccountSetup} from '../../account/account/pages/AccountSetup';
 import {FamilyPage} from '../../family/pages/FamilyPage';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
-import {Link} from '@react-navigation/native';
+
 const AccountIcon = props => <Avatar.Icon {...props} icon="account" />;
 const AccountsIcon = props => <Avatar.Icon {...props} icon="family-tree" />;
 
