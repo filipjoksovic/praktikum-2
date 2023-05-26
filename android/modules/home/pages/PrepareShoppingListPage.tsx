@@ -36,14 +36,19 @@ export const PrepareShoppingListPage = () => {
     ShoppingListService.createList({
       name: shoppingListName,
       items: shoppingListItems,
-    }).then(result => setIsCreating(true));
+    }).then(result => {
+      setIsCreating(true);
+      setShoppingItems(prevState => []);
+    });
   };
-
+  const transcriptReceived = transcript => {
+    setShoppingItems(prevState => transcript);
+  };
   return (
     <ScrollView
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
-      {isCreating ? (
-        <ShoppingListTranscriptPage />
+      {shoppingItems.length === 0 ? (
+        <ShoppingListTranscriptPage onReceiveTranscript={transcriptReceived} />
       ) : (
         <>
           <CreateShoppingListPage

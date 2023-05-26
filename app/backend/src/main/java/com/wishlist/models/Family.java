@@ -21,6 +21,11 @@ public class Family {
         this.inviteCode = inviteCode;
     }
 
+    public Family(String name, String inviteCode) {
+        this.name = name;
+        this.inviteCode = inviteCode;
+    }
+
     public String getName() {
         return name;
     }

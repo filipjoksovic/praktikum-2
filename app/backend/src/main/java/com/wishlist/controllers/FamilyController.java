@@ -1,8 +1,14 @@
 package com.wishlist.controllers;
 
 import com.wishlist.dto.ApiError;
+import com.wishlist.dto.CreateFamilyRequestDTO;
 import com.wishlist.models.Family;
+import com.wishlist.models.User;
 import com.wishlist.services.FamilyService;
+import com.wishlist.services.UserService;
+import jakarta.websocket.server.PathParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +19,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/families")
 public class FamilyController {
+    Logger logger = LoggerFactory.getLogger(FamilyController.class);
     private final FamilyService familyService;
+    private final UserService userService;
 
-    public FamilyController(FamilyService familyService) {
+    public FamilyController(final FamilyService familyService, final UserService userService) {
         this.familyService = familyService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -34,6 +43,14 @@ public class FamilyController {
         }
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Family> getFamilyForUser(@PathVariable String userId) {
+        User user = userService.getUserById(userId);
+        if (user != null) {
+            return new ResponseEntity<>(familyService.findById(user.getFamilyId()), HttpStatus.OK);
+        } else return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         boolean success = familyService.delete(id);
@@ -44,10 +61,20 @@ public class FamilyController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Family> create(@RequestBody Family family) {
-        Family createdFamily = familyService.save(family);
-        return new ResponseEntity<>(createdFamily, HttpStatus.CREATED);
+    //TODO DTO
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> create(@PathVariable String userId, @RequestBody CreateFamilyRequestDTO dto) {
+        logger.info("POST createFamily");
+        try {
+            logger.info("POST createFamily fml crt HTTP 200");
+            Family saved = familyService.save(CreateFamilyRequestDTO.from(dto));
+            userService.addUserToFamily(userId, saved.getId());
+            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("POST createFamily FAIL {}", e.getMessage());
+            return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
     @PutMapping("/{id}")
@@ -64,7 +91,7 @@ public class FamilyController {
     }
 
     @PostMapping("/leave/{familyId}/{userId}")
-    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId){
+    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId) {
         try {
             Family family = familyService.removeUserFromFamily(familyId, userId);
             return new ResponseEntity<>(family, HttpStatus.OK);
@@ -72,9 +99,6 @@ public class FamilyController {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
 
 }

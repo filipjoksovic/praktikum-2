@@ -10,7 +10,12 @@ import {ShoppingListService} from '../../../services/ShoppingListService';
 import {BigAssRecordButton} from '../components/BigAssRecordButton';
 import {RecorderPage} from './RecorderPage';
 
-export const ShoppingListTranscriptPage = () => {
+export interface IShoppingListTranscriptPage {
+  onReceiveTranscript: any;
+}
+export const ShoppingListTranscriptPage = (
+  props: IShoppingListTranscriptPage,
+) => {
   const theme = useTheme();
   const [shoppingListPrompt, setShoppingListPrompt] = useState(
     // 'We need some milk, oranges, apples and bananas today.',
@@ -29,7 +34,8 @@ export const ShoppingListTranscriptPage = () => {
       console.log(result);
 
       setIsCreating(false);
-      setShoppingItems(result.summary);
+      // setShoppingItems(result.summary);
+      props.onReceiveTranscript(result.summary);
     } catch (err) {
       console.log('Error:', err);
     }

@@ -19,6 +19,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {SettingsPage} from './modules/settings/pages/SettingsPage';
 import {PrepareShoppingListPage} from './modules/home/pages/PrepareShoppingListPage';
 import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPage';
+import {FamilyPage} from './modules/family/pages/FamilyPage';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -55,7 +56,7 @@ export const TabNavigation = () => {
           tabBarLabel: 'Shopping lists',
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={'AccountSetup'}
         component={AccountSetup}
         options={{
@@ -66,8 +67,8 @@ export const TabNavigation = () => {
           },
           tabBarLabel: 'Account setup',
         }}
-      />
-      <Tab.Screen
+      /> */}
+      {/* <Tab.Screen
         name={'Settings'}
         component={SettingsPage}
         options={{
@@ -77,6 +78,22 @@ export const TabNavigation = () => {
             );
           },
           tabBarLabel: 'Settings',
+        }}
+      /> */}
+      <Tab.Screen
+        name={'Family'}
+        component={FamilyPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon
+                name={'user-friends'}
+                color={theme.colors.tertiary}
+                size={20}
+              />
+            );
+          },
+          tabBarLabel: 'Family',
         }}
       />
     </Tab.Navigator>

@@ -22,39 +22,5 @@ export const HomePage = ({navigation}) => {
     const exists = doesUserExist();
   });
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {
-      key: 'music',
-      title: 'Home',
-      focusedIcon: 'home',
-      unfocusedIcon: 'home-outline',
-    },
-    {
-      key: 'notifications',
-      title: 'Notifications',
-      focusedIcon: 'bell',
-      unfocusedIcon: 'bell-outline',
-    },
-    {
-      key: 'shoppingLists',
-      title: 'Shopping Lists',
-      focusedIcon: 'format-list-bulleted-square',
-      unfocusedIcon: 'format-list-checkbox',
-    },
-    {
-      key: 'settings',
-      title: 'Settings',
-      focusedIcon: 'cog',
-      unfocusedIcon: 'cog-outline',
-    },
-  ]);
-  const renderScene = BottomNavigation.SceneMap({
-    music: PrepareShoppingListPage,
-    notifications: AccountSetup,
-    shoppingLists: ShoppingListsPage,
-    settings: SettingsPage,
-  });
-
   return <TabNavigation></TabNavigation>;
 };

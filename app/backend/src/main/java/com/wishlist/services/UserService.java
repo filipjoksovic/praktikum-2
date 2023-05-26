@@ -116,6 +116,20 @@ public class UserService implements IUserService, IAuth {
     }
 
     @Override
+    public boolean addUserToFamily(String userId, String familyId) throws UserDoesNotExistException {
+
+        Optional<User> maybeUser = userRepository.findById(userId);
+        if (maybeUser.isEmpty()) {
+            throw new UserDoesNotExistException();
+        }
+        User user = maybeUser.get();
+        user.setFamilyId(familyId);
+        userRepository.save(user);
+        return true;
+
+    }
+
+    @Override
     public FullUserDetailsDTO setupAccount(AccountSetupDTO dto) throws AccountSetupFailedException {
         Optional<User> found = userRepository.findById(dto.getId());
         if (found.isEmpty()) {

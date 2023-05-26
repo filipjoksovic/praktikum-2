@@ -91,27 +91,55 @@ export const ShoppingListsComponent = () => {
   const dialogConfirmed = async () => {
     setIsDialogVisible(false);
     if (selectedList) {
-      console.log('ShoppingListComponent: Should check off whole list');
-      try {
-        await ShoppingListService.checkOffList(selectedList.shoppingList.id);
-      } catch (e) {
-        console.log(
-          'ShoppingListComponent: Error occured when checking off whole lsit',
-          e,
-        );
+      if (selectedList.allChecked) {
+        console.log('ShoppingListComponent: Should check off whole list');
+        try {
+          await ShoppingListService.checkOffList(selectedList.shoppingList.id);
+        } catch (e) {
+          console.log(
+            'ShoppingListComponent: Error occured when checking off whole lsit',
+            e,
+          );
+        }
+      } else {
+        console.log('ShoppingListComponent: Should delete whole list');
+        try {
+          await ShoppingListService.deleteList(selectedList.shoppingList.id);
+        } catch (e) {
+          console.log(
+            'ShoppingListComponent: Error occured when checking off whole lsit',
+            e,
+          );
+        }
       }
     } else if (selectedListItem) {
-      console.log('ShoppingListComponent: Should check off just a list item');
-      try {
-        await ShoppingListService.checkOffListItem(
-          selectedListItem.listId,
-          selectedListItem.item.id,
-        );
-      } catch (e) {
-        console.log(
-          'ShoppingListsComponent: Error occured when checking off list item',
-          e,
-        );
+      if (!selectedListItem.item.checked) {
+        console.log('ShoppingListComponent: Should check off just a list item');
+        try {
+          await ShoppingListService.checkOffListItem(
+            selectedListItem.listId,
+            selectedListItem.item.id,
+          );
+        } catch (e) {
+          console.log(
+            'ShoppingListsComponent: Error occured when checking off list item',
+            e,
+          );
+        }
+      }
+      if (!selectedListItem.item.checked) {
+        console.log('ShoppingListComponent: Should delete just a list item');
+        try {
+          await ShoppingListService.deleteListItem(
+            selectedListItem.listId,
+            selectedListItem.item.id,
+          );
+        } catch (e) {
+          console.log(
+            'ShoppingListsComponent: Error occured when checking off list item',
+            e,
+          );
+        }
       }
     }
   };
@@ -134,7 +162,7 @@ export const ShoppingListsComponent = () => {
         <Dialog visible={isDialogVisible} onDismiss={dialogDismissed}>
           <Dialog.Title>Alert</Dialog.Title>
           <Dialog.Content>
-            {selectedList ? (
+            {selectedList && selectedList.allChecked ? (
               <Text variant="bodyMedium">
                 Check off whole list? All of the items on{' '}
                 {selectedList.shoppingList.name} will be checked off.
@@ -142,9 +170,24 @@ export const ShoppingListsComponent = () => {
             ) : (
               <></>
             )}
-            {selectedListItem ? (
+            {selectedList && !selectedList.allChecked ? (
+              <Text variant="bodyMedium">
+                Delete whole list? All of the items on{' '}
+                {selectedList.shoppingList.name} will be deleted.
+              </Text>
+            ) : (
+              <></>
+            )}
+            {selectedListItem && !selectedListItem.item.checked ? (
               <Text variant="bodyMedium">
                 Check off {selectedListItem.item.name}?
+              </Text>
+            ) : (
+              <></>
+            )}
+            {selectedListItem && selectedListItem.item.checked ? (
+              <Text variant="bodyMedium">
+                Delete {selectedListItem.item.name}?
               </Text>
             ) : (
               <></>

@@ -1,6 +1,9 @@
 import {Environment} from '../environment';
 import {LocalStorageService} from './LocalStorageService';
-import {IShoppingListsResponseshoppingList} from '../models/IShoppingListsResponseDTO';
+import {
+  IShoppingListsResponse,
+  IShoppingListsResponseshoppingList,
+} from '../models/IShoppingListsResponseDTO';
 import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
@@ -9,6 +12,49 @@ export interface IPromptRequest {
 }
 
 export class ShoppingListService {
+  static async deleteList(listId: string) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    return await fetch(`${Environment.BACKEND_URL}/shoppingLists/${listId}`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error while checking off list');
+      }
+    });
+  }
+  static async deleteListItem(listId: string, itemId: string) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    console.log('here');
+    console.log(`${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}`);
+    return await fetch(
+      `${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}`,
+      {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      },
+    ).then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error while checking off list');
+      }
+    });
+  }
   public static async createRequest(promptRequest: IPromptRequest) {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (!user) {
@@ -67,7 +113,7 @@ export class ShoppingListService {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (user) {
       return await fetch(
-        `${Environment.BACKEND_URL}/shoppingLists/${user.id}`,
+        `${Environment.BACKEND_URL}/shoppingLists/user/${user.id}`,
         {
           method: 'post',
           headers: {
