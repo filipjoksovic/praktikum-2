@@ -49,6 +49,7 @@ export class AuthService {
   static async checkIfExists() {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (!user) {
+      throw new Error('No user logged in');
       return;
     }
     return await fetch(`${Environment.BACKEND_URL}/auth/doesExist/${user.id}`, {
@@ -58,7 +59,9 @@ export class AuthService {
       },
     }).then(response => {
       if (response.ok) {
-        return response.json();
+        const json = response.json();
+        console.log(json);
+        return json;
       }
       throw new Error('User does not exist');
     });
@@ -86,5 +89,9 @@ export class AuthService {
       }
       throw new Error('Account setup failed');
     });
+  }
+
+  static async logout() {
+    await LocalStorageService.removeUserFromLocalStorage();
   }
 }

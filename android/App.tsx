@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import {StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {STYLESHEET} from './resources/styles/STYLESHEET';
 import {RegisterPage} from './modules/auth/pages/RegisterPage';
 import {NavigationContainer} from '@react-navigation/native';
@@ -20,64 +15,85 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {SettingsPage} from './modules/settings/pages/SettingsPage';
+import {PrepareShoppingListPage} from './modules/home/pages/PrepareShoppingListPage';
+import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPage';
+import {FamilyPage} from './modules/family/pages/FamilyPage';
 
-const TabNavigation = () => {
-  const Tab = createBottomTabNavigator();
-
+export const TabNavigation = () => {
+  const Tab = createMaterialBottomTabNavigator();
+  const theme = useTheme();
   return (
     <Tab.Navigator
+      barStyle={{backgroundColor: theme.colors.background}}
       screenOptions={({route, navigation}) => {
         return {
           headerShown: false,
-          // tabBarIcon: props => {
-          //   return <Icon name={'rocket'} color={'#900'} size={30} />;
-          // },
-          tabBarLabelStyle: {
-            marginBottom: 5,
-          },
-
-          tabBarStyle: {
-            height: 60,
-          },
-          tabBarLabel: () => {
-            return null;
-          },
         };
       }}>
       <Tab.Screen
-        name={'Login'}
-        component={LoginPage}
+        name={'Shopping list'}
+        component={PrepareShoppingListPage}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'rocket'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'plus'} color={theme.colors.tertiary} size={20} />
+            );
           },
+          tabBarLabel: 'New list',
         }}
       />
       <Tab.Screen
-        name={'Register'}
-        component={RegisterPage}
+        name={'ShoppingLists'}
+        component={ShoppingListsPage}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'rocket'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'list-ul'} color={theme.colors.tertiary} size={20} />
+            );
           },
+          tabBarLabel: 'Shopping lists',
         }}
       />
-      <Tab.Screen
-        name={'Home'}
-        component={HomePage}
-        options={{
-          tabBarIcon: ({color, size}) => {
-            return <Icon name={'home'} color={'#900'} size={30} />;
-          },
-        }}
-      />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={'AccountSetup'}
         component={AccountSetup}
         options={{
           tabBarIcon: ({color, size}) => {
-            return <Icon name={'times'} color={'#900'} size={30} />;
+            return (
+              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
+            );
           },
+          tabBarLabel: 'Account setup',
+        }}
+      /> */}
+      {/* <Tab.Screen
+        name={'Settings'}
+        component={SettingsPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
+            );
+          },
+          tabBarLabel: 'Settings',
+        }}
+      /> */}
+      <Tab.Screen
+        name={'Family'}
+        component={FamilyPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon
+                name={'user-friends'}
+                color={theme.colors.tertiary}
+                size={20}
+              />
+            );
+          },
+          tabBarLabel: 'Family',
         }}
       />
     </Tab.Navigator>
@@ -112,7 +128,7 @@ function App(): JSX.Element {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={stylesheet.container}>
+      <View style={stylesheet.container}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={theme.colors.secondary}
@@ -120,7 +136,7 @@ function App(): JSX.Element {
         <NavigationContainer>
           <StackNavigation />
         </NavigationContainer>
-      </SafeAreaView>
+      </View>
     </PaperProvider>
   );
 }

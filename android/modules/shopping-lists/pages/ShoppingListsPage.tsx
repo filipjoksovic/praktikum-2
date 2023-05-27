@@ -1,4 +1,4 @@
-import {Pressable, SafeAreaView, ScrollView, View} from 'react-native';
+import {Pressable, RefreshControl, ScrollView, View} from 'react-native';
 import {
   Button,
   Checkbox,
@@ -23,13 +23,13 @@ export const ShoppingListsPage = () => {
   const theme = useTheme();
 
   return (
-    <SafeAreaView
+    <ScrollView
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
       <Text variant={'headlineLarge'} style={{marginBottom: 10}}>
         Shopping lists
       </Text>
       <ListContextSelectorComponent />
       <ShoppingListsComponent />
-    </SafeAreaView>
+    </ScrollView>
   );
 };

@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {TYPO} from '../../../resources/styles/STYLESHEET';
 import {ShoppingListItem} from '../components/ShoppingListItem';
@@ -21,7 +21,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
     setShoppingList(prevState => prevState.filter(i => i !== item));
   };
   return (
-    <SafeAreaView style={{height: '100%'}}>
+    <View style={{height: '100%'}}>
       <Text variant={'headlineLarge'}>Success!</Text>
 
       <Text variant={'bodyMedium'}>
@@ -69,6 +69,6 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
           Confirm
         </Button>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

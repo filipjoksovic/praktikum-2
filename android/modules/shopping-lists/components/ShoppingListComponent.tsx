@@ -1,12 +1,14 @@
 import {Checkbox, List, Surface, Text} from 'react-native-paper';
 import {Pressable} from 'react-native';
 import React from 'react';
-import {IShoppingListsResponseDTO} from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListsComponent} from './ShoppingListsComponent';
 import {ShoppingListItemComponent} from './ShoppingListItemComponent';
+import {IShoppingListResponse} from '../../../models/IShoppingListsResponseDTO';
 
 export interface IShoppingListComponentProps {
-  list: IShoppingListsResponseDTO;
+  list: IShoppingListResponse;
+  wholeListLongPressEmitter: any;
+  singleListItemLongPressEmitter: any;
 }
 
 export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
@@ -14,10 +16,30 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
   console.log(list);
   return (
     <List.Accordion
+      onLongPress={() => {
+        props.wholeListLongPressEmitter(list);
+      }}
       left={props => <List.Icon {...props} icon="cart" />}
-      title={list.name ? list.name : 'No name'}>
-      {list.itemList.map(item => (
-        <ShoppingListItemComponent item={item} />
+      title={list.shoppingList.name ? list.shoppingList.name : 'No name'}
+      titleStyle={{
+        textDecorationLine: !list.allChecked ? 'line-through' : 'none',
+        textDecorationStyle: 'solid',
+      }}>
+      {list.shoppingList.itemList.map(item => (
+        <List.Item
+          title={item.name}
+          key={item.id}
+          titleStyle={{
+            textDecorationLine: item.checked ? 'line-through' : 'none',
+            textDecorationStyle: 'solid',
+          }}
+          onLongPress={() => {
+            props.singleListItemLongPressEmitter({
+              listId: list.shoppingList.id,
+              item: item,
+            });
+          }}
+        />
       ))}
     </List.Accordion>
   );

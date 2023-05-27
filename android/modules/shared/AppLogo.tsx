@@ -1,4 +1,4 @@
-import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {STYLESHEET, TYPO} from '../../resources/styles/STYLESHEET';
 import {useTheme, Text, Avatar} from 'react-native-paper';
 
@@ -27,7 +27,7 @@ export const AppLogo = (props: IAppLogoProps) => {
     },
   });
   return (
-    <SafeAreaView style={{alignItems: 'center', marginBottom: 50}}>
+    <View style={{alignItems: 'center', marginBottom: 50}}>
       <Avatar.Image
         size={200}
         style={{marginVertical: 20}}
@@ -37,6 +37,6 @@ export const AppLogo = (props: IAppLogoProps) => {
         <Text variant={'displayMedium'}>WishList</Text>
         <Text variant={'displaySmall'}> - {context}</Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

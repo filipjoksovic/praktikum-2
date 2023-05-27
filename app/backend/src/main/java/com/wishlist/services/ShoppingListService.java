@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingListService implements IShoppingListService {
@@ -181,5 +182,35 @@ public class ShoppingListService implements IShoppingListService {
         shoppingListRepository.save(foundList);
         return itemService.save(foundItem);
     }
+
+    @Override
+    public ShoppingList completeWholeList(String id) throws ShoppingListDoesNotExistException {
+        Optional<ShoppingList> maybeList = shoppingListRepository.findById(id);
+        if (maybeList.isEmpty()) {
+            throw new ShoppingListDoesNotExistException();
+        }
+        ShoppingList fullList = maybeList.get();
+        fullList.getItemList().stream().forEach(shoppingItem -> shoppingItem.setChecked(true));
+        shoppingListRepository.save(fullList);
+        return fullList;
+    }
+
+    @Override
+    public ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException {
+        Optional<ShoppingList> maybeList = shoppingListRepository.findById(listId);
+        if (maybeList.isEmpty()) {
+            throw new ShoppingListDoesNotExistException();
+        }
+        ShoppingList fullList = maybeList.get();
+        //TODO refactor with mongo logic;
+        for (ShoppingItem item : fullList.getItemList()) {
+            if (item.getId().equals(itemId)) {
+                item.setChecked(true);
+            }
+        }
+        shoppingListRepository.save(fullList);
+        return fullList;
+    }
+
 
 }

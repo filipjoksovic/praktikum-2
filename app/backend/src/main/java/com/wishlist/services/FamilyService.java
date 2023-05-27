@@ -1,5 +1,6 @@
 package com.wishlist.services;
 
+import com.wishlist.dto.CreateFamilyRequestDTO;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.User;

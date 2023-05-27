@@ -13,6 +13,8 @@ import java.util.List;
 public interface IShoppingListService {
 
     List<ShoppingList> getAll();
+    //TODO change name to getAllForFamily or something like taht
+    List<ShoppingList> getShoppingListForFamily(String familyId) throws Exception;
     ShoppingList updateShoppingList(ShoppingList shoppingList);
     ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws Exception;
     ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto) throws Exception;
@@ -23,5 +25,6 @@ public interface IShoppingListService {
     ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId) throws ShoppingListDoesNotExistException;
     boolean deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception;
     ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception;
-    List<ShoppingList> getShoppingListForFamily(String familyId) throws Exception;
+    ShoppingList completeWholeList(String id) throws ShoppingListDoesNotExistException;
+    ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
 }

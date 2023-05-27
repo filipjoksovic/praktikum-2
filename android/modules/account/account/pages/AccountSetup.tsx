@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, View} from 'react-native';
+import {View} from 'react-native';
 import {
   LAYOUT,
   STYLESHEET,
