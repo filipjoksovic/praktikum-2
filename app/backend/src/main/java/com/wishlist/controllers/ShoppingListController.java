@@ -49,12 +49,13 @@ public class ShoppingListController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PutMapping("/{id}/completeList")
     public ResponseEntity copmpleteWholeList(@PathVariable String id) {
         log.info("PUT completeList for lid {}", id);
         try {
             log.info("PUT completeList return HTTP OK for lid {}", id);
-            return new ResponseEntity(shoppingListService.completeWholeList(id), HttpStatus.OK);
+            return new ResponseEntity(new ShoppingListResponseDTO(shoppingListService.completeWholeList(id)), HttpStatus.OK);
         } catch (Exception e) {
             log.info("PUT completeList return HTTP INTERNAL_SERVER_ERROR for lid {}", id);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,7 +66,7 @@ public class ShoppingListController {
     public ResponseEntity completeListItem(@PathVariable String listId, @PathVariable String itemId) {
         try {
             log.info("PUT completeListItem for lid {} iid {}", listId, itemId);
-            return new ResponseEntity(shoppingListService.completeListItem(listId, itemId), HttpStatus.OK);
+            return new ResponseEntity(new ShoppingListResponseDTO(shoppingListService.completeListItem(listId, itemId)), HttpStatus.OK);
         } catch (Exception e) {
             log.error("PUT completeListItem for lid {} iid {} FAIL", listId, itemId);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -104,6 +105,7 @@ public class ShoppingListController {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("family/{familyId}")
     public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody ShoppingListDTO shoppingListDTO) {
         log.info("POST createShoppingList for family:" + familyId);
@@ -139,9 +141,10 @@ public class ShoppingListController {
     @DeleteMapping("/{userId}/{listId}/{itemId}")
     public ResponseEntity deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId) {
         try {
-            boolean success = shoppingListService.deleteItemFromShoppingList(userId, listId, itemId);
-            return new ResponseEntity<>(success, HttpStatus.NO_CONTENT);
+            log.info("deleteShoppingListItem for uid {} lid {} iid {}", userId, listId, itemId);
+            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.deleteItemFromShoppingList(userId, listId, itemId)), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("deleteShoppingListItem for uid {} lid {} iid {} FAIL", userId, listId, itemId);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

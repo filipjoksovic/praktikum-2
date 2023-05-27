@@ -3,25 +3,33 @@ import {Pressable} from 'react-native';
 import React from 'react';
 import {ShoppingListsComponent} from './ShoppingListsComponent';
 import {ShoppingListItemComponent} from './ShoppingListItemComponent';
-import {IShoppingListResponse} from '../../../models/IShoppingListsResponseDTO';
+import {
+  IListItem,
+  IShoppingListResponse,
+} from '../../../models/IShoppingListsResponseDTO';
 
 export interface IShoppingListComponentProps {
   list: IShoppingListResponse;
-  wholeListLongPressEmitter: any;
-  singleListItemLongPressEmitter: any;
-  wholeListPressedEmitter: any;
+  onListLongPressed: any;
+  onItemLongPressed: any;
+  onListPressed: any;
 }
 
 export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
   const {list} = props;
   console.log(list);
+
+  const itemLongPressed = (item: IListItem) => {
+    props.onItemLongPressed({listId: list.shoppingList.id, item: item});
+  };
+
   return (
     <List.Accordion
       onPress={() => {
-        props.wholeListPressedEmitter(list);
+        props.onListPressed(list);
       }}
       onLongPress={() => {
-        props.wholeListLongPressEmitter(list);
+        props.onListLongPressed(list);
       }}
       left={props => <List.Icon {...props} icon="cart" />}
       title={list.shoppingList.name ? list.shoppingList.name : 'No name'}
@@ -30,20 +38,9 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
         textDecorationStyle: 'solid',
       }}>
       {list.shoppingList.itemList.map(item => (
-        <List.Item
-          title={item.name}
-          key={item.id}
-          titleStyle={{
-            textDecorationLine: item.checked ? 'line-through' : 'none',
-            textDecorationStyle: 'solid',
-          }}
-          onLongPress={() => {
-            props.singleListItemLongPressEmitter({
-              listId: list.shoppingList.id,
-              item: item,
-            });
-          }}
-        />
+        <ShoppingListItemComponent
+          item={item}
+          onLongPress={itemLongPressed}></ShoppingListItemComponent>
       ))}
     </List.Accordion>
   );

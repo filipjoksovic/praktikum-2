@@ -1,28 +1,28 @@
-import {Checkbox, Surface, Text} from 'react-native-paper';
+import {Checkbox, List, Surface, Text} from 'react-native-paper';
 import {Pressable} from 'react-native';
 import React from 'react';
 import {IListItem} from '../../../models/IShoppingListsResponseDTO';
 
 export interface IShoppingListItemComponentProps {
   item: IListItem;
+  onLongPress: (item: IListItem) => void;
+  onPress?: (item: IListItem) => void;
 }
 export const ShoppingListItemComponent = (
   props: IShoppingListItemComponentProps,
 ) => {
   const {item} = props;
   return (
-    <Pressable>
-      <Surface
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          padding: 10,
-          borderRadius: 20,
-          marginTop: 10,
-        }}>
-        <Checkbox status={'checked'} />
-        <Text>{item.name}</Text>
-      </Surface>
-    </Pressable>
+    <List.Item
+      title={item.name}
+      key={item.id}
+      titleStyle={{
+        textDecorationLine: item.checked ? 'line-through' : 'none',
+        textDecorationStyle: 'solid',
+      }}
+      onLongPress={() => {
+        props.onLongPress(item);
+      }}
+    />
   );
 };

@@ -12,8 +12,7 @@ export const ShoppingListTranscriptPage = (
 ) => {
   const theme = useTheme();
   const [shoppingListPrompt, setShoppingListPrompt] = useState(
-    // 'We need some milk, oranges, apples and bananas today.',
-    '',
+    'We need some milk, oranges, apples and bananas today.',
   );
 
   // Additional state for recording

@@ -1,6 +1,7 @@
 import {Environment} from '../environment';
 import {LocalStorageService} from './LocalStorageService';
 import {
+  IShoppingListResponse,
   IShoppingListsResponse,
   IShoppingListsResponseshoppingList,
 } from '../models/IShoppingListsResponseDTO';
@@ -39,7 +40,7 @@ export class ShoppingListService {
     console.log('here');
     console.log(`${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}`);
     return await fetch(
-      `${Environment.BACKEND_URL}/shoppingLists/${listId}/${itemId}`,
+      `${Environment.BACKEND_URL}/shoppingLists/${user.id}/${listId}/${itemId}`,
       {
         method: 'delete',
         headers: {
@@ -49,9 +50,9 @@ export class ShoppingListService {
       },
     ).then(response => {
       if (response.ok) {
-        return response.json();
+        return '{}';
       } else {
-        throw new Error('Error while checking off list');
+        throw new Error('Error while deleting listitem');
       }
     });
   }
@@ -152,7 +153,9 @@ export class ShoppingListService {
       .then(response => response.json())
       .then(response => response as IShoppingListsResponse);
   }
-  public static async checkOffList(listId: string) {
+  public static async checkOffList(
+    listId: string,
+  ): Promise<IShoppingListResponse> {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (!user) {
       throw new Error('User not logged in');
@@ -168,13 +171,16 @@ export class ShoppingListService {
       },
     ).then(response => {
       if (response.ok) {
-        return response.json();
+        return response.json() as Promise<IShoppingListResponse>;
       } else {
         throw new Error('Error while checking off list');
       }
     });
   }
-  public static async checkOffListItem(listId: string, itemId: string) {
+  public static async checkOffListItem(
+    listId: string,
+    itemId: string,
+  ): Promise<IShoppingListResponse> {
     const user = await LocalStorageService.getUserFromLocalStorage();
     if (!user) {
       throw new Error('User not logged in');
@@ -194,7 +200,7 @@ export class ShoppingListService {
       },
     ).then(response => {
       if (response.ok) {
-        return response.json();
+        return response.json() as Promise<IShoppingListResponse>;
       } else {
         throw new Error('Error while checking off list');
       }

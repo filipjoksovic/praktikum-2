@@ -130,7 +130,7 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public boolean deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception {
+    public ShoppingList deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception {
         User user = userService.getUserById(userId);
         Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(listId);
         if (shoppingListOptional.isEmpty()) {
@@ -138,11 +138,13 @@ public class ShoppingListService implements IShoppingListService {
         }
         ShoppingList shoppingList = shoppingListOptional.get();
         if (!Objects.equals(shoppingList.getUserId(), user.getId())) {
+            //TODO custom exception
             throw new Exception("User does not have access to that list");
         }
 
         Optional<ShoppingItem> itemToRemoveOptional = itemService.findById(itemId);
         if (itemToRemoveOptional.isEmpty()) {
+            //TODO custom exception
             throw new Exception("This item is not inside the provided shopping list");
         }
 
@@ -152,7 +154,7 @@ public class ShoppingListService implements IShoppingListService {
         itemService.delete(itemId);
         shoppingList.setItemList(currentItems);
         shoppingListRepository.save(shoppingList);
-        return true;
+        return shoppingList;
     }
 
     @Override
