@@ -9,17 +9,22 @@
             </div>
 
             <div class="form-container">
+                <form [formGroup]="form" (ngSubmit)="submit()">
                 <div class="form-group">
                     <label class="label" for="inputEmail">Email</label>
-                    <input type="text" class="input" placeholder="Username">
+                    <input autocomplete="off" type="text" class="input" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <label class="label" for="inputEmail">Password</label>
-                    <input type="password" class="input" placeholder="Password">
+                    <input autocomplete="off" type="password" class="input" placeholder="Password">
                 </div>
                 <div class="form-button">
-                    <button class="primaryButton">Login</button>
+                    <button [disabled]="!form.valid" class="primaryButton">{{modeButtonString}}</button>
                 </div>
+                <div class="display-mode-message">
+                    <a class="text-muted" (click)="onSwitchMode()">{{displayModeString}}</a>
+                </div>
+             </form>
             </div>
         </div>
 </div>
