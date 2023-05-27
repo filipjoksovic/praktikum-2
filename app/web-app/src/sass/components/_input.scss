@@ -1,0 +1,18 @@
+.input {
+  display: block;
+  width: 100%;
+  font-size: 0.71vw; /* 14px => 0.71vw */
+  box-shadow: 0 0.08vh 0.25vh rgba(0, 0, 0, 0.1); /* 1px 3px => 0.08vh 0.25vh */
+  padding: 2.30vh; /* 28px => 2.30vh */
+  height: 3.29vh; /* 40px => 3.29vh */
+  transition: box-shadow 0.3s ease-in-out;
+  border-radius: $border-radius-input;
+  background-color: $light-gray;
+  border: 0.08vh solid $input-border-color; /* 1px => 0.08vh */
+  &:focus {
+    box-shadow: 0 0 0 0.08vh $input-border-color; /* 1px => 0.08vh */
+  }
+}
+
+
+  
