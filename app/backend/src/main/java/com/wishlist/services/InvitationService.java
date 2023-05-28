@@ -1,5 +1,6 @@
 package com.wishlist.services;
 
+import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.exceptions.InvitationFailedException;
 import com.wishlist.models.Family;
 import com.wishlist.models.Invitation;
@@ -38,7 +39,7 @@ public class InvitationService implements IInvitationService {
     }
 
     @Override
-    public Invitation save(Invitation invitation) throws InvitationFailedException {
+    public Invitation save(Invitation invitation) throws InvitationFailedException, FamilyDoesNotExistException {
 
         logger.info(invitation.toString());
         String userToId = invitation.getUserId();

@@ -11,7 +11,7 @@ public class ShoppingListResponseDTO {
     public ShoppingListResponseDTO(ShoppingList shoppingList) {
         this.shoppingList = shoppingList;
         for (ShoppingItem item : shoppingList.getItemList()) {
-            if (item.isChecked()) {
+            if (!item.isChecked()) {
                 allChecked = false;
                 break;
             }

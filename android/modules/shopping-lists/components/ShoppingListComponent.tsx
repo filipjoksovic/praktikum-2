@@ -34,7 +34,7 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
       left={props => <List.Icon {...props} icon="cart" />}
       title={list.shoppingList.name ? list.shoppingList.name : 'No name'}
       titleStyle={{
-        textDecorationLine: !list.allChecked ? 'line-through' : 'none',
+        textDecorationLine: list.allChecked ? 'line-through' : 'none',
         textDecorationStyle: 'solid',
       }}>
       {list.shoppingList.itemList.map(item => (

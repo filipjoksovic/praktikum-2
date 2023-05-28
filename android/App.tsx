@@ -68,18 +68,6 @@ export const TabNavigation = () => {
           tabBarLabel: 'Account setup',
         }}
       /> */}
-      {/* <Tab.Screen
-        name={'Settings'}
-        component={SettingsPage}
-        options={{
-          tabBarIcon: ({color, size}) => {
-            return (
-              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
-            );
-          },
-          tabBarLabel: 'Settings',
-        }}
-      /> */}
       <Tab.Screen
         name={'Family'}
         component={FamilyPage}
@@ -94,6 +82,18 @@ export const TabNavigation = () => {
             );
           },
           tabBarLabel: 'Family',
+        }}
+      />
+      <Tab.Screen
+        name={'Settings'}
+        component={SettingsPage}
+        options={{
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
+            );
+          },
+          tabBarLabel: 'Settings',
         }}
       />
     </Tab.Navigator>

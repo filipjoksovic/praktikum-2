@@ -1,10 +1,11 @@
 package com.wishlist.services;
 
-import com.wishlist.dto.CreateFamilyRequestDTO;
+import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.User;
 import com.wishlist.repositories.FamilyRepository;
+import com.wishlist.repositories.UserRepository;
 import com.wishlist.services.interfaces.IFamilyService;
 import org.springframework.stereotype.Service;
 
@@ -20,31 +21,31 @@ public class FamilyService implements IFamilyService {
     private final FamilyRepository familyRepository;
     private final UserService userService;
     Logger logger = Logger.getLogger(FamilyService.class.getName());
+    private final UserRepository userRepository;
 
 
-    public FamilyService(FamilyRepository familyRepository, UserService userService) {
+    public FamilyService(FamilyRepository familyRepository, UserService userService,
+                         UserRepository userRepository) {
         this.familyRepository = familyRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public List<Family> getAll() {
         return familyRepository.findAll();
     }
 
-    public Family findById(String id) {
+    public Family findById(String id) throws FamilyDoesNotExistException {
         Optional<Family> familyOptional = familyRepository.findById(id);
-        return familyOptional.orElse(null);
+        return familyOptional.orElseThrow(FamilyDoesNotExistException::new);
     }
 
-    public boolean delete(String id) {
-        Optional<Family> familyOptional = familyRepository.findById(id);
-        if (familyOptional.isPresent()) {
-            familyRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
+    public Family delete(String id) throws FamilyDoesNotExistException {
+        Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+        familyRepository.deleteById(id);
+        return family;
     }
+
     public Family save(Family family) {
         return familyRepository.save(family);
     }
@@ -75,6 +76,12 @@ public class FamilyService implements IFamilyService {
     }
 
     @Override
+    public Family findByUser(String userId) throws FamilyDoesNotExistException {
+        User user = userRepository.findUserById(userId);
+        return familyRepository.findById(user.getFamilyId()).orElseThrow(FamilyDoesNotExistException::new);
+    }
+
+    @Override
     public Family findByInviteCode(String inviteCode) {
         return familyRepository.findByInviteCode(inviteCode);
     }
@@ -102,9 +109,6 @@ public class FamilyService implements IFamilyService {
         throw new Exception("Failed to delete user from family");
 
     }
-
-
-
 
 
 }

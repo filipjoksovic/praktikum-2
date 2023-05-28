@@ -15,7 +15,7 @@ export const HomePage = ({navigation}) => {
         navigation.navigate('Login');
       }
     }
-    const exists = doesUserExist();
+    doesUserExist();
   });
 
   return <TabNavigation></TabNavigation>;

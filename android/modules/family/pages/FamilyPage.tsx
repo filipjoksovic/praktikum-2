@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {IFamily} from '../../../models/IFamily';
 import {LocalStorageService} from '../../../services/LocalStorageService';
+import {FamilyDetailsComponent} from '../components/FamilyDetailsComponent';
 
 export const FamilyPage = () => {
   const theme = useTheme();
@@ -25,6 +26,8 @@ export const FamilyPage = () => {
   useFocusEffect(
     React.useCallback(() => {
       console.log('here');
+      console.log('Should get family for used');
+      setFamily(null);
       getFamilyForUser();
     }, []),
   );
@@ -53,47 +56,28 @@ export const FamilyPage = () => {
         ...LAYOUT.container,
         backgroundColor: theme.colors.background,
       }}>
-      <Surface
-        style={{paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20}}>
-        <Text variant={'headlineLarge'}>Family</Text>
-        <Text variant={'bodyMedium'}>
-          Here you can see details about your family.
-        </Text>
-        <Text variant={'bodyMedium'}>
-          If you're not in one already, you can join it using a code provided to
-          you by a member
-        </Text>
-      </Surface>
+      {!family && (
+        <Surface
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderRadius: 20,
+          }}>
+          <Text variant={'headlineLarge'}>Family</Text>
+          <Text variant={'bodyMedium'}>
+            Here you can see details about your family.
+          </Text>
+          <Text variant={'bodyMedium'}>
+            If you're not in one already, you can join it using a code provided
+            to you by a member
+          </Text>
+        </Surface>
+      )}
 
-      {family ? (
-        <>
-          <Surface
-            style={{
-              marginTop: 20,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              borderRadius: 20,
-            }}>
-            <Text variant="headlineMedium">{family.name}</Text>
-          </Surface>
-          <Surface
-            style={{
-              marginTop: 20,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              borderRadius: 20,
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                height: '50%',
-                verticalAlign: 'middle',
-              }}>
-              W.I.P
-            </Text>
-          </Surface>
-        </>
-      ) : (
+      {family && (
+        <FamilyDetailsComponent family={family}></FamilyDetailsComponent>
+      )}
+      {!family && (
         <>
           <View style={{marginTop: 20}}>
             <Surface

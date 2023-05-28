@@ -95,12 +95,12 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
       console.log('SelectedList:', selectedList);
       console.log(selectedList.shoppingList.itemList.length > 0);
       if (
-        selectedList.allChecked &&
+        !selectedList.allChecked &&
         selectedList.shoppingList.itemList.length > 0
       ) {
         console.log('ShoppingListComponent: Should check off whole list');
         try {
-          const editedList = await ShoppingListService.checkOffList(
+          const editedList = await ShoppingListService.completeList(
             selectedList.shoppingList.id,
           );
           console.log('CHECK OFF WHOLE LIST RESPONSE:', editedList);
@@ -209,7 +209,7 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
           <Dialog.Title>Alert</Dialog.Title>
           <Dialog.Content>
             {selectedList &&
-            selectedList.allChecked &&
+            !selectedList.allChecked &&
             selectedList.shoppingList.itemList.length > 0 ? (
               <Text variant="bodyMedium">
                 Check off whole list? All of the items on{' '}
@@ -218,7 +218,7 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             ) : (
               <></>
             )}
-            {(selectedList && !selectedList.allChecked) ||
+            {(selectedList && selectedList.allChecked) ||
             selectedList?.shoppingList.itemList.length === 0 ? (
               <Text variant="bodyMedium">
                 Delete whole list? All of the items on{' '}

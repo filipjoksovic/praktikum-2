@@ -24,6 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final String secretKey;
     private final IJWTGenerator jwtGenerator;
     private final UserRepository userRepository;
+
     public JwtFilter(@Value("${jwt.secret}") String secretKey, IJWTGenerator jwtGenerator, UserRepository userRepository) {
         this.secretKey = secretKey;
         this.jwtGenerator = jwtGenerator;
@@ -49,23 +50,28 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
         final String token = authHeader.substring(7);
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        try {
+            Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 
-        userEmail = jwtGenerator.extractEmail(token);
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userRepository.findUserByEmail(userEmail).get();
-            if (jwtGenerator.isTokenValid(token,user)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        user.getAuthorities()
-                );
-                authenticationToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            userEmail = jwtGenerator.extractEmail(token);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                User user = userRepository.findUserByEmail(userEmail).get();
+                if (jwtGenerator.isTokenValid(token, user)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            user,
+                            null,
+                            user.getAuthorities()
+                    );
+                    authenticationToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            System.out.println("JWT expired " + e.getMessage());
+            response.setStatus(440);
         }
-        filterChain.doFilter(request, response);
     }
 }
