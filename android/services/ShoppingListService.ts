@@ -14,6 +14,24 @@ export interface IPromptRequest {
 }
 
 export class ShoppingListService {
+  static async createListForFamily(data: {name: string; items: string[]}) {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('User not defined');
+      }
+      if (!user.familyId) {
+        throw new Error('User has no family');
+      }
+      return await makeRequest(
+        `shoppingLists/family/${user.familyId}`,
+        'post',
+        data,
+      );
+    } catch (err) {
+      console.log('Error at createList', err);
+    }
+  }
   static async addListItems(id: string, summary: string) {
     try {
       return await makeRequest(`shoppingLists/${id}/items`, 'post', {
@@ -83,7 +101,7 @@ export class ShoppingListService {
       });
   }
 
-  public static async createList(data: {name: string; items: string[]}) {
+  public static async createListForUser(data: {name: string; items: string[]}) {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
       if (!user) {

@@ -49,10 +49,10 @@ export const ShoppingListTranscriptPage = (
     <ScrollView>
       {shoppingListPrompt ? (
         <>
-          <Text variant={'headlineLarge'}>Welcome</Text>
+          <Text variant={'headlineMedium'}>Transcription complete</Text>
           <Text variant={'labelLarge'}>
-            You can start recording your voice and when you're finished, the
-            data will be sent for processing, making your shopping list
+            Here is the transcription based on your voice recording. If
+            something is off, you can always edit it to your liking.
           </Text>
           <TextInput
             style={{marginTop: 20}}

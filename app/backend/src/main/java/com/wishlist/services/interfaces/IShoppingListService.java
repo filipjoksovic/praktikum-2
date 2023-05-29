@@ -30,4 +30,6 @@ public interface IShoppingListService {
     ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception;
     ShoppingList completeWholeList(String id) throws ShoppingListDoesNotExistException;
     ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
+
+    boolean hasList(String familyId);
 }

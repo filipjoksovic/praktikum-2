@@ -30,12 +30,12 @@ export const PrepareShoppingListPage = () => {
     setIsCreating(true);
     setShoppingItems([]);
   };
-  const createList = async (
+  const createPersonalList = async (
     shoppingListName: string,
     shoppingListItems: string[],
   ) => {
     try {
-      await ShoppingListService.createList({
+      await ShoppingListService.createListForUser({
         name: shoppingListName,
         items: shoppingListItems,
       });
@@ -54,9 +54,37 @@ export const PrepareShoppingListPage = () => {
   const transcriptReceived = (transcript: any) => {
     setShoppingItems(prevState => transcript);
   };
+  const createFamilyList = async (
+    shoppingListName: string,
+    shoppingListItems: string[],
+  ) => {
+    try {
+      await ShoppingListService.createListForFamily({
+        name: shoppingListName,
+        items: shoppingListItems,
+      });
+      setIsCreating(true);
+      setShoppingItems([]);
+      SnackBarStore.update(s => {
+        return {
+          isOpen: true,
+          text: 'Successfully created family shopping list',
+        };
+      });
+    } catch (err) {
+      console.error(`createList error`, err);
+      SnackBarStore.update(s => {
+        return {
+          isOpen: true,
+          text: 'Error when creating family shopping list: ',
+          err,
+        };
+      });
+    }
+  };
 
   return (
-    <ScrollView
+    <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
       {shoppingItems.length === 0 ? (
         <ShoppingListTranscriptPage onReceiveTranscript={transcriptReceived} />
@@ -65,10 +93,11 @@ export const PrepareShoppingListPage = () => {
           <CreateShoppingListPage
             shoppingList={shoppingItems}
             cancelListCreate={cancel}
-            createList={createList}
+            createPersonalList={createPersonalList}
+            createFamilyList={createFamilyList}
           />
         </>
       )}
-    </ScrollView>
+    </View>
   );
 };

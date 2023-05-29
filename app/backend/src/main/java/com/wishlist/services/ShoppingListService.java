@@ -226,5 +226,14 @@ public class ShoppingListService implements IShoppingListService {
         return fullList;
     }
 
+    @Override
+    public boolean hasList(String familyId) {
+        List<ShoppingList> lists = shoppingListRepository.findByFamilyId(familyId);
+        if (lists.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

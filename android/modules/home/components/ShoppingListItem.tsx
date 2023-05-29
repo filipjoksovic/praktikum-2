@@ -14,6 +14,7 @@ import {
   useTheme,
   Portal,
   List,
+  Divider,
 } from 'react-native-paper';
 import {inspect} from 'util';
 
@@ -25,24 +26,33 @@ export interface IShoppingListItem {
 export const ShoppingListItem = (props: IShoppingListItem) => {
   const theme = useTheme();
   const [isEdit, setIsEdit] = useState(false);
-  const {shoppingItem} = props;
+  const {shoppingItem, onRemoveItem} = props;
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
   return (
-    <Surface theme={theme} style={{marginBottom: 20, borderRadius: 20}}>
+    // <Surface theme={theme} style={{marginBottom: 20, borderRadius: 20}}>
+    <View>
       <List.Item
         title={shoppingItem}
         theme={{...theme, roundness: 20}}
+        style={{paddingRight: 5}}
         onPress={() => {}}
         onLongPress={() => {}}
         left={props => <List.Icon {...props} icon="cart" />}
         right={props => (
-          <IconButton {...props} onPress={() => {}} icon="delete" />
+          <IconButton
+            {...props}
+            onPress={() => {
+              onRemoveItem(shoppingItem);
+            }}
+            icon="delete"
+          />
         )}
       />
-    </Surface>
+    </View>
+    // </Surface>
   );
 };

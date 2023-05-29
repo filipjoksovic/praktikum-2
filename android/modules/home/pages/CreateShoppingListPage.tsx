@@ -3,55 +3,145 @@ import {useEffect, useState} from 'react';
 import {TYPO} from '../../../resources/styles/STYLESHEET';
 import {ShoppingListItem} from '../components/ShoppingListItem';
 import {CustomButton} from '../../shared/components/CustomButton';
-import {Button, Text, TextInput, useTheme} from 'react-native-paper';
+import {
+  Button,
+  Divider,
+  IconButton,
+  SegmentedButtons,
+  Text,
+  TextInput,
+  useTheme,
+} from 'react-native-paper';
+import React from 'react';
 
 export interface ICreateShoppingListPageProps {
   shoppingList: string[];
   cancelListCreate: () => void;
-  createList: (param1: string, param2: string[]) => void;
+  createPersonalList: (param1: string, param2: string[]) => void;
+  createFamilyList: (param1: string, param2: string[]) => void;
 }
 
 export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
-  //TODO refactor state, possibly use different page
   const theme = useTheme();
   const [shoppingList, setShoppingList] = useState(props.shoppingList);
   const [shoppingListName, setShoppingListName] = useState('');
+  const [listPrivacyValue, setListPrivacyValue] = React.useState('');
+  const [isAdding, setIsAdding] = React.useState(false);
+  const [newItem, setNewItem] = React.useState('');
   const removeItem = (item: string) => {
     console.log(shoppingList);
     setShoppingList(prevState => prevState.filter(i => i !== item));
   };
 
   const handleCreateConfirm = () => {
-    props.createList(shoppingListName, props.shoppingList);
+    if (listPrivacyValue === 'per') {
+      props.createPersonalList(shoppingListName, shoppingList);
+    }
+    if (listPrivacyValue === 'fam') {
+      props.createFamilyList(shoppingListName, shoppingList);
+    }
   };
+  const addNewItem = () => {
+    console.log('adding new item');
+    setShoppingList(prevState => [newItem, ...prevState]);
+  };
+
   return (
     <View style={{height: '100%'}}>
       <Text variant={'headlineLarge'}>Success!</Text>
 
       <Text variant={'bodyMedium'}>
         Your data has been successfully processed. You can go over the list one
-        more time, to confirm your choices, and then create the list.
+        more time, to add or remove items, and then create the list.
       </Text>
-      <TextInput
-        label={'Name'}
-        style={{marginTop: 20}}
-        theme={{...theme, roundness: 20}}
-        mode={'outlined'}
-        value={shoppingListName}
-        onChangeText={setShoppingListName}
-      />
-      <Text style={{marginVertical: 20}} variant={'bodyLarge'}>
-        Shopping items
-      </Text>
-
-      <ScrollView>
-        {props.shoppingList.map(item => {
-          return (
-            <ShoppingListItem
-              key={item}
-              shoppingItem={item}
-              onRemoveItem={removeItem}
+      {!isAdding && (
+        <View>
+          <SegmentedButtons
+            value={listPrivacyValue}
+            onValueChange={setListPrivacyValue}
+            style={{marginTop: 20}}
+            buttons={[
+              {
+                value: 'fam',
+                label: 'Family',
+                icon: 'home',
+              },
+              {
+                value: 'per',
+                label: 'Personal',
+                icon: 'account',
+              },
+            ]}
+          />
+          {listPrivacyValue === 'fam' && (
+            <Text
+              variant={'bodySmall'}
+              style={{textAlign: 'center', marginTop: 10}}>
+              Only one list exists per family. If the list already exists, the
+              data will be updated while avoiding duplicates.
+            </Text>
+          )}
+          <View>
+            <TextInput
+              label={'Name'}
+              style={{marginTop: 10}}
+              theme={{...theme, roundness: 20}}
+              mode={'outlined'}
+              value={shoppingListName}
+              onChangeText={setShoppingListName}
             />
+          </View>
+        </View>
+      )}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <Text style={{marginVertical: 20}} variant={'bodyLarge'}>
+          Shopping items
+        </Text>
+        <IconButton
+          icon={isAdding ? 'check' : 'plus'}
+          iconColor={theme.colors.primary}
+          mode="contained-tonal"
+          onPress={() => {
+            setIsAdding(prevState => !prevState);
+          }}></IconButton>
+      </View>
+      {isAdding && (
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 10,
+          }}>
+          <TextInput
+            mode="outlined"
+            label={'Item name'}
+            style={{flex: 1}}
+            onChangeText={setNewItem}></TextInput>
+          <IconButton
+            icon={'plus'}
+            iconColor={theme.colors.primary}
+            mode="contained-tonal"
+            onPress={addNewItem}></IconButton>
+        </View>
+      )}
+      <ScrollView>
+        {shoppingList.map(item => {
+          return (
+            <>
+              <ShoppingListItem
+                key={item}
+                shoppingItem={item}
+                onRemoveItem={removeItem}
+              />
+              <Divider></Divider>
+            </>
           );
         })}
       </ScrollView>
@@ -61,6 +151,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
           alignItems: 'center',
           justifyContent: 'flex-end',
           gap: 10,
+          marginTop: 10,
         }}>
         <Button onPress={props.cancelListCreate} mode={'outlined'}>
           Cancel

@@ -3,12 +3,13 @@ package com.wishlist.dto;
 import com.wishlist.models.User;
 
 public class AuthResponseDTO {
-    public String id;
-    public String name;
-    public String surname;
-    public String email;
-    public String accessToken;
-    public String refreshToken;
+    private String id;
+    private String name;
+    private String surname;
+    private String email;
+    private String accessToken;
+    private String refreshToken;
+    private String familyId;
 
     public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken) {
         this.id = id;
@@ -17,6 +18,19 @@ public class AuthResponseDTO {
         this.email = email;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+    }
+
+    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken, String familyId) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.familyId = familyId;
+    }
+
+    public AuthResponseDTO() {
     }
 
     public String getId() {
@@ -67,8 +81,16 @@ public class AuthResponseDTO {
         this.refreshToken = refreshToken;
     }
 
+    public String getFamilyId() {
+        return familyId;
+    }
+
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
+    }
+
     public static AuthResponseDTO to(User user, String accessToken, String refreshToken) {
-        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken);
+        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken, user.getFamilyId());
     }
 
 }

@@ -1,5 +1,6 @@
 import {SegmentedButtons} from 'react-native-paper';
 import React from 'react';
+import {TouchableNativeFeedback, View} from 'react-native';
 
 export const ListContextSelectorComponent = () => {
   const [value, setValue] = React.useState('');
@@ -16,10 +17,6 @@ export const ListContextSelectorComponent = () => {
         {
           value: 'personal',
           label: 'Personal',
-        },
-        {
-          value: 'all',
-          label: 'All',
         },
       ]}
     />

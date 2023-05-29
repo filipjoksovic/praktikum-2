@@ -108,8 +108,14 @@ public class ShoppingListController {
     public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody ShoppingListDTO shoppingListDTO) {
         log.info("POST createShoppingList for family:" + familyId);
         try {
-            ShoppingList shoppingList = shoppingListService.createShoppingListForFamily(familyId, shoppingListDTO);
-            return new ResponseEntity(shoppingList, HttpStatus.CREATED);
+            if (!shoppingListService.hasList(familyId)) {
+                ShoppingList shoppingList = shoppingListService.createShoppingListForFamily(familyId, shoppingListDTO);
+                return new ResponseEntity(shoppingList, HttpStatus.CREATED);
+
+            } else {
+                ShoppingList list = shoppingListService.getShoppingListForFamily(familyId).get(0);
+                return new ResponseEntity(shoppingListService.addItemsToShoppingList(new AddListItemsDTO(shoppingListDTO.items.toArray(new String[0])), list.getId()), HttpStatus.OK);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -166,7 +172,6 @@ public class ShoppingListController {
             log.error("add itm to ls {} fail", listId);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
 }

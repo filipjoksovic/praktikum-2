@@ -35,7 +35,7 @@ public class AuthController {
         log.info("Rcv lgn {} {}", requestDTO.getEmail(), requestDTO.getPassword());
         try {
             AuthResponseDTO loggedIn = authService.login(requestDTO);
-            log.info("usr {} found. send 200 ok", loggedIn.id);
+            log.info("usr {} found. send 200 ok", loggedIn.getId());
             return new ResponseEntity<>(loggedIn, HttpStatus.OK);
         } catch (Exception e) {
             log.error("usr email {} not found. send 500 err", requestDTO.getEmail());

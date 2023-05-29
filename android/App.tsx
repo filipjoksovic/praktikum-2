@@ -22,6 +22,12 @@ import {PrepareShoppingListPage} from './modules/home/pages/PrepareShoppingListP
 import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPage';
 import {FamilyPage} from './modules/family/pages/FamilyPage';
 import {SnackBarStore} from './modules/shared/state/SnackBarStore';
+import {
+  scheme_green_dark,
+  scheme_green_light,
+  scheme_turq_dark,
+  scheme_turq_light,
+} from './resources/styles/colorSchemes';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -118,7 +124,7 @@ const StackNavigation = () => {
 };
 
 function App(): JSX.Element {
-  const theme = useTheme();
+  // const theme = useTheme();
   const isDarkMode = useColorScheme() === 'dark';
   const SnackbarState = SnackBarStore.useState();
 
@@ -128,13 +134,17 @@ function App(): JSX.Element {
       backgroundColor: STYLESHEET.colors.bg_light,
     },
   });
-
+  const defTheme = useTheme();
+  const theme = {
+    ...DefaultTheme,
+    colors: isDarkMode ? scheme_green_dark : scheme_green_light,
+  };
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <View style={stylesheet.container}>
         <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={theme.colors.secondary}
+          barStyle={isDarkMode ? 'dark-content' : 'light-content'}
+          backgroundColor={theme.colors.tertiary}
         />
         <NavigationContainer>
           <StackNavigation />

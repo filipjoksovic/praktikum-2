@@ -4,7 +4,7 @@ export interface User {
   surname: string;
   email: string;
   password: string;
-  familyId: string;
+  familyId?: string;
   accessToken: string;
   refreshToken: string;
 }
