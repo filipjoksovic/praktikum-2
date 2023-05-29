@@ -3,6 +3,7 @@ import {ScrollView, View} from 'react-native';
 import {Button, Surface, Text, TextInput, useTheme} from 'react-native-paper';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 import {RecorderPage} from './RecorderPage';
+import {SnackBarStore} from '../../shared/state/SnackBarStore';
 
 export interface IShoppingListTranscriptPage {
   onReceiveTranscript: any;
@@ -28,6 +29,9 @@ export const ShoppingListTranscriptPage = (
 
       setIsCreating(false);
       // setShoppingItems(result.summary);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'Data successfully parsed'};
+      });
       props.onReceiveTranscript(result.summary);
     } catch (err) {
       console.log('Error:', err);

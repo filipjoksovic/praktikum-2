@@ -33,23 +33,32 @@ export async function makeRequest(
       throw new Error('User not logged in');
     }
   }
-
-  return await fetch(`${Environment.BACKEND_URL}/${url}`, {
+  const options: {
+    method: string;
+    headers: {[key: string]: string};
+    body?: string;
+  } = {
     method: method,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${user ? user.accessToken : ''}`,
     },
-    body: JSON.stringify(body),
-  }).then(async response => {
-    if (response.ok) {
-      const json = response.json();
-      console.log(`${method} request at ${url} OK. json data: `, json);
+  };
+  if (method !== 'get') {
+    options.body = JSON.stringify(body);
+  }
 
-      return json;
-    }
-    const fail = await response.text();
-    console.log('Fail content:', fail);
-    throw new Error(fail);
-  });
+  return await fetch(`${Environment.BACKEND_URL}/${url}`, options).then(
+    async response => {
+      if (response.ok) {
+        const json = response.json();
+        console.log(`${method} request at ${url} OK. json data: `, json);
+
+        return json;
+      }
+      const fail = await response.text();
+      console.log('Fail content:', fail);
+      throw new Error(fail);
+    },
+  );
 }

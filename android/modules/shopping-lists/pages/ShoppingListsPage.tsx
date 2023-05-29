@@ -1,24 +1,115 @@
-import {StyleSheet, View} from 'react-native';
-import {FAB, Text, useTheme} from 'react-native-paper';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ListContextSelectorComponent} from '../components/ListContextSelectorComponent';
 import {ShoppingListsComponent} from '../components/ShoppingListsComponent';
+import {MiniRecorderComponent} from '../components/MiniRecorderComponent';
+import {ShoppingListService} from '../../../services/ShoppingListService';
+import {
+  IShoppingList,
+  IShoppingListResponse,
+} from '../../../models/IShoppingListsResponseDTO';
+import {SnackBarStore} from '../../shared/state/SnackBarStore';
+import {useFocusEffect} from '@react-navigation/native';
+import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 
 export const ShoppingListsPage = () => {
   const theme = useTheme();
-  const [listForFab, setListForFab] = useState(null);
+  const shoppingLists = ShoppingListStore.useState(s => s.shoppingLists);
 
-  const styles = StyleSheet.create({
-    fab: {},
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getShoppingLists() {
+        console.log('Updated shopping lists');
+        const lists = await ShoppingListService.getShoppingLists();
+        ShoppingListStore.update(s => {
+          return {...s, shoppingLists: lists};
+        });
+      }
+      getShoppingLists();
+    }, []),
+  );
+
+  const listForFab = ShoppingListStore.useState(s => s.activeShoppingList);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [state, setState] = React.useState({open: false});
+  const [recorderVisible, setRecorderVisible] = React.useState(false);
 
   const onStateChange = ({open}) => setState({open});
 
   const {open} = state;
 
+  const handleAddNewItems = () => {
+    console.log('Pressed record');
+    setRecorderVisible(true);
+  };
+  const handleDelete = async () => {
+    try {
+      if (!listForFab) {
+        return;
+      }
+      const deleted = await ShoppingListService.deleteList(
+        listForFab?.shoppingList.id,
+      );
+      ShoppingListStore.update(s => {
+        return {
+          ...s,
+          shoppingLists: {
+            ...shoppingLists,
+            shoppingLists: shoppingLists.shoppingLists.filter(
+              list => list.shoppingList.id !== deleted.id,
+            ),
+          },
+          activeShoppingList: null,
+        };
+      });
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'List successfully deleted'};
+      });
+    } catch (err) {
+      console.log('ShoppingListsPage error', err);
+    }
+  };
+
+  const transcriptReceived = async (transcript: string) => {
+    setIsLoading(true);
+    console.log('List for fab', listForFab);
+    if (!listForFab) {
+      return;
+    }
+    console.log('text:', transcript);
+    try {
+      const result = await ShoppingListService.createRequest({
+        text: transcript,
+      });
+      console.log(result.summary);
+      const updatedList = await ShoppingListService.addListItems(
+        listForFab.shoppingList.id,
+        result.summary,
+      );
+      console.log(updatedList);
+      ShoppingListStore.update(s => {
+        return {
+          ...s,
+          shoppingLists: {
+            ...s.shoppingLists,
+            shoppingLists: shoppingLists.shoppingLists.map(list =>
+              list.shoppingList.id === updatedList.shoppingList.id
+                ? updatedList
+                : list,
+            ),
+          },
+        };
+      });
+      setIsLoading(false);
+    } catch (err) {
+      console.log('Error:', err);
+      setIsLoading(false);
+    }
+  };
   return (
     <View
       style={{
@@ -31,13 +122,22 @@ export const ShoppingListsPage = () => {
         Shopping lists
       </Text>
       <ListContextSelectorComponent />
-      <ShoppingListsComponent onListRecieved={setListForFab} />
+      {isLoading && (
+        <ActivityIndicator
+          style={{marginTop: 20}}
+          size={'large'}
+          animating={true}
+          color={MD2Colors.amber900}
+        />
+      )}
+
+      <ShoppingListsComponent />
       {listForFab ? (
         <FAB.Group
           open={open}
           visible
+          label={open ? listForFab && listForFab.shoppingList.name : ''}
           icon={open ? 'close' : 'pencil'}
-          fabStyle={styles.fab}
           actions={[
             {
               icon: 'bell',
@@ -47,12 +147,12 @@ export const ShoppingListsPage = () => {
             {
               icon: 'trash-can',
               label: 'Delete',
-              onPress: () => console.log('Pressed delete'),
+              onPress: handleDelete,
             },
             {
               icon: 'radiobox-marked',
               label: 'Add new items',
-              onPress: () => console.log('Pressed record'),
+              onPress: handleAddNewItems,
             },
           ]}
           onStateChange={onStateChange}
@@ -64,6 +164,16 @@ export const ShoppingListsPage = () => {
         />
       ) : (
         <></>
+      )}
+      {recorderVisible && (
+        <Portal>
+          <MiniRecorderComponent
+            onTranscriptReceived={transcriptReceived}
+            recordingStopped={() => {
+              setRecorderVisible(false);
+            }}
+            recorderVisible={recorderVisible}></MiniRecorderComponent>
+        </Portal>
       )}
     </View>
   );

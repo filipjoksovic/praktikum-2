@@ -1,6 +1,13 @@
-import {Button, Dialog, Portal, Text} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  Dialog,
+  MD2Colors,
+  Portal,
+  Text,
+} from 'react-native-paper';
 import {RefreshControl, ScrollView} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   IShoppingListsResponse,
   IShoppingListResponse,
@@ -10,82 +17,50 @@ import {ShoppingListService} from '../../../services/ShoppingListService';
 import {ShoppingListComponent} from './ShoppingListComponent';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {NoShoppingListsComponent} from './NoShoppingListsComponent';
+import {ISnackBarStore, SnackBarStore} from '../../shared/state/SnackBarStore';
+import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 
-export interface IShoppingListsComponentProps {
-  onListRecieved: any;
-}
+export interface IShoppingListsComponentProps {}
 
 export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
-  const [shoppingLists, setShoppingLists] = React.useState<
-    IShoppingListResponse[]
-  >([]);
+  const shoppingLists = ShoppingListStore.useState(
+    s => s.shoppingLists.shoppingLists,
+  );
+  const selectedList = ShoppingListStore.useState(s => s.selectedList);
+  const selectedListItem = ShoppingListStore.useState(s => s.selectedListItem);
 
-  const [selectedList, setSelectedList] =
-    React.useState<IShoppingListResponse | null>(null);
-
-  const [selectedListItem, setSelectedListItem] = React.useState<{
-    listId: string;
-    item: IListItem;
-  } | null>(null);
-
-  const onRefresh = React.useCallback(() => {
-    async function getShoppingLists() {
-      try {
-        ShoppingListService.getShoppingLists().then(
-          (response: IShoppingListsResponse) => {
-            console.log('Lists', response);
-            setShoppingLists(response.shoppingLists);
-          },
-        );
-      } catch (e) {
-        console.log(e);
-        setShoppingLists(prevState => []);
-      }
-    }
-    getShoppingLists();
-    setRefreshing(false);
-  }, []);
+  const onRefresh = React.useCallback(() => {}, []);
   const [refreshing, setRefreshing] = React.useState(false);
   const [isDialogVisible, setIsDialogVisible] = React.useState(false);
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    async function getShoppingLists() {
-      try {
-        ShoppingListService.getShoppingLists().then(
-          (response: IShoppingListsResponse) => {
-            console.log('Lists', response);
-            setShoppingLists(response.shoppingLists);
-          },
-        );
-      } catch (e) {
-        console.log(e);
-        setShoppingLists(prevState => []);
-      }
-    }
-    console.log('focused');
-    getShoppingLists();
-  }, [isFocused]);
-
-  const hideDialog = () => {
-    setIsDialogVisible(prevState => false);
-  };
 
   const handleWholeListLongPress = (list: any) => {
-    setSelectedListItem(prevState => null);
-    setSelectedList(prevState => list);
+    ShoppingListStore.update(s => {
+      return {...s, selectedListItem: undefined};
+    });
+    ShoppingListStore.update(s => {
+      return {...s, selectedList: list};
+    });
     setIsDialogVisible(prevState => true);
   };
 
   const handleSingleListItemLongPress = (item: any) => {
-    setSelectedList(prevState => null);
-    setSelectedListItem(prevState => item);
+    ShoppingListStore.update(s => {
+      return {...s, selectedListItem: item};
+    });
+    ShoppingListStore.update(s => {
+      return {...s, selectedList: null};
+    });
     setIsDialogVisible(prevState => true);
   };
 
   const dialogDismissed = () => {
-    setSelectedListItem(prevState => null);
-    setSelectedList(prevState => null);
+    ShoppingListStore.update(s => {
+      return {
+        ...selectedList,
+        selectedListItem: undefined,
+        selectedList: undefined,
+      };
+    });
     setIsDialogVisible(false);
   };
 
@@ -104,12 +79,22 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedList.shoppingList.id,
           );
           console.log('CHECK OFF WHOLE LIST RESPONSE:', editedList);
-          const newShoppingLists = shoppingLists.map(shoppingList =>
-            shoppingList.shoppingList.id === editedList.shoppingList.id
-              ? editedList
-              : shoppingList,
+          const newShoppingLists: IShoppingListResponse[] = shoppingLists.map(
+            shoppingList =>
+              shoppingList.shoppingList.id === editedList.shoppingList.id
+                ? editedList
+                : shoppingList,
           );
-          setShoppingLists(prevState => newShoppingLists);
+          console.log('new shopping lists', newShoppingLists);
+          ShoppingListStore.update(s => {
+            return {
+              ...s,
+              shoppingLists: {
+                ...s.shoppingLists,
+                shoppingLists: newShoppingLists,
+              },
+            };
+          });
         } catch (e) {
           console.log(
             'ShoppingListComponent: Error occured when checking off whole lsit',
@@ -120,11 +105,15 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
         console.log('ShoppingListComponent: Should delete whole list');
         try {
           await ShoppingListService.deleteList(selectedList.shoppingList.id);
-          setShoppingLists(prevState =>
-            prevState.filter(
-              list => list.shoppingList.id !== selectedList.shoppingList.id,
-            ),
+          const newList = shoppingLists.filter(
+            list => list.shoppingList.id !== selectedList.shoppingList.id,
           );
+          ShoppingListStore.update(s => {
+            return {
+              ...s,
+              shoppingLists: {...s.shoppingLists, shoppingLists: newList},
+            };
+          });
         } catch (e) {
           console.log(
             'ShoppingListComponent: Error occured when checking off whole lsit',
@@ -146,7 +135,17 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
               ? editedList
               : shoppingList,
           );
-          setShoppingLists(prevState => newShoppingLists);
+          ShoppingListStore.update(s => {
+            {
+              return {
+                ...s,
+                shoppingLists: {
+                  ...s.shoppingLists,
+                  shoppingLists: newShoppingLists,
+                },
+              };
+            }
+          });
         } catch (e) {
           console.log(
             'ShoppingListsComponent: Error occured when checking off list item',
@@ -161,19 +160,40 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedListItem.listId,
             selectedListItem.item.id,
           );
-          setShoppingLists(prevState =>
-            prevState.map(list => {
-              list.shoppingList.itemList = list.shoppingList.itemList.filter(
-                item => item.id !== selectedListItem.item.id,
-              );
-              return list;
-            }),
+
+          const lists = shoppingLists;
+          let foundList = shoppingLists.find(
+            list => list.shoppingList.id === selectedListItem.listId,
           );
+          if (foundList) {
+            const foundItems = foundList?.shoppingList.itemList.filter(
+              item => item.id !== selectedListItem.item.id,
+            );
+            foundList = {
+              ...foundList,
+              shoppingList: {...foundList?.shoppingList, itemList: foundItems},
+            };
+            const updated = shoppingLists.map(list =>
+              list.shoppingList.id === foundList?.shoppingList.id
+                ? foundList
+                : list,
+            );
+            ShoppingListStore.update(s => {
+              return {
+                ...s,
+                shoppingLists: {
+                  ...s.shoppingLists,
+                  shoppingLists: updated,
+                },
+              };
+            });
+          }
         } catch (e) {
           console.log(
             'ShoppingListsComponent: Error occured when deleting list item',
             e,
           );
+          e.stack;
         }
       }
     }
@@ -181,7 +201,9 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
 
   const handleWholeListPress = (list: IShoppingListResponse) => {
     console.log('list pressed');
-    props.onListRecieved(list);
+    ShoppingListStore.update(s => {
+      return {...s, activeShoppingList: list};
+    });
   };
 
   return (
@@ -227,14 +249,18 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             ) : (
               <></>
             )}
-            {selectedListItem && !selectedListItem.item.checked ? (
+            {selectedListItem &&
+            selectedListItem.item &&
+            !selectedListItem.item.checked ? (
               <Text variant="bodyMedium">
                 Check off {selectedListItem.item.name}?
               </Text>
             ) : (
               <></>
             )}
-            {selectedListItem && selectedListItem.item.checked ? (
+            {selectedListItem &&
+            selectedListItem.item &&
+            selectedListItem.item.checked ? (
               <Text variant="bodyMedium">
                 Delete {selectedListItem.item.name}?
               </Text>
@@ -243,8 +269,8 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             )}
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={dialogDismissed}>Cancel</Button>
-            <Button onPress={dialogConfirmed}>Done</Button>
+            <Button onPress={dialogDismissed}>No</Button>
+            <Button onPress={dialogConfirmed}>Yes</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

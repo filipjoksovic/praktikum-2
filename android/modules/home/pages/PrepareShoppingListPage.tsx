@@ -14,6 +14,7 @@ import AudioRecorderPlayer, {
 import RNFS from 'react-native-fs';
 import AudioService from '../../../services/AudioService';
 import {ShoppingListTranscriptPage} from './ShoppingListTranscriptPage';
+import {SnackBarStore} from '../../shared/state/SnackBarStore';
 
 export const PrepareShoppingListPage = () => {
   const audioRecorderPlayer = AudioService.getInstance().audioRecorderPlayer;
@@ -29,21 +30,31 @@ export const PrepareShoppingListPage = () => {
     setIsCreating(true);
     setShoppingItems([]);
   };
-  const createList = (
+  const createList = async (
     shoppingListName: string,
     shoppingListItems: string[],
   ) => {
-    ShoppingListService.createList({
-      name: shoppingListName,
-      items: shoppingListItems,
-    }).then(result => {
+    try {
+      await ShoppingListService.createList({
+        name: shoppingListName,
+        items: shoppingListItems,
+      });
       setIsCreating(true);
-      setShoppingItems(prevState => []);
-    });
+      setShoppingItems([]);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'Successfully created shopping list'};
+      });
+    } catch (err) {
+      console.error(`createList error`, err);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'Successfully created shopping list'};
+      });
+    }
   };
-  const transcriptReceived = transcript => {
+  const transcriptReceived = (transcript: any) => {
     setShoppingItems(prevState => transcript);
   };
+
   return (
     <ScrollView
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>

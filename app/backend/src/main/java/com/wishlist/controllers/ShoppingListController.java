@@ -1,10 +1,8 @@
 package com.wishlist.controllers;
 
-import com.wishlist.dto.ApiError;
-import com.wishlist.dto.ShoppingListDTO;
-import com.wishlist.dto.ShoppingListResponseDTO;
-import com.wishlist.dto.ShoppingListsResponseDTO;
+import com.wishlist.dto.*;
 import com.wishlist.exceptions.ListDoesNotExistException;
+import com.wishlist.exceptions.ShoppingListDoesNotExistException;
 import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.exceptions.UserHasNoShoppingListsException;
 import com.wishlist.models.ShoppingItem;
@@ -142,7 +140,7 @@ public class ShoppingListController {
     public ResponseEntity deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId) {
         try {
             log.info("deleteShoppingListItem for uid {} lid {} iid {}", userId, listId, itemId);
-            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.deleteItemFromShoppingList(userId, listId, itemId)), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.deleteItemFromShoppingList(userId, listId, itemId)), HttpStatus.OK);
         } catch (Exception e) {
             log.error("deleteShoppingListItem for uid {} lid {} iid {} FAIL", userId, listId, itemId);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -157,6 +155,18 @@ public class ShoppingListController {
         } catch (Exception e) {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/{listId}/items")
+    public ResponseEntity<?> addItems(@PathVariable String listId, @RequestBody AddListItemsDTO dto) {
+        try {
+            log.info("add itm to ls {}", listId);
+            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.addItemsToShoppingList(dto, listId)), HttpStatus.OK);
+        } catch (ShoppingListDoesNotExistException e) {
+            log.error("add itm to ls {} fail", listId);
+            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 }

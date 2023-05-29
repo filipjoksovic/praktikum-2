@@ -1,5 +1,6 @@
 package com.wishlist.services;
 
+import com.wishlist.dto.AddListItemsDTO;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
@@ -127,6 +128,17 @@ public class ShoppingListService implements IShoppingListService {
         currentItems.add(item);
         shoppingListRepository.save(shoppingList);
         return shoppingList;
+    }
+
+    @Override
+    public ShoppingList addItemsToShoppingList(AddListItemsDTO items, String shoppingListId) throws ShoppingListDoesNotExistException {
+        ShoppingList list = shoppingListRepository.findById(shoppingListId).orElseThrow(ShoppingListDoesNotExistException::new);
+        for (String item : items.getItems()) {
+            ShoppingItem saved = itemService.save(new ShoppingItem(item));
+            list.getItemList().add(saved);
+        }
+        shoppingListRepository.save(list);
+        return list;
     }
 
     @Override

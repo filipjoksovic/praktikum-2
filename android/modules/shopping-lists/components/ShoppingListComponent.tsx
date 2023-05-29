@@ -17,7 +17,7 @@ export interface IShoppingListComponentProps {
 
 export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
   const {list} = props;
-  console.log(list);
+  // console.log('list');
 
   const itemLongPressed = (item: IListItem) => {
     props.onItemLongPressed({listId: list.shoppingList.id, item: item});
@@ -40,6 +40,7 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
       {list.shoppingList.itemList.map(item => (
         <ShoppingListItemComponent
           item={item}
+          key={item.id}
           onLongPress={itemLongPressed}></ShoppingListItemComponent>
       ))}
     </List.Accordion>

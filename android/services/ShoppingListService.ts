@@ -14,6 +14,15 @@ export interface IPromptRequest {
 }
 
 export class ShoppingListService {
+  static async addListItems(id: string, summary: string) {
+    try {
+      return await makeRequest(`shoppingLists/${id}/items`, 'post', {
+        items: summary,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
   static async deleteList(listId: string) {
     try {
       return await makeRequest(`shoppingLists/${listId}`, 'delete');
@@ -23,7 +32,14 @@ export class ShoppingListService {
   }
   static async deleteListItem(listId: string, itemId: string) {
     try {
-      return await makeRequest(`shoppingLists/${listId}/${itemId}`, 'delete');
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        return;
+      }
+      return await makeRequest(
+        `shoppingLists/${user.id}/${listId}/${itemId}`,
+        'delete',
+      );
     } catch (err) {
       console.log('Error at deleteListItem', err);
     }

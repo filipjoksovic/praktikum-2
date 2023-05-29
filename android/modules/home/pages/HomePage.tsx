@@ -1,8 +1,9 @@
 import React from 'react';
-import {BottomNavigation, useTheme} from 'react-native-paper';
+import {BottomNavigation, Snackbar, useTheme} from 'react-native-paper';
 import {AuthService} from '../../../services/AuthService';
 import {useFocusEffect} from '@react-navigation/native';
 import {TabNavigation} from '../../../App';
+import {View} from 'react-native';
 
 export const HomePage = ({navigation}) => {
   const theme = useTheme();

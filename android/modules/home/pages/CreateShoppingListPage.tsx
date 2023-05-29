@@ -20,6 +20,10 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
     console.log(shoppingList);
     setShoppingList(prevState => prevState.filter(i => i !== item));
   };
+
+  const handleCreateConfirm = () => {
+    props.createList(shoppingListName, props.shoppingList);
+  };
   return (
     <View style={{height: '100%'}}>
       <Text variant={'headlineLarge'}>Success!</Text>
@@ -61,11 +65,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
         <Button onPress={props.cancelListCreate} mode={'outlined'}>
           Cancel
         </Button>
-        <Button
-          mode={'contained'}
-          onPress={() => {
-            props.createList(shoppingListName, props.shoppingList);
-          }}>
+        <Button mode={'contained'} onPress={handleCreateConfirm}>
           Confirm
         </Button>
       </View>

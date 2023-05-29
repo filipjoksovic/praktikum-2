@@ -12,14 +12,16 @@ import {
   BottomNavigation,
   DefaultTheme,
   PaperProvider,
+  Snackbar,
   useTheme,
 } from 'react-native-paper';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {SettingsPage} from './modules/settings/pages/SettingsPage';
 import {PrepareShoppingListPage} from './modules/home/pages/PrepareShoppingListPage';
 import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPage';
 import {FamilyPage} from './modules/family/pages/FamilyPage';
+import {SnackBarStore} from './modules/shared/state/SnackBarStore';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -118,6 +120,7 @@ const StackNavigation = () => {
 function App(): JSX.Element {
   const theme = useTheme();
   const isDarkMode = useColorScheme() === 'dark';
+  const SnackbarState = SnackBarStore.useState();
 
   const stylesheet = StyleSheet.create({
     container: {
@@ -137,6 +140,20 @@ function App(): JSX.Element {
           <StackNavigation />
         </NavigationContainer>
       </View>
+      <Snackbar
+        visible={SnackbarState.isOpen}
+        onDismiss={() => {}}
+        duration={3000}
+        action={{
+          label: 'Close',
+          onPress: () => {
+            SnackBarStore.update(s => {
+              return {...s, isOpen: false};
+            });
+          },
+        }}>
+        {SnackbarState.text}
+      </Snackbar>
     </PaperProvider>
   );
 }
