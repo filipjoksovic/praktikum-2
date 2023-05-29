@@ -15,7 +15,7 @@ export class AuthComponent {
   isLoginMode: boolean = true;
   modeButtonString: string = "Login";
   wantToRegister = "Don't have an account? Click here to register"
-  wantToLogin = "Already have an account? Click here to login"
+  wantToLogin = "Already have an account? Click here to login "
 
   form: FormGroup;
 
