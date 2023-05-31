@@ -1,4 +1,8 @@
-@import "abstracts/mixins";
-@import "abstracts/variables";
+@import 'abstracts/mixins';
+@import 'abstracts/variables';
 
-@import "pages/auth";
+@import 'base/main';
+
+@import 'pages/auth';
+
+@import 'components/main';

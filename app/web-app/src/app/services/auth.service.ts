@@ -7,26 +7,26 @@ import { environment } from '../../../environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private _currentUser$: BehaviorSubject<User>;
+  public currentUser$: Observable<User>;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
+    this._currentUser$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUser$ = this._currentUser$.asObservable();
   }
 
   public get currentUserValue(): User {
-    return this.currentUserSubject.value;
+    return this._currentUser$.value;
   }
 
   login(email: string, password: string) {
-    return this.http.post<User>(`${environment.apiBaseUrl}/auth/login`, { email, password })
-      .pipe(map(user => {
+    return this.http.post<User>(`${environment.apiBaseUrl}/auth/login`, { email, password }).pipe(
+      map((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
+        this._currentUser$.next(user);
         return user;
-      }));
+      }),
+    );
   }
 
   register(user: User) {
@@ -35,6 +35,6 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+    this._currentUser$.next(null);
   }
 }

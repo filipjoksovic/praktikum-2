@@ -14,32 +14,31 @@ export class VoiceService {
   startRecording(): void {
     if (!this.recording) {
       this.recording = true;
-      let mediaConstraints = {
+      const mediaConstraints = {
         video: false,
-        audio: true
+        audio: true,
       };
-      navigator.mediaDevices.getUserMedia(mediaConstraints)
-        .then(stream => {
-          this.stream = stream;
-          var options = {
-            mimeType: "audio/wav",
-            numberOfAudioChannels: 1,
-            sampleRate: 44100, //44100 - optimal for voice!
-          };
-          // Start actual recording
-          var StereoAudioRecorder = RecordRTC.StereoAudioRecorder;
-          this.record = new StereoAudioRecorder(stream, options);
-          this.record.record();
-        });
+      navigator.mediaDevices.getUserMedia(mediaConstraints).then((stream) => {
+        this.stream = stream;
+        const options = {
+          mimeType: 'audio/wav',
+          numberOfAudioChannels: 1,
+          sampleRate: 44100, //44100 - optimal for voice!
+        };
+        // Start actual recording
+        const StereoAudioRecorder = RecordRTC.StereoAudioRecorder;
+        this.record = new StereoAudioRecorder(stream, options);
+        this.record.record();
+      });
     }
   }
 
   stopRecording(): Observable<Blob> {
     if (this.recording) {
       this.recording = false;
-      this.record.stop(blob => {
+      this.record.stop((blob) => {
         // stop the audio tracks
-        this.stream.getTracks().forEach(track => track.stop());
+        this.stream.getTracks().forEach((track) => track.stop());
         // destroy the recorder object
         this.record = null;
         this.subject.next(blob);

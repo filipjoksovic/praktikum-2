@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { OnSameUrlNavigation, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth-service.service';
+import { AuthService } from '../../../../services/auth.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit{
   errorMessage: string;
   displayModeString: string;
-  isLoginMode: boolean = true;
-  modeButtonString: string = 'Login';
+  isLoginMode = true;
+  modeButtonString = 'Login';
   wantToRegister = "Don't have an account? Click here to register";
   wantToLogin = 'Already have an account? Click here to login ';
 
@@ -52,15 +52,14 @@ export class AuthComponent {
       return;
     }
 
-    this.authService.login(this.form.value.email, this.form.value.password)
-      .subscribe({
-        next: (data) => {
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          this.errorMessage = error.message;
-        }
-      });
+    this.authService.login(this.form.value.email, this.form.value.password).subscribe({
+      next: (data) => {
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.errorMessage = error.message;
+      },
+    });
   }
 
   signUp() {
@@ -68,14 +67,13 @@ export class AuthComponent {
       return;
     }
 
-    this.authService.register(this.form.value)
-      .subscribe({
-        next: (data) => {
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          this.errorMessage = error.message;
-        }
-      });
+    this.authService.register(this.form.value).subscribe({
+      next: (data) => {
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.errorMessage = error.message;
+      },
+    });
   }
-}  
+}

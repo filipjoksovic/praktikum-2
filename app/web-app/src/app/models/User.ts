@@ -10,10 +10,12 @@ export interface User {
   accessToken: string;
   refreshToken: string;
 }
+
 export enum UserRoleEnum {
   // Define your user role options here
 }
 
 export interface Role {
   // Define your role properties here
+  name: string;
 }

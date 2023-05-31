@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environment';
-import { AuthService } from './auth-service.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ApiService {
-  constructor(private http: HttpClient, private authService: AuthService) { }
+export class ShoppingListService {
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHttpOptions() {
     let httpOptions = {};
@@ -15,27 +15,31 @@ export class ApiService {
     if (currentUser && currentUser.accessToken) {
       httpOptions = {
         headers: new HttpHeaders({
-          Authorization: `Bearer ${currentUser.accessToken}`
-        })
+          Authorization: `Bearer ${currentUser.accessToken}`,
+        }),
       };
     }
     return httpOptions;
   }
 
   uploadRecording(data: Blob) {
-    console.log("Upload Recording Called");
+    console.log('Upload Recording Called');
     const formData: FormData = new FormData();
     formData.append('file', data, 'recording.wav');
     return this.http.post(`${environment.apiBaseUrl}/uploads/wav`, formData, this.getHttpOptions());
   }
 
   processText(data: string) {
-    console.log("Process Text Called");
+    console.log('Process Text Called');
     return this.http.post(`${environment.apiBaseUrl}/uploads/text`, { text: data }, this.getHttpOptions());
   }
 
   saveShoppingList(list: any) {
-    return this.http.post(`${environment.apiBaseUrl}/shoppingLists/user/${this.authService.currentUserValue.id}`, list, this.getHttpOptions());
+    return this.http.post(
+      `${environment.apiBaseUrl}/shoppingLists/user/${this.authService.currentUserValue.id}`,
+      list,
+      this.getHttpOptions(),
+    );
   }
 
   getAllShoppingLists() {

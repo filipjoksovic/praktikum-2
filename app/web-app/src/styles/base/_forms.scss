@@ -1,0 +1,21 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  & label {
+    margin-bottom: $spacer;
+  }
+}
+
+.form-control {
+  background-color: $form-control-bg;
+  border: 1px solid $form-control-stroke;
+  padding: $spacer * 2 $spacer;
+  border-radius: 20px;
+  border-radius: $border-radius-input;
+
+  &:focus {
+    // border: 2px solid $form-control-stroke;
+    outline: 2px solid $form-control-stroke;
+  }
+}

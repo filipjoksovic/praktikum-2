@@ -1,21 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthComponent } from './components/auth/auth.component';
-import { HomeComponent } from './components/home/home.component';
-import { AuthGuard } from './guards/auth.guard';
-import { inject } from '@angular/core';
-import { ShoppingListsComponent } from './components/shopping-lists/shopping-lists.component';
+import { AuthRoutingModule } from './modules/auth/auth-routing.module';
+import { HomeRoutingModule } from './modules/home/home-routing.module';
 
 const routes: Routes = [
-  { path: '', component: AuthComponent },
-  { path: 'auth', component: AuthComponent },
-  { path: 'home', component: HomeComponent, canActivate: [() => inject(AuthGuard).canActivate()] },
-  { path: 'lists', component: ShoppingListsComponent, canActivate: [() => inject(AuthGuard).canActivate()] },
-  { path: '**', component: AuthComponent },
+  {
+    path: '',
+    loadChildren: () => import('./modules/auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
+    path: 'user',
+    loadChildren: () => import('./modules/home/home.module').then((m) => m.HomeModule),
+  },
 ];
-
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes), HomeRoutingModule, AuthRoutingModule],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

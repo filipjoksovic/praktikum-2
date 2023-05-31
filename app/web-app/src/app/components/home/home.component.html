@@ -1,3 +1,5 @@
+<app-page-descriptor-pill></app-page-descriptor-pill>
+
 <div>
   <button (click)="startStopRecording()">{{ recording ? 'Stop Recording' : 'Start Recording' }}</button>
 </div>
@@ -10,12 +12,12 @@
 <div *ngIf="items.length > 0">
   <div>
     <label>List Name: </label>
-    <input [(ngModel)]="listName">
+    <input [(ngModel)]="listName" />
   </div>
 
   <ul>
     <li *ngFor="let item of items; let i = index">
-      <input [(ngModel)]="items[i]">
+      <input [(ngModel)]="items[i]" />
     </li>
   </ul>
   <button (click)="saveShoppingList()">Create List</button>
