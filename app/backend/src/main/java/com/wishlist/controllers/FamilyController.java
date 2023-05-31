@@ -2,6 +2,7 @@ package com.wishlist.controllers;
 
 import com.wishlist.dto.ApiError;
 import com.wishlist.dto.CreateFamilyRequestDTO;
+import com.wishlist.dto.FamilyMemberDTO;
 import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/families")
@@ -40,6 +42,18 @@ public class FamilyController {
         } catch (FamilyDoesNotExistException e) {
             logger.info("rtn fml {} FAIL", id);
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}/members")
+    public ResponseEntity<?> getFamilyMembers(@PathVariable String id) {
+        logger.info("get fml mbr for {}",id);
+        try {
+            logger.info("get fml mbr for {} success",id);
+            return new ResponseEntity<>(familyService.getFamilyMembers(id).stream().map(FamilyMemberDTO::to).collect(Collectors.toList()), HttpStatus.OK);
+        } catch (FamilyDoesNotExistException e) {
+            logger.info("get fml mbr for {} fail",id);
+            return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

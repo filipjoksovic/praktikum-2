@@ -82,6 +82,11 @@ public class FamilyService implements IFamilyService {
     }
 
     @Override
+    public List<User> getFamilyMembers(String familyId) throws FamilyDoesNotExistException {
+        return userRepository.findByFamilyId(familyId);
+    }
+
+    @Override
     public Family findByInviteCode(String inviteCode) {
         return familyRepository.findByInviteCode(inviteCode);
     }

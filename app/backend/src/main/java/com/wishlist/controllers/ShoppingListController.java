@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +87,14 @@ public class ShoppingListController {
     public ResponseEntity getForFamily(@PathVariable String familyId) {
         log.info("Get shopping lists for family " + familyId);
         try {
-            return new ResponseEntity(shoppingListService.getShoppingListForFamily(familyId), HttpStatus.OK);
+            List<ShoppingList> familyLists = shoppingListService.getShoppingListForFamily(familyId);
+            ShoppingListResponseDTO dto = new ShoppingListResponseDTO();
+            if (familyLists.size() > 0) {
+                dto = new ShoppingListResponseDTO(familyLists.get(0));
+            } else {
+                dto = new ShoppingListResponseDTO(new ShoppingList());
+            }
+            return new ResponseEntity(dto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
