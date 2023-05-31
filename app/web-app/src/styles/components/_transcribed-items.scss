@@ -1,0 +1,28 @@
+.transcribed-item {
+  display: flex;
+  gap: $spacer * 4;
+  margin-block: $spacer;
+
+  &__action {
+    background-color: #AA4D4D;
+    color: $light-gray;
+  }
+
+  &__input {
+    background-color: $white;
+    padding: $spacer * 4;
+    border-radius: 30px;
+  }
+}
+
+.transcribed-list {
+  background-color: $white;
+  padding: $spacer * 4;
+  border-radius: 20px;
+  margin-top: 2rem;
+  box-shadow: $container-box-shadow;
+}
+
+.transcribed-list-container {
+  margin-block: $spacer * 4;
+}

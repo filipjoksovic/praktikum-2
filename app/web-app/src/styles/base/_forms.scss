@@ -13,9 +13,24 @@
   padding: $spacer * 2 $spacer;
   border-radius: 20px;
   border-radius: $border-radius-input;
+  color: $font-light;
+
+  &__border-dark {
+    border: 1px solid #e2e2e2;
+  }
+
+  &__block {
+    width: 100%;
+    display: block;
+  }
 
   &:focus {
     // border: 2px solid $form-control-stroke;
     outline: 2px solid $form-control-stroke;
   }
+}
+
+textarea.form-control {
+  padding: $spacer * 4 $spacer * 4;
+  box-shadow: $container-box-shadow;
 }

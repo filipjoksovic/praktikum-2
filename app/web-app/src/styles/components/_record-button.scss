@@ -1,0 +1,33 @@
+.record-button {
+  border-radius: 100000rem;
+  aspect-ratio: 1/1;
+  border: none;
+  outline: none;
+  box-shadow: inset 0px 0px 30px rgba(0, 0, 0, 0.25);
+  transform: scale(100%);
+  transition: 500ms cubic-bezier(.57,.21,.69,1.25) transform;
+  max-width: 300px;
+  &:hover{
+    transform: scale(110%);
+    & *{
+      transform: scale(110%);
+
+    }
+  }
+
+  &__large {
+    background-color: #AA4D4D;
+  }
+
+  &__medium {
+    background-color: #C19797;
+  }
+
+  &__small {
+    background-color: #E9E9E9;
+  }
+  &__center{
+    margin-inline: auto;
+  }
+
+}

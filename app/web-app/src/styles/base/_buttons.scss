@@ -5,10 +5,19 @@ button,
   outline: none;
   border: 1px solid $form-control-stroke;
   background-color: $form-control-bg;
+  cursor: pointer;
 
   &__primary {
     background-color: $primary-5;
     color: $primary-9;
     border: 1px solid $primary-6;
+
+    &__outline {
+      border: 2px solid $primary-7;
+      color: $primary-7;
+      background-color: transparent;
+    }
   }
+
+
 }

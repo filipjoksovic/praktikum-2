@@ -17,6 +17,7 @@ th,
 button,
 input,
 label,
+textarea,
 a {
   color: $font-light;
 }
@@ -26,7 +27,7 @@ span,
 label,
 a,
 button,
-input {
+input, textarea {
   font-size: 16pt;
 }
 

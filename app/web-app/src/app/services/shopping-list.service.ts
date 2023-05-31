@@ -2,12 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environment';
 import { AuthService } from './auth.service';
+import { map } from 'rxjs/operators';
+import { tap } from 'rxjs';
+import { TranscriptStoreService } from './stores/transcript-store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShoppingListService {
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private transcriptStore: TranscriptStoreService,
+  ) {}
 
   private getHttpOptions() {
     let httpOptions = {};
@@ -31,7 +38,10 @@ export class ShoppingListService {
 
   processText(data: string) {
     console.log('Process Text Called');
-    return this.http.post(`${environment.apiBaseUrl}/uploads/text`, { text: data }, this.getHttpOptions());
+    return this.http.post(`${environment.apiBaseUrl}/uploads/text`, { text: data }, this.getHttpOptions()).pipe(
+      map((response: { summary: string[] }) => response.summary),
+      tap((items) => this.transcriptStore.setTranscribedList(items)),
+    );
   }
 
   saveShoppingList(list: any) {

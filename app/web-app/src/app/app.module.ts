@@ -11,6 +11,7 @@ import {ShoppingListService} from './services/shopping-list.service';
 import {VoiceService} from './services/voice.service';
 import {ShoppingListsComponent} from './components/shopping-lists/shopping-lists.component';
 import {PageDescriptorPillComponent} from './components/page-descriptor-pill/page-descriptor-pill.component';
+import {HomeModule} from "./modules/home/home.module";
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, ShoppingListsComponent],
@@ -21,11 +22,11 @@ import {PageDescriptorPillComponent} from './components/page-descriptor-pill/pag
     HttpClientModule,
     FormsModule,
     PageDescriptorPillComponent,
-    NavbarComponent
+    NavbarComponent,
+    HomeModule,
   ],
   providers: [ShoppingListService, VoiceService],
   bootstrap: [AppComponent],
-  exports: []
+  exports: [],
 })
-export class AppModule {
-}
+export class AppModule {}

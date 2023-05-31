@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from 'src/app/components/home/home.component';
 import {AuthGuard} from 'src/app/guards/auth.guard';
 import {HomeLayoutComponent} from './pages/home-layout/home-layout.component';
-import {BrowserModule} from '@angular/platform-browser';
 
 const routes: Routes = [
   {
