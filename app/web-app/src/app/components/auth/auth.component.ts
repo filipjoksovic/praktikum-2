@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { OnSameUrlNavigation, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth-service.service';
 
 
 @Component({
@@ -19,7 +20,7 @@ export class AuthComponent {
 
   form: FormGroup;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.form = new FormGroup({
       'email': new FormControl('', [Validators.required, Validators.email]),
       'password': new FormControl('', Validators.required)
@@ -52,21 +53,34 @@ export class AuthComponent {
   }
 
   login() {
-    return
-    // validate form
-    // call the function from the service
-    // navigate router if user exists
-    // if not display the message from api error
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.authService.login(this.form.value.email, this.form.value.password)
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          this.errorMessage = error.message;
+        }
+      });
   }
 
   signUp() {
-    return
-    // validate form
-    // call the function from the service
-    // navigate router to home page
-    // if not display the message from api error
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.authService.register(this.form.value)
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          this.errorMessage = error.message;
+        }
+      });
   }
-
-
-
 }  

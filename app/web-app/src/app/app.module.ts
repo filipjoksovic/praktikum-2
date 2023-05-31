@@ -5,21 +5,30 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { HomeComponent } from './components/home/home.component';
+import { ApiService } from './services/api.service';
+import { VoiceService } from './services/voice.service';
+import { ShoppingListsComponent } from './components/shopping-lists/shopping-lists.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    NavbarComponent
+    HomeComponent,
+    NavbarComponent,
+    ShoppingListsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [ApiService, VoiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

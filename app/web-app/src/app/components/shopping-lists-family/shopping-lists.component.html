@@ -1,0 +1,14 @@
+<table>
+    <tr *ngFor="let list of shoppingLists">
+        <td>{{ list.name }}</td>
+        <td>
+            <div *ngFor="let item of list.itemList; let i = index">
+                <input [value]="item.name" (input)="item.name=$event.target.value">
+            </div>
+        </td>
+        <td>
+            <button (click)="updateShoppingList(list)">Update</button>
+            <button (click)="deleteShoppingList(list.id)">Delete</button>
+        </td>
+    </tr>
+</table>
