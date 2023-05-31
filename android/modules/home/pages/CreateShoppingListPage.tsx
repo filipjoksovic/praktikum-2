@@ -131,7 +131,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
             onPress={addNewItem}></IconButton>
         </View>
       )}
-      <ScrollView>
+      <ScrollView style={{margin: -12}} contentContainerStyle={{padding: 12}}>
         {shoppingList.map(item => {
           return (
             <>

@@ -7,6 +7,26 @@ import React, {useState} from 'react';
 import {IFamily} from '../../../models/IFamily';
 import {LocalStorageService} from '../../../services/LocalStorageService';
 import {FamilyDetailsComponent} from '../components/FamilyDetailsComponent';
+import {createStackNavigator} from '@react-navigation/stack';
+import {EditFamily} from './EditFamily';
+import {FamilyJoinRequests} from './FamilyJoinRequests';
+import {FamilyMembers} from './FamilyMembers';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {FamilyDetails} from './FamilyDetails';
+import {FamilyList} from './FamilyList';
+
+const TopTab = createMaterialTopTabNavigator();
+
+function TopBarNavigation() {
+  return (
+    <TopTab.Navigator>
+      <TopTab.Screen name="Requests" component={FamilyJoinRequests} />
+      <TopTab.Screen name="EditFamily" component={EditFamily} />
+      <TopTab.Screen name="Members" component={FamilyMembers} />
+    </TopTab.Navigator>
+  );
+}
 
 export const FamilyPage = () => {
   const theme = useTheme();
@@ -48,74 +68,41 @@ export const FamilyPage = () => {
       console.log('createFamily FamilyPage failed', err);
     }
   };
+  const Stack = createNativeStackNavigator();
 
   return (
-    <View
-      style={{
-        ...theme,
-        ...LAYOUT.container,
-        backgroundColor: theme.colors.background,
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: theme.colors.tertiary,
+        },
+        headerShadowVisible: false,
       }}>
-      {!family && (
-        <Surface
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            borderRadius: 20,
-          }}>
-          <Text variant={'headlineLarge'}>Family</Text>
-          <Text variant={'bodyMedium'}>
-            Here you can see details about your family.
-          </Text>
-          <Text variant={'bodyMedium'}>
-            If you're not in one already, you can join it using a code provided
-            to you by a member
-          </Text>
-        </Surface>
-      )}
-
-      {family && (
-        <FamilyDetailsComponent family={family}></FamilyDetailsComponent>
-      )}
-      {!family && (
-        <>
-          <View style={{marginTop: 20}}>
-            <Surface
-              style={{
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 20,
-              }}>
-              <Text>Create a family</Text>
-              <TextInput
-                label={'Name'}
-                value={name}
-                style={{marginTop: 10}}
-                onChangeText={setName}
-                mode="outlined"></TextInput>
-              <TextInput
-                label={'Joining code'}
-                mode="outlined"
-                value={inviteCode}
-                onChangeText={setInviteCode}
-                style={{marginTop: 10}}></TextInput>
-
-              <Text
-                variant={'bodySmall'}
-                style={{textAlign: 'center', marginTop: 10}}>
-                By creating this family, other users will be able to join in and
-                participate in creating family shopping lists.
-              </Text>
-              <Button
-                style={{marginTop: 20}}
-                mode="contained"
-                onPress={createFamily}>
-                Create family
-              </Button>
-            </Surface>
-          </View>
-        </>
-      )}
-    </View>
+      <Stack.Screen
+        name="Details"
+        component={FamilyDetails}
+        options={{headerShown: false, title: 'Family details'}}
+      />
+      <Stack.Screen
+        name="Edit"
+        component={EditFamily}
+        options={{title: 'Edit family'}}
+      />
+      <Stack.Screen
+        name="JoinRequests"
+        component={FamilyJoinRequests}
+        options={{title: 'Join requests'}}
+      />
+      <Stack.Screen
+        name="Members"
+        component={FamilyMembers}
+        options={{title: 'Family Members'}}
+      />
+      <Stack.Screen
+        name="FamilyList"
+        component={FamilyList}
+        options={{title: 'Shopping list'}}
+      />
+    </Stack.Navigator>
   );
 };

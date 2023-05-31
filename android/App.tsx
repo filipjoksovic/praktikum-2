@@ -141,7 +141,11 @@ function App(): JSX.Element {
   };
   return (
     <PaperProvider theme={theme}>
-      <View style={stylesheet.container}>
+      <View
+        style={{
+          ...stylesheet.container,
+          backgroundColor: theme.colors.background,
+        }}>
         <StatusBar
           barStyle={isDarkMode ? 'dark-content' : 'light-content'}
           backgroundColor={theme.colors.tertiary}

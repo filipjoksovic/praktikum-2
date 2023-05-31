@@ -5,6 +5,20 @@ import {IFamily} from '../models/IFamily';
 import {makeRequest} from '../modules/shared/helpers';
 
 export class FamilyService {
+  static async getFamilyMembers() {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('No user present');
+      }
+      if (!user.familyId) {
+        throw new Error('User has no family');
+      }
+      return await makeRequest(`families/${user.familyId}/members`, 'get');
+    } catch (e) {
+      console.error('getFamilyMembers FamilyService fail', e);
+    }
+  }
   public static async createFamily(familyCreationRequest: IFamily) {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
