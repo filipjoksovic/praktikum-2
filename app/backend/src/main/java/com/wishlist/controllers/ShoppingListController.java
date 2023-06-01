@@ -36,6 +36,7 @@ public class ShoppingListController {
         return shoppingListService.getAll();
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<ShoppingList> update(@PathVariable String id, @RequestBody ShoppingList updatedShoppingList) {
         Optional<ShoppingList> shoppingListOptional = Optional.ofNullable(shoppingListService.getShoppingList(id));

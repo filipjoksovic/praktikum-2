@@ -1,0 +1,43 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  & label {
+    margin-bottom: $spacer;
+  }
+}
+
+.form-control {
+  background-color: $form-control-bg;
+  border: 1px solid $form-control-stroke;
+  padding: $spacer * 2 $spacer;
+  border-radius: 20px;
+  border-radius: $border-radius-input;
+  color: $font-light;
+
+  &__border-dark {
+    border: 1px solid #e2e2e2;
+  }
+
+  &__block {
+    width: 100%;
+    display: block;
+  }
+
+  &:focus {
+    // border: 2px solid $form-control-stroke;
+    outline: 2px solid $form-control-stroke;
+  }
+
+  &__checkbox {
+    background: $primary-5;
+    width: 32px;
+    height: 32px;
+    accent-color: $primary-5;
+  }
+}
+
+textarea.form-control {
+  padding: $spacer * 4 $spacer * 4;
+  box-shadow: $container-box-shadow;
+}

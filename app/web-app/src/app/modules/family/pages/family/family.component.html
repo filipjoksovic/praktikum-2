@@ -1,0 +1,29 @@
+<app-page-descriptor-pill title="Family"
+                          description="Manage family invites, details, and see the shopping list. If you are not a part of a family yet, you can join or create a new one."></app-page-descriptor-pill>
+
+
+<div class="d-flex w-100 flex-grow-1 align-center justify-center gap-8 flex-wrap">
+
+  <ng-container *ngIf="(family$ | async ) === null">
+
+    <a class="action-square" [routerLink]="['/family/create']">
+      <fa-icon [icon]="faPeopleGroup" size="3x"></fa-icon>
+      <h3>Create or join family</h3>
+    </a>
+
+  </ng-container>
+
+  <ng-container *ngIf="family$ | async as family">
+
+    <a class="action-square" [routerLink]="['/family/data']">
+      <fa-icon [icon]="faDatabase" size="3x"></fa-icon>
+      <h3>Family data</h3>
+    </a>
+
+    <a class="action-square" [routerLink]="['/family/list']">
+      <fa-icon [icon]="faCartShopping" size="3x"></fa-icon>
+      <h3>Shopping list</h3>
+    </a>
+
+  </ng-container>
+</div>

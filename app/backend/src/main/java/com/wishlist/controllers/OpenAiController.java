@@ -25,7 +25,7 @@ public class OpenAiController {
         try {
             log.info("Processing text request");
             String response = "{\"summary\":" + openAiService.processText(textRequest.getText()) + "}";
-            log.info("Request processed, sending back response");
+            log.info("Request processed, sending back response: " + response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error occurred when processing request {}. Returning HTTP 500", e.getMessage());

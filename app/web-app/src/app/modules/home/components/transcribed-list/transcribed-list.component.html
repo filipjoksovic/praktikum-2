@@ -1,0 +1,30 @@
+<div class="d-flex flex-column gap-4 flex-1 h-100">
+  <ng-container *ngIf="items$ | async as items">
+    <ng-container *ngIf="items.length > 0">
+      <div class="items-section flex-1" [ngClass]="{ 'transcribed-list': (items$ | async).length > 0 }">
+        <div class="form-group">
+          <label>List Name: </label>
+          <input class="form-control" [(ngModel)]="listName" />
+        </div>
+
+        <div class="transcribed-list-container">
+          <ng-container *ngFor="let item of items; let i = index">
+            <app-transcribed-list-item [item]="item"></app-transcribed-list-item>
+          </ng-container>
+        </div>
+
+
+      </div>
+
+      <div class="container">
+        <app-add-list-item></app-add-list-item>
+      </div>
+      <button (click)="saveShoppingList()" class="btn btn__primary w-fit ml-auto d-block">Create List</button>
+    </ng-container>
+    <ng-container *ngIf="items.length === 0">
+      <div class="d-flex flex-column align-center justify-center flex-1 h-100">
+        <p>When processed, your list items will appear here</p>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

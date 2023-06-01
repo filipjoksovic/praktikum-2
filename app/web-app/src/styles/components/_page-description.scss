@@ -1,0 +1,22 @@
+.descriptor {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 2;
+
+  &__title {
+    background-color: $white;
+    width: fit-content;
+    padding: $spacer * 2 $spacer * 6;
+    border-radius: 20px;
+    border: 1px solid #e2e2e2;
+  }
+  &__description {
+    background-color: $white;
+    width: fit-content;
+    padding: $spacer * 2 $spacer * 6;
+    border-radius: 20px;
+    border: 1px solid #e2e2e2;
+    max-width: 30vw;
+    line-height: 1.6;
+  }
+}

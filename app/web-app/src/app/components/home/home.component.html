@@ -1,0 +1,29 @@
+<app-page-descriptor-pill [title]="descriptorTitle" [description]="descriptorDescription"></app-page-descriptor-pill>
+
+<div class="d-flex flex-column">
+  <ng-container *ngIf="(transcript$ | async) === ''">
+    <button class="record-button record-button__large record-button__center" (click)="startStopRecording()">
+      <button class="record-button record-button__medium">
+        <button class="record-button record-button__small">
+        </button>
+      </button>
+    </button>
+  </ng-container>
+
+  <div class="d-flex flex-row gap-4 ">
+    <ng-container *ngIf="transcript$ | async as transcript">
+      <div class="transcript-section flex-1">
+        <textarea class="form-control form-control__border-dark" rows="30" cols="60" [value]="transcript"></textarea>
+
+        <div class="transcript-section__actions">
+          <button (click)="processTranscript()" class="btn btn__primary btn__primary__outline ">Cancel</button>
+          <button (click)="processTranscript()" class="btn btn__primary">Process</button>
+        </div>
+      </div>
+
+      <app-transcribed-list></app-transcribed-list>
+    </ng-container>
+
+  </div>
+</div>
+
