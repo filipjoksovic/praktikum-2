@@ -1,9 +1,11 @@
-<div class="transcribed-list add-list-item d-flex w-100 justify-between align-end transcribed-item">
+<div class="transcribed-list add-list-item d-flex w-100 align-center justify-between transcribed-item no-shadow">
   <div class="d-flex flex-column flex-1">
     <label>Custom list item</label>
     <input type="text" class="form-control form-control__block bg-white border__dark transcribed-item__input"
            [(ngModel)]="item">
   </div>
-  <button class="btn btn__success round" (click)="addItem()">+</button>
+  <button class="btn btn__success round w-64 h-64" (click)="addItem()">
+    <fa-icon [icon]="faPlus"></fa-icon>
+  </button>
 
 </div>

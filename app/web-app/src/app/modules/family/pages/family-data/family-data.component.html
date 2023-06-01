@@ -1,0 +1,48 @@
+<app-page-descriptor-pill title="Family Data"
+                          description="Here you can see and edit the name of your families, have an overview of the members, and kick them out if necessary"></app-page-descriptor-pill>
+
+<ng-container *ngIf="family$ | async">
+  <div class="d-flex flex-grow-1 gap-4 mt-4">
+
+    <div class="container flex-1">
+      <h3>Family data</h3>
+      <form [formGroup]="familyForm">
+        <div class="d-flex gap-4 mt-2 flex-column">
+          <div class="form-group">
+            <label for="familyName">Family name</label>
+            <input class="form-control" id="familyName" formControlName="familyName">
+          </div>
+
+          <div class="d-flex align-end gap-4">
+            <div class="form-group flex-1">
+              <label for="inviteCode">Invite code</label>
+              <input class="form-control" id="inviteCode" formControlName="inviteCode">
+            </div>
+            <button class="btn round w-64 h-64" (click)="generateCode()">
+              <fa-icon [icon]="faDice"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="flex-1 mt-8">
+        <form [formGroup]="emailForm">
+          <h3>Invite members</h3>
+          <p class="mt-2 mb-1">Invited members will get an invite link requesting them to join</p>
+          <div class="d-flex gap-4 ">
+            <div class="form-group flex-1">
+              <input class="form-control" placeholder="Email" formControlName="emailToAdd"
+                     [ngClass]="{'border-red':emailForm.invalid && !emailForm.pristine}">
+            </div>
+            <button class="btn btn__primary round w-64 h-64" (click)="addEmail()">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+          </div>
+          <p class="text-center">{{emailsToAdd.join(",")}}</p>
+        </form>
+      </div>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-8">Create</button>
+    </div>
+    <div class="container flex-1"></div>
+  </div>
+</ng-container>

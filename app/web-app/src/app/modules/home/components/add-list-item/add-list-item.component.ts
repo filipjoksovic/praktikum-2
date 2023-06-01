@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TranscriptStoreService } from '../../../../services/stores/transcript-store.service';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-add-list-item',
@@ -15,4 +16,6 @@ export class AddListItemComponent {
     console.log('adding', this.item);
     this.transcriptStore.addToList(this.item);
   }
+
+  protected readonly faPlus = faPlus;
 }

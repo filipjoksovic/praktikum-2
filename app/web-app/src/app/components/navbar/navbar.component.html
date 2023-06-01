@@ -1,23 +1,35 @@
-<div class = "navbar">
+<div class="navbar">
   <div class="navbar-section navbar-section__top">
     <div class="navbar-link">
-      <a href="/"></a>
+      <a routerLink="/">
+        <img src="assets/images/Logo.svg" class="w-64 h-64">
+      </a>
     </div>
   </div>
   <div class="navbar-section navbar-section">
     <div class="navbar-link">
-      <a href="/"></a>
+      <a href="/">
+        <fa-icon [icon]="faHouse" size="lg" style="color: #ffffff !important;"></fa-icon>
+      </a>
     </div>
     <div class="navbar-link">
-      <a href="/"></a>
+      <a href="/family">
+        <fa-icon [icon]="faUsers" class="nav-icon" style="color: #ffffff !important;"></fa-icon>
+
+      </a>
     </div>
     <div class="navbar-link">
-      <a href="/"></a>
+      <a href="/lists">
+        <fa-icon [icon]="faListCheck" size="lg" style="color: #ffffff !important;"></fa-icon>
+      </a>
     </div>
   </div>
   <div class="navbar-section navbar-section__bottom">
     <div class="navbar-link">
-      <a href="/"></a>
+      <a href="/settings">
+        <fa-icon [icon]="faCog" size="lg" style="color: #ffffff !important;"></fa-icon>
+
+      </a>
     </div>
   </div>
 

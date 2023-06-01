@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-transcribed-list-item',
@@ -8,4 +9,5 @@ import { Component, Input } from '@angular/core';
 export class TranscribedListItemComponent {
   @Input()
   item: string;
+  protected readonly faTimes = faTimes;
 }

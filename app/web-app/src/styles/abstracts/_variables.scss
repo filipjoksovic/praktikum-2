@@ -1,31 +1,3 @@
-$border-radius: 2rem;
-$label-font-family: Inter;
-$label-font-style: normal;
-$label-font-weight: 400;
-$lable-font-size: 20px;
-$border-radius-input: 10px;
-
-$light-gray: #f2f2f2;
-$white: #ffffff;
-$primary-5: #ffc49b;
-$primary-6: #e3a67c;
-$primary-7: #C7885D;
-$primary-9: #8e4d1f;
-$form-control-bg: #fafafa;
-$form-control-stroke: #ededed;
-$black: #000000;
-$background: #f5f5f5;
-
-$font-light: #505050e6;
-
-$container-box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-
-$bg: #f2f2f2;
-
-$spacer: 0.5rem;
-
-
-
 $black: #000000;
 $white: #ffffff;
 $gray-100: #f7fafc;
@@ -118,4 +90,31 @@ $pink-600: #d53f8c;
 $pink-700: #b83280;
 $pink-800: #97266d;
 $pink-900: #702459;
+
+
+$border-radius: 2rem;
+$label-font-family: Inter;
+$label-font-style: normal;
+$label-font-weight: 400;
+$lable-font-size: 20px;
+$border-radius-input: 10px;
+
+$light-gray: #ffffff;
+$white: #ffffff;
+$primary-5: $green-500;
+$primary-6: $green-600;
+$primary-7: $green-700;
+$primary-9: $green-900;
+$form-control-bg: #fafafa;
+$form-control-stroke: #ededed;
+$black: #000000;
+$background: #f5f5f5;
+
+$font-light: #505050e6;
+
+$container-box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+
+$bg: #f2f2f2;
+
+$spacer: 0.5rem;
 

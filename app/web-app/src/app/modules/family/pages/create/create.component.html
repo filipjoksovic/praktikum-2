@@ -1,0 +1,61 @@
+<app-page-descriptor-pill title="Family"
+                          description="Create or join a family"></app-page-descriptor-pill>
+
+<div class="d-flex gap-4 mt-8">
+
+  <div class="flex-1 mt-4">
+    <div class="container">
+      <h3>Family data</h3>
+      <div class="d-flex gap-4 mt-2 flex-column">
+        <div class="form-group">
+          <label for="familyName">Family name</label>
+          <input class="form-control" id="familyName">
+        </div>
+
+        <div class="d-flex align-end gap-4">
+          <div class="form-group flex-1">
+            <label for="inviteCode">Invite code</label>
+            <input class="form-control" id="inviteCode" [(ngModel)]="code">
+          </div>
+          <button class="btn round w-64 h-64" (click)="generateCode()">
+            <fa-icon [icon]="faDice"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 mt-8">
+        <form [formGroup]="emailForm">
+          <h3>Invite members</h3>
+          <p class="mt-2 mb-1">Invited members will get an invite link requesting them to join</p>
+          <div class="d-flex gap-4 ">
+            <div class="form-group flex-1">
+              <input class="form-control" placeholder="Email" formControlName="emailToAdd"
+                     [ngClass]="{'border-red':emailForm.invalid}">
+            </div>
+            <button class="btn btn__primary round w-64 h-64" (click)="addEmail()">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+          </div>
+          <p class="text-center">{{emailsToAdd.join(",")}}</p>
+        </form>
+      </div>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-8">Create</button>
+    </div>
+  </div>
+
+
+  <div class="flex-1 mt-4">
+    <div class="container">
+      <h3 class="">Join</h3>
+      <p class="mt-2">If there already is a family you'd like to join, just input the code here</p>
+
+      <form [formGroup]="joinFamilyForm" class="d-flex flex-1 align-center flex-column">
+        <div class="form-group mt-8 flex-1">
+          <input formControlname="familyCode" class="form-control" placeholder="Code">
+        </div>
+        <button class="btn btn__primary mt-8 w-fit">Send join request</button>
+      </form>
+    </div>
+  </div>
+
+</div>

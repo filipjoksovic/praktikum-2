@@ -28,6 +28,13 @@
     // border: 2px solid $form-control-stroke;
     outline: 2px solid $form-control-stroke;
   }
+
+  &__checkbox {
+    background: $primary-5;
+    width: 32px;
+    height: 32px;
+    accent-color: $primary-5;
+  }
 }
 
 textarea.form-control {

@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
   height: 100%;
   width: 5vw;
   max-width: 300px;
@@ -11,16 +11,24 @@
   gap: $spacer * 4;
   padding-block: $spacer * 2;
 
-  & .navbar-section{
+  & .navbar-section {
     display: flex;
     flex-direction: column;
     gap: $spacer * 2
   }
 
-  & .navbar-link{
+  & .navbar-link {
     width: 64px;
     height: 64px;
     background-color: $primary-7;
     border-radius: 1000rem;
+    color: $font-light !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .nav-icon {
+      color: $font-light !important;
+    }
   }
 }

@@ -1,0 +1,21 @@
+.action-square {
+  background: $white;
+  padding: $spacer * 4;
+  border-radius: 20px;
+  box-shadow: $container-box-shadow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: $spacer * 50;
+  height: $spacer * 50;
+  text-decoration: none;
+  gap: $spacer * 4;
+  transform: scale(100%);
+  transition: 250ms ease-in-out transform;
+  text-align: center;
+
+  &:hover {
+    transform: scale(110%);
+  }
+}
