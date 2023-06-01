@@ -11,6 +11,7 @@ import { ShoppingListService } from './services/shopping-list.service';
 import { VoiceService } from './services/voice.service';
 import { PageDescriptorPillComponent } from './components/page-descriptor-pill/page-descriptor-pill.component';
 import { HomeModule } from './modules/home/home.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent],
@@ -23,6 +24,7 @@ import { HomeModule } from './modules/home/home.module';
     PageDescriptorPillComponent,
     NavbarComponent,
     HomeModule,
+    FontAwesomeModule,
   ],
   providers: [ShoppingListService, VoiceService],
   bootstrap: [AppComponent],

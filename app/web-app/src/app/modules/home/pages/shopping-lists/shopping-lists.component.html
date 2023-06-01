@@ -3,20 +3,27 @@
 
 <div class="d-flex align-center gap-4 mt-6 flex-grow-1">
   <div class="shopping-list-selector d-flex flex-column gap-4 flex-1">
-    <div class="shopping-list-search container  gap-4 d-flex mt-2">
+    <div class="shopping-list-search container  gap-4 d-flex mt-2 align-end justify-between">
 
-      <div class="form-group">
+      <div class="form-group flex-grow-1">
         <label>Search</label>
         <input class="form-control">
       </div>
-      <button class="btn btn__success"></button>
+      <button class="btn btn__success round w-64 h-64">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </button>
 
     </div>
 
     <div class="shopping-lists-container">
       <ng-container *ngFor="let list of shoppingLists$ | async">
         <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)">
-          <span>{{ list.name }}</span>
+          <div class="d-flex justify-between align-center">
+            <span>{{ list.name }}</span>
+            <ng-container *ngIf="isSelectedList(selectedList$ | async, list.id)">
+              <fa-icon [icon]="faEye" size="lg"></fa-icon>
+            </ng-container>
+          </div>
         </div>
       </ng-container>
 
@@ -32,7 +39,9 @@
 
           <div class="list-name-container">
             <h1>{{selectedList.name}}</h1>
-            <button class="btn round"></button>
+            <button class="btn round">
+              <fa-icon [icon]="faPen" size="lg"></fa-icon>
+            </button>
           </div>
           <div class="shopping-list-container">
 
