@@ -22,4 +22,4 @@ COPY wait-for-it.sh /usr/src/app/wait-for-it.sh
 RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Run the app
-ENTRYPOINT ["/usr/src/app/wait-for-it.sh", "mongodb 27017", "--", "node", "/usr/src/app/dist/main.js"]
+ENTRYPOINT ["/usr/src/app/wait-for-it.sh", "mongodb 27018", "--", "node", "/usr/src/app/dist/main.js"]

@@ -16,4 +16,4 @@ RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
-ENTRYPOINT ["/app/wait-for-it.sh", "mongodb 27017", "--", "mvn", "-f", "/app", "spring-boot:run"]
+ENTRYPOINT ["/app/wait-for-it.sh", "mongodb 27018", "--", "mvn", "-f", "/app", "spring-boot:run"]
