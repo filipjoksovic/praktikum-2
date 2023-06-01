@@ -3,3 +3,6 @@
 android/Environment.ts
 android/environment.ts
 app/backend/src/main/resources/application.properties
+
+**/Dockerfile
+**/docker-compose.yaml
