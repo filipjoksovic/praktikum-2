@@ -20,9 +20,28 @@ button,
   }
 
   &__success {
-    background-color: $green-500;
+    background-color: $green-300;
     color: $green-900;
   }
 
+  &__toggle {
+    background-color: transparent;
+    border-width: 2px;
+    transition: 250ms ease-in-out background-color;
+    border-radius: 30px;
+
+    &__active {
+      background-color: $green-100;
+    }
+
+    &:hover {
+      background-color: $green-100;
+    }
+  }
+
+  &__danger {
+    background-color: $red-500;
+    color: white;
+  }
 
 }

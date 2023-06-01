@@ -51,9 +51,9 @@
 
       <form [formGroup]="joinFamilyForm" class="d-flex flex-1 align-center flex-column">
         <div class="form-group mt-8 flex-1">
-          <input formControlname="familyCode" class="form-control" placeholder="Code">
+          <input formControlName="familyCode" class="form-control" placeholder="Code">
         </div>
-        <button class="btn btn__primary mt-8 w-fit">Send join request</button>
+        <button class="btn btn__primary mt-8 w-fit" (click)="sendJoin()">Send join request</button>
       </form>
     </div>
   </div>

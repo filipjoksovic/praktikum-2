@@ -3,6 +3,7 @@ import { faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { generateRandomString } from '../../../../shared/helpers';
 import { interval } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FamilyService } from '../../../../services/family.service';
 
 @Component({
   selector: 'app-create',
@@ -24,7 +25,7 @@ export class CreateComponent {
   emailToAdd = '';
   emailsToAdd = [];
 
-  public constructor(private fb: FormBuilder) {}
+  public constructor(private fb: FormBuilder, private familyService: FamilyService) {}
 
   generateCode() {
     for (let i = 0; i < 100; i++) {
@@ -40,5 +41,9 @@ export class CreateComponent {
     } else {
       console.log('Invalid email');
     }
+  }
+
+  sendJoin() {
+    this.familyService.sendRequest(this.joinFamilyForm.get('familyCode').value).subscribe();
   }
 }
