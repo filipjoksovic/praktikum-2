@@ -8,16 +8,19 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { TranscribedListComponent } from './components/transcribed-list/transcribed-list.component';
 import { TranscribedListItemComponent } from './components/transcribed-list-item/transcribed-list-item.component';
 import { FormsModule } from '@angular/forms';
+import { AddListItemComponent } from './components/add-list-item/add-list-item.component';
+import { ShoppingListsComponent } from './pages/shopping-lists/shopping-lists.component';
+import { PageDescriptorPillComponent } from '../../components/page-descriptor-pill/page-descriptor-pill.component';
 
 @NgModule({
-  declarations: [HomeLayoutComponent, TranscribedListComponent, TranscribedListItemComponent],
-  imports: [
-    CommonModule,
-    HomeRoutingModule,
-    RouterModule,
-    NavbarComponent,
-    FormsModule,
+  declarations: [
+    HomeLayoutComponent,
+    TranscribedListComponent,
+    TranscribedListItemComponent,
+    AddListItemComponent,
+    ShoppingListsComponent,
   ],
+  imports: [CommonModule, HomeRoutingModule, RouterModule, NavbarComponent, FormsModule, PageDescriptorPillComponent],
   exports: [TranscribedListComponent],
 })
 export class HomeModule {}

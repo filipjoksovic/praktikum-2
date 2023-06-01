@@ -1,0 +1,54 @@
+<app-page-descriptor-pill title="Shopping lists"></app-page-descriptor-pill>
+
+
+<div class="d-flex align-center gap-4 mt-6 flex-grow-1">
+  <div class="shopping-list-selector d-flex flex-column gap-4 flex-1">
+    <div class="shopping-list-search container  gap-4 d-flex mt-2">
+
+      <div class="form-group">
+        <label>Search</label>
+        <input class="form-control">
+      </div>
+      <button class="btn btn__success"></button>
+
+    </div>
+
+    <div class="shopping-lists-container">
+      <ng-container *ngFor="let list of shoppingLists$ | async">
+        <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)">
+          <span>{{ list.name }}</span>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <div class="selected-list-container flex-2 align-center justify-center d-flex h-100">
+
+    <ng-container *ngIf="(selectedList$ | async) !== null; else selectList">
+      <div class="list-items container flex-grow-1 h-100">
+
+        <ng-container *ngIf="selectedList$ | async as selectedList">
+
+          <div class="list-name-container">
+            <h1>{{selectedList.name}}</h1>
+            <button class="btn round"></button>
+          </div>
+          <div class="shopping-list-container">
+
+            <div class="shopping-list-container__item" *ngFor="let item of selectedList.itemList">
+              <p>{{item.name}}</p>
+            </div>
+          </div>
+
+        </ng-container>
+      </div>
+
+    </ng-container>
+
+    <ng-template #selectList>
+      <h2>Select a list to see its contents</h2>
+    </ng-template>
+  </div>
+
+</div>

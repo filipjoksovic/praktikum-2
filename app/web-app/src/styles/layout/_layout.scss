@@ -4,9 +4,11 @@
   display: flex;
   gap: $spacer * 2;
 
-  &__content{
+  &__content {
     padding: $spacer * 4;
-    flex:1;
+    flex: 1;
     overflow: scroll;
+    flex-direction: column;
+    display: flex;
   }
 }

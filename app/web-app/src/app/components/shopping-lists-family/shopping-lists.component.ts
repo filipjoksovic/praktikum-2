@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ShoppingListService } from '../../services/shopping-list.service';
+import { PageDescriptorPillComponent } from '../page-descriptor-pill/page-descriptor-pill.component';
 
 @Component({
-  standalone:true,
-  selector: 'app-shopping-lists',
+  standalone: true,
+  selector: 'app-shopping-lists-family',
   templateUrl: './shopping-lists.component.html',
+  imports: [PageDescriptorPillComponent],
 })
 export class ShoppingListsComponent implements OnInit {
   shoppingLists: unknown[] = [];

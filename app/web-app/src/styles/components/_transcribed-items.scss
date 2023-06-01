@@ -25,4 +25,10 @@
 
 .transcribed-list-container {
   margin-block: $spacer * 4;
+  overflow-y: scroll;
+  max-height: 30vh;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

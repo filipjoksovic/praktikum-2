@@ -29,4 +29,8 @@ export class TranscriptStoreService {
   public getTranscribedListVlue(): string[] {
     return this._transcribedList$.value;
   }
+
+  addToList(item: string) {
+    this._transcribedList$.next([item, ...this._transcribedList$.value]);
+  }
 }
