@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { generateRandomString } from '../../../../shared/helpers';
 import { FamilyStoreService } from '../../../services/stores/family-store.service';
 import { FamilyService } from '../../../../services/family.service';
@@ -22,6 +22,7 @@ export class FamilyDataComponent {
   protected readonly faPlus = faPlus;
   code = '';
   emailsToAdd: string[] = [];
+  selectedTab: 'members' | 'requests' = 'members';
 
   public family$ = this.familyService.getFamily().pipe(
     tap((family) => {
@@ -32,6 +33,11 @@ export class FamilyDataComponent {
       this.familyStore.setFamily(family);
       return this.familyStore.family$;
     }),
+  );
+
+  public familyMembers$ = this.familyService.getMembers().pipe(
+    tap((members) => this.familyStore.setFamilyMembers(members)),
+    mergeMap((members) => this.familyStore.familyMembers$),
   );
   public emailForm = this.fb.group({
     emailToAdd: new FormControl('', [Validators.required, Validators.required]),
@@ -50,4 +56,15 @@ export class FamilyDataComponent {
       }, 100);
     }
   }
+
+  public loadMembers() {
+    this.selectedTab = 'members';
+  }
+
+  public loadRequests() {
+    this.selectedTab = 'requests';
+    this.familyService.getRequests().subscribe();
+  }
+
+  protected readonly faBan = faBan;
 }

@@ -5,7 +5,7 @@
   <div class="d-flex flex-grow-1 gap-4 mt-4">
 
     <div class="container flex-1">
-      <h3>Family data</h3>
+      <h3>Data</h3>
       <form [formGroup]="familyForm">
         <div class="d-flex gap-4 mt-2 flex-column">
           <div class="form-group">
@@ -43,6 +43,37 @@
       </div>
       <button class="btn btn__primary ml-auto d-block w-fit mt-8">Create</button>
     </div>
-    <div class="container flex-1"></div>
+    <div class="container flex-1">
+
+      <div class="d-flex w-100 justify-center gap-4">
+        <button class="btn btn__toggle" [ngClass]="{'btn__toggle__active':selectedTab==='members'}"
+                (click)="loadMembers()">Members
+        </button>
+        <button class="btn btn__toggle" [ngClass]="{'btn__toggle__active':selectedTab==='requests'}"
+                (click)="loadRequests()">Requests
+        </button>
+      </div>
+
+      <ng-container *ngIf="selectedTab === 'members'">
+        <ng-container *ngIf="familyMembers$ | async as members">
+          <div *ngFor="let member of members" class="family-member">
+            <div class="family-member__data">
+              <p>{{member.name || "No first name"}}</p>
+              <p>{{member.surname || "No last name"}}</p>
+              <p>{{member.email}}</p>
+            </div>
+            <div class="family-member__actions">
+              <button class="btn btn__danger w-64 h-64 round">
+                <fa-icon [icon]="faBan"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+      <ng-container *ngIf="selectedTab==='requests'"></ng-container>
+
+    </div>
   </div>
 </ng-container>
