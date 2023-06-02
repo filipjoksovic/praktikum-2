@@ -62,7 +62,7 @@ export class FamilyService {
     const user = this.authService.currentUserValue;
 
     return this.http
-      .get(`${environment.apiBaseUrl}/joinRequests/${user.familyId}`, this.getHttpOptions())
+      .get(`${environment.apiBaseUrl}/requestJoins/${user.familyId}`, this.getHttpOptions())
       .pipe(tap((res) => console.log(res)));
   }
 

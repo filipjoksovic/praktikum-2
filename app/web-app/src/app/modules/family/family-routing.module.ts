@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: FamilyLayoutComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()],
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'family',
@@ -32,9 +32,15 @@ const routes: Routes = [
         path: 'family/data',
         component: FamilyDataComponent,
       },
-      { path: 'family/list', component: FamilyListComponent },
-      { path: 'family/members', component: FamilyMembersComponent },
-      { path: 'family/requests', component: FamilyRequestsComponent },
+      { path: 'family/list', component: FamilyListComponent, canActivate: [AuthGuard] },
+      {
+        path: 'family/members',
+        component: FamilyMembersComponent,
+      },
+      {
+        path: 'family/requests',
+        component: FamilyRequestsComponent,
+      },
     ],
   },
 ];

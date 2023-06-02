@@ -9,12 +9,15 @@ export class AuthGuard {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate() {
-    return (): boolean => {
-      if (!this.authService.currentUserValue) {
-        this.router.navigate(['/auth']);
-        return false;
-      }
-      return true;
-    };
+    console.log(this.authService.currentUserValue);
+
+    if (!this.authService.currentUserValue) {
+      // this.router.navigate(['/auth']);
+      console.log('Should redirect');
+      this.router.navigateByUrl('/auth');
+
+      return false;
+    }
+    return true;
   }
 }

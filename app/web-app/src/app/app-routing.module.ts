@@ -7,7 +7,7 @@ import { SettingsRoutingModule } from './modules/settings/settings-routing.modul
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then((m) => m.AuthModule),
   },
   {
