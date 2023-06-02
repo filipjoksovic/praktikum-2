@@ -30,10 +30,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // TODO: Set to actual domains in production
+        configuration.setAllowedOrigins(Arrays.asList("http://51.11.244.201")); // CHANGE TO LOCALHOST IF YOU ARE TESTING LOCALLY!
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "content-type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList(
+                    "Authorization",
+                    "Accept",
+                    "Cache-Control",
+                    "Content-Type",
+                    "Origin",
+                    "x-csrf-token",
+                    "x-requested-with"
+            ));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
