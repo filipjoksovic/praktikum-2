@@ -86,7 +86,7 @@ export const ShoppingListsPage = () => {
         text: transcript,
       });
       console.log(result.summary);
-      const updatedList = await ShoppingListService.addListItems(
+      const updatedList = await ShoppingListService.addFamilyListItems(
         listForFab.shoppingList.id,
         result.summary,
       );
@@ -121,7 +121,6 @@ export const ShoppingListsPage = () => {
       <Text variant={'headlineLarge'} style={{marginBottom: 10}}>
         Shopping lists
       </Text>
-      <ListContextSelectorComponent />
       {isLoading && (
         <ActivityIndicator
           style={{marginTop: 20}}
@@ -172,7 +171,8 @@ export const ShoppingListsPage = () => {
             recordingStopped={() => {
               setRecorderVisible(false);
             }}
-            recorderVisible={recorderVisible}></MiniRecorderComponent>
+            recorderVisible={recorderVisible}
+          />
         </Portal>
       )}
     </View>

@@ -9,6 +9,7 @@ import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
 import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
+import org.hibernate.mapping.Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,6 +124,8 @@ public class ShoppingListController {
                 return new ResponseEntity(shoppingList, HttpStatus.CREATED);
 
             } else {
+                log.info("family has list, adding items:" + familyId);
+                log.info("items received", Arrays.toString(shoppingListDTO.items.toArray()));
                 ShoppingList list = shoppingListService.getShoppingListForFamily(familyId).get(0);
                 return new ResponseEntity(shoppingListService.addItemsToShoppingList(new AddListItemsDTO(shoppingListDTO.items.toArray(new String[0])), list.getId()), HttpStatus.OK);
             }

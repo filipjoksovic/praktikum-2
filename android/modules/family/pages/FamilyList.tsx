@@ -1,5 +1,5 @@
-import {View} from 'react-native';
-import {FAB, List, Text, useTheme} from 'react-native-paper';
+import {ActivityIndicator, GestureResponderEvent, View} from 'react-native';
+import {FAB, List, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
 import {IShoppingListResponse} from '../../../models/IShoppingListsResponseDTO';
@@ -8,8 +8,11 @@ import {error} from 'console';
 import {useFocusEffect} from '@react-navigation/native';
 import {ShoppingListComponent} from '../../shopping-lists/components/ShoppingListComponent';
 import {FamilyListComponent} from '../components/FamilyListComponent';
+import {MiniRecorderComponent} from '../../shopping-lists/components/MiniRecorderComponent';
+import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 
 export interface IFamilyListProps {}
+
 export const FamilyList = (props: IFamilyListProps) => {
   const theme = useTheme();
   const [familyList, setFamilyList] =
@@ -18,6 +21,8 @@ export const FamilyList = (props: IFamilyListProps) => {
   const [listForFab, setListForFab] = useState<IShoppingListResponse | null>(
     null,
   );
+  const [recorderVisible, setRecorderVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onStateChange = ({open}) => setState({open});
 
@@ -46,17 +51,60 @@ export const FamilyList = (props: IFamilyListProps) => {
   const handleWholeListLongPress = () => {};
   const handleSingleListItemLongPress = () => {};
 
-  function handleAddNewItems(e: GestureResponderEvent): void {
-    throw new Error('Function not implemented.');
-  }
+  const handleAddNewItems = () => {
+    console.log('Pressed record');
+    setRecorderVisible(true);
+  };
 
   function handleDelete(e: GestureResponderEvent): void {
     throw new Error('Function not implemented.');
   }
 
+  const transcriptReceived = async (transcript: string) => {
+    setIsLoading(true);
+
+    console.log('text:', transcript);
+    try {
+      const result = await ShoppingListService.createRequest({
+        text: transcript,
+      });
+      console.log('Result', result);
+      console.log(result.summary);
+      const updatedList = await ShoppingListService.addFamilyListItems(
+        // listForFab.shoppingList.id,
+        result.summary,
+      );
+      console.log(updatedList);
+      // ShoppingListStore.update(s => {
+      //   return {
+      //     ...s,
+      //     shoppingLists: {
+      //       ...s.shoppingLists,
+      //       shoppingLists: shoppingLists.shoppingLists.map(list =>
+      //         list.shoppingList.id === updatedList.shoppingList.id
+      //           ? updatedList
+      //           : list,
+      //       ),
+      //     },
+      //   };
+      // });
+      setIsLoading(false);
+    } catch (err) {
+      console.log('Error:', err);
+      setIsLoading(false);
+    }
+  };
   return (
     <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
+      {isLoading && (
+        <ActivityIndicator
+          style={{marginTop: 20}}
+          size={'large'}
+          animating={true}
+          color={MD2Colors.amber900}
+        />
+      )}
       {familyList ? (
         <FamilyListComponent
           list={familyList}
@@ -98,9 +146,21 @@ export const FamilyList = (props: IFamilyListProps) => {
           }
         }}
       />
+      {recorderVisible && (
+        <Portal>
+          <MiniRecorderComponent
+            onTranscriptReceived={transcriptReceived}
+            recordingStopped={() => {
+              setRecorderVisible(false);
+            }}
+            recorderVisible={recorderVisible}
+          />
+        </Portal>
+      )}
     </View>
   );
 };
+
 function setState(arg0: {open: any}) {
   throw new Error('Function not implemented.');
 }

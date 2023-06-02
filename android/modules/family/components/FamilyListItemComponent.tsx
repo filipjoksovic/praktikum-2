@@ -8,6 +8,7 @@ export interface IFamilyListItemComponentProps {
   onLongPress: (item: IListItem) => void;
   onPress?: (item: IListItem) => void;
 }
+
 export const FamilyListItemComponent = (
   props: IFamilyListItemComponentProps,
 ) => {
@@ -20,7 +21,7 @@ export const FamilyListItemComponent = (
             return (
               <View>
                 <Text variant="bodyMedium">{item.name}</Text>
-                <Text variant="bodySmall">Added by: username</Text>
+                <Text variant="bodySmall">Added by: TODO</Text>
               </View>
             );
           }}
