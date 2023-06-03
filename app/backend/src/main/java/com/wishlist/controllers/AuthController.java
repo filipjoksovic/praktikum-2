@@ -39,6 +39,7 @@ public class AuthController {
             return new ResponseEntity<>(loggedIn, HttpStatus.OK);
         } catch (Exception e) {
             log.error("usr email {} not found. send 500 err", requestDTO.getEmail());
+            log.error(e.getMessage());
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

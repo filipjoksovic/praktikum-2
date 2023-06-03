@@ -32,4 +32,6 @@ public interface IShoppingListService {
     ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
 
     boolean hasList(String familyId);
+
+    ShoppingList findShoppingListIdByItemId(String itemId);
 }

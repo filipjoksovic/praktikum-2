@@ -10,13 +10,16 @@ public class Family {
     private String id;
     private String name;
     @DBRef
+    private User owner;
+    @DBRef
     private List<User> users;
     private String inviteCode;
     public Family() {
 
     }
-    public Family(String name, List<User> users, String inviteCode) {
+    public Family(String name, User owner, List<User> users, String inviteCode) {
         this.name = name;
+        this.owner = owner;
         this.users = users;
         this.inviteCode = inviteCode;
     }
@@ -40,6 +43,12 @@ public class Family {
 
     public void setId(String id) {
         this.id = id;
+    }
+    public User getOwner(){
+        return owner;
+    }
+    public void setOwner(User owner){
+        this.owner = owner;
     }
 
     public List<User> getUsers() {

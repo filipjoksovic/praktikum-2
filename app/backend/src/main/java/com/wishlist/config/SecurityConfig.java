@@ -1,5 +1,6 @@
 package com.wishlist.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,6 +23,9 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
 
+    @Value("${server.cors}")
+    private String corsIp;
+
     public SecurityConfig(JwtFilter jwtFilter, AuthenticationProvider authenticationProvider) {
         this.jwtFilter = jwtFilter;
         this.authenticationProvider = authenticationProvider;
@@ -30,7 +34,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://51.11.244.201")); // CHANGE TO LOCALHOST IF YOU ARE TESTING LOCALLY!
+        configuration.setAllowedOrigins(Arrays.asList(corsIp));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(

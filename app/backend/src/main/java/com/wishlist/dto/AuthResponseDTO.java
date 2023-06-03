@@ -11,6 +11,8 @@ public class AuthResponseDTO {
     private String refreshToken;
     private String familyId;
 
+    private boolean isOwner;
+
     public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken) {
         this.id = id;
         this.name = name;
@@ -20,7 +22,7 @@ public class AuthResponseDTO {
         this.refreshToken = refreshToken;
     }
 
-    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken, String familyId) {
+    public AuthResponseDTO(String id, String name, String surname, String email, String accessToken, String refreshToken, String familyId, boolean isOwner) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -28,6 +30,7 @@ public class AuthResponseDTO {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.familyId = familyId;
+        this.isOwner = isOwner;
     }
 
     public AuthResponseDTO() {
@@ -89,8 +92,15 @@ public class AuthResponseDTO {
         this.familyId = familyId;
     }
 
-    public static AuthResponseDTO to(User user, String accessToken, String refreshToken) {
-        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken, user.getFamilyId());
+    public boolean isOwner() {
+        return isOwner;
     }
 
+    public void setOwner(boolean owner) {
+        this.isOwner = owner;
+    }
+
+    public static AuthResponseDTO to(User user, String accessToken, String refreshToken, boolean isOwner) {
+        return new AuthResponseDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), accessToken, refreshToken, user.getFamilyId(), isOwner);
+    }
 }

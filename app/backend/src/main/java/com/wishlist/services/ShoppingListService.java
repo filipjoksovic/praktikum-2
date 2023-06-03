@@ -235,5 +235,18 @@ public class ShoppingListService implements IShoppingListService {
         return true;
     }
 
+    @Override
+    public ShoppingList findShoppingListIdByItemId(String itemId) {
+        List<ShoppingList> allShoppingLists = shoppingListRepository.findAll();
+        for (ShoppingList shoppingList : allShoppingLists) {
+            for (ShoppingItem shoppingItem : shoppingList.getItemList()) {
+                if (shoppingItem.getId().equals(itemId)) {
+                    return shoppingList;
+                }
+            }
+        }
+        return null;
+    }
+
 
 }

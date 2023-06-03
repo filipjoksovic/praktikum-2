@@ -50,6 +50,17 @@ public class FamilyService implements IFamilyService {
         return familyRepository.save(family);
     }
 
+    public Family saveWithOwner(Family family, User owner){
+        family.setOwner(owner);
+        return familyRepository.save(family);
+    }
+
+/*    public Family update(Family family, String id) throws FamilyDoesNotExistException {
+        Family foundFamily = findById(id);
+        family.setUsers(foundFamily.getUsers());
+        Family updatedFamilyResult = save(family);
+
+    }*/
     public String generateInviteCode() {
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         final int LENGTH = 8;
@@ -61,6 +72,20 @@ public class FamilyService implements IFamilyService {
             sb.append(randomChar);
         }
         return sb.toString();
+    }
+
+    public boolean isOwner(String userId, String familyId) {
+        // assuming you have a way to get the family by user id
+        Optional<Family> familyOptional = familyRepository.findById(familyId);
+
+        if (familyOptional.isPresent()) {
+            Family family = familyOptional.get();
+            User owner = family.getOwner();
+            // comparing the user id with the owner's user id
+            return owner.getId().equals(userId);
+        }
+        // returning false if the family does not exist
+        return false;
     }
 
     public boolean isValidInviteCode(String inviteCode) throws InvalidInviteCodeFormatException, InvalidInviteCodeException {

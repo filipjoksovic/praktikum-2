@@ -2,7 +2,9 @@ package com.wishlist.services;
 
 import com.wishlist.dto.*;
 import com.wishlist.exceptions.*;
+import com.wishlist.models.Family;
 import com.wishlist.models.User;
+import com.wishlist.repositories.FamilyRepository;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
 import com.wishlist.services.interfaces.IAuth;
@@ -26,11 +28,14 @@ public class UserService implements IUserService, IAuth {
     private final IJWTGenerator jwtGenerator;
     private final IEmailSender emailSender;
     private final AuthenticationManager authenticationManager;
+
+    private final FamilyRepository familyRepository;
     Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
-    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender, AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, FamilyRepository familyRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.familyRepository = familyRepository;
         this.jwtGenerator = jwtGenerator;
         this.emailSender = emailSender;
         this.authenticationManager = authenticationManager;
@@ -72,8 +77,19 @@ public class UserService implements IUserService, IAuth {
             if (passwordEncoder.matches(dto.getPassword(), user.get().getPassword())) {
                 Map<String, String> jwt = jwtGenerator.generateToken(user.get());
                 Map<String, String> jwtRefresh = jwtGenerator.generateRefreshToken(user.get());
-                logger.info("Generated JWT: " + jwt);
-                return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"));
+                logger.info("Generated JWT 123 : " + jwt);
+
+                //duplicate code avoids circular dependency
+                boolean isOwner = false;
+                if (user.get().getFamilyId() != null){
+                    Optional<Family> familyOptional = familyRepository.findById(user.get().getFamilyId());
+                    if (familyOptional.isPresent()) {
+                        Family family = familyOptional.get();
+                        User owner = family.getOwner();
+                        isOwner =  owner.getId().equals(user.get().getId());
+                    }
+                }
+                return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"), isOwner);
             }
         }
         throw new Exception("Invalid credentials");
