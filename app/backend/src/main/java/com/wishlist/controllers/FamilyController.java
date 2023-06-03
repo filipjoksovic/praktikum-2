@@ -1,9 +1,9 @@
 package com.wishlist.controllers;
 
-import com.wishlist.dto.ApiError;
-import com.wishlist.dto.CreateFamilyRequestDTO;
-import com.wishlist.dto.FamilyMemberDTO;
+import com.wishlist.dto.*;
 import com.wishlist.exceptions.FamilyDoesNotExistException;
+import com.wishlist.exceptions.FamilyNotChangedException;
+import com.wishlist.exceptions.InvalidInviteCodeException;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import com.wishlist.services.UserService;
@@ -47,12 +47,12 @@ public class FamilyController {
 
     @GetMapping("/{id}/members")
     public ResponseEntity<?> getFamilyMembers(@PathVariable String id) {
-        logger.info("get fml mbr for {}",id);
+        logger.info("get fml mbr for {}", id);
         try {
-            logger.info("get fml mbr for {} success",id);
+            logger.info("get fml mbr for {} success", id);
             return new ResponseEntity<>(familyService.getFamilyMembers(id).stream().map(FamilyMemberDTO::to).collect(Collectors.toList()), HttpStatus.OK);
         } catch (FamilyDoesNotExistException e) {
-            logger.info("get fml mbr for {} fail",id);
+            logger.info("get fml mbr for {} fail", id);
             return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -94,16 +94,33 @@ public class FamilyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Family> update(@PathVariable String id, @RequestBody Family updatedFamily) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody UpdateFamilyRequestDTO updatedFamily) {
         //todo move to service layer
+        logger.info("updt fml {}", id);
         try {
-            Family family = familyService.findById(id);
-            family.setUsers(updatedFamily.getUsers());
-            Family updatedFamilyResult = familyService.save(family);
-            return ResponseEntity.ok(updatedFamilyResult);
-        } catch (FamilyDoesNotExistException e) {
-            return ResponseEntity.notFound().build();
+//            Family family = familyService.findById(id);
+//            family.setUsers(updatedFamily.getUsers());
+//            Family updatedFamilyResult = familyService.save(family);
 
+            logger.info("updt fml {} success", id);
+            return ResponseEntity.ok(familyService.update(id, updatedFamily.getName()));
+        } catch (FamilyDoesNotExistException e) {
+            logger.info("updt fml {} fail", id);
+            return ResponseEntity.notFound().build();
+        } catch (FamilyNotChangedException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{familyId}/code")
+    public ResponseEntity<?> changeCode(@PathVariable String familyId, @RequestBody UpdateFamilyCodeDTO updateFamilyCodeDTO) {
+        logger.info("updt fml code {}", familyId);
+        try {
+            return ResponseEntity.ok(familyService.updateCode(familyId, updateFamilyCodeDTO.getCode()));
+        } catch (FamilyDoesNotExistException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        } catch (InvalidInviteCodeException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
         }
     }
 

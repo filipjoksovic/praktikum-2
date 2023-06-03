@@ -1,0 +1,178 @@
+app-toaster {
+  position: absolute;
+  right: $spacer * 2;
+  bottom: $spacer * 2;
+}
+
+.toaster-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* The animation code */
+@keyframes toaster {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes toaster-loader {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.toaster-message {
+  animation-name: toaster;
+  animation-duration: 250ms;
+  width: fit-content;
+  min-width: 400px;
+  max-width: 30vw;
+  padding-left: $spacer*4;
+  padding-right: $spacer*8;
+  padding-top: $spacer*2;
+  padding-bottom: $spacer* 2;
+  display: flex;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: $spacer * 2;
+  flex-direction: column;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+
+  &__title {
+    font-weight: bold;
+    font-size: x-large;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    max-width: 30vw;
+    overflow: hidden;
+  }
+
+  &__text {
+    white-space: break-spaces;
+    text-overflow: ellipsis;
+    width: 100%;
+    max-width: 30vw;
+    overflow: hidden;
+  }
+
+
+  &__primary {
+    background-color: $blue-500;
+    border: 1px solid $blue-700;
+
+    & > * {
+      color: $blue-900;
+    }
+  }
+
+  &__success {
+    background-color: $green-500;
+    border: 1px solid $green-700;
+
+    & > * {
+      color: $green-900;
+    }
+  }
+
+  &__danger {
+    background-color: $red-500;
+    border: 1px solid $red-700;
+
+    & > * {
+      color: $red-900;
+    }
+  }
+
+  &__warning {
+    background-color: $yellow-500;
+    border: 1px solid $yellow-700;
+
+    & > * {
+      color: $yellow-900;
+    }
+  }
+
+  &__dismiss-btn {
+    background-color: transparent !important;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    border: none;
+    outline: none;
+    top: $spacer*2;
+    right: $spacer*4;
+    position: absolute;
+  }
+
+  &__loader {
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0px;
+    left: 2px;
+    border-radius: 20px;
+
+    &__primary::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: $blue-900;
+      height: 3px;
+      animation-name: toaster-loader;
+      animation-duration: 3000ms;
+      animation-timing-function: linear;
+
+    }
+
+    &__danger::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: $red-900;
+      height: 3px;
+      animation-name: toaster-loader;
+      animation-duration: 3000ms;
+      animation-timing-function: linear;
+
+    }
+
+    &__warning::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: $yellow-900;
+      height: 3px;
+      animation-name: toaster-loader;
+      animation-duration: 3000ms;
+      animation-timing-function: linear;
+
+    }
+
+    &__success::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background-color: $green-900;
+      height: 3px;
+      animation-name: toaster-loader;
+      animation-duration: 3000ms;
+      animation-timing-function: linear;
+
+    }
+
+
+  }
+}

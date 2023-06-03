@@ -1,6 +1,7 @@
 package com.wishlist.services.interfaces;
 
 import com.wishlist.exceptions.FamilyDoesNotExistException;
+import com.wishlist.exceptions.FamilyNotChangedException;
 import com.wishlist.exceptions.InvalidInviteCodeException;
 import com.wishlist.exceptions.InvalidInviteCodeFormatException;
 import com.wishlist.models.Family;
@@ -20,6 +21,8 @@ public interface IFamilyService {
 
     String generateInviteCode();
 
+    Family update(String id, String name) throws FamilyDoesNotExistException, FamilyNotChangedException;
+
     List<User> getFamilyMembers(String familyId) throws FamilyDoesNotExistException;
 
     Family findByInviteCode(String inviteCode);
@@ -28,4 +31,5 @@ public interface IFamilyService {
 
     Family findByUser(String userId) throws FamilyDoesNotExistException;
 
+    Family updateCode(String id, String code) throws FamilyDoesNotExistException, InvalidInviteCodeException;
 }

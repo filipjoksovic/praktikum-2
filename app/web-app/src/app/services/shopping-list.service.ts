@@ -16,51 +16,34 @@ export class ShoppingListService {
     private transcriptStore: TranscriptStoreService,
   ) {}
 
-  private getHttpOptions() {
-    let httpOptions = {};
-    const currentUser = this.authService.currentUserValue;
-    if (currentUser && currentUser.accessToken) {
-      httpOptions = {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${currentUser.accessToken}`,
-        }),
-      };
-    }
-    return httpOptions;
-  }
-
   uploadRecording(data: Blob) {
     console.log('Upload Recording Called');
     const formData: FormData = new FormData();
     formData.append('file', data, 'recording.wav');
-    return this.http.post(`${environment.apiBaseUrl}/uploads/wav`, formData, this.getHttpOptions());
+    return this.http.post(`uploads/wav`, formData);
   }
 
   processText(data: string) {
     console.log('Process Text Called');
-    return this.http.post(`${environment.apiBaseUrl}/uploads/text`, { text: data }, this.getHttpOptions()).pipe(
+    return this.http.post(`uploads/text`, { text: data }).pipe(
       map((response: { summary: string[] }) => response.summary),
       tap((items) => this.transcriptStore.setTranscribedList(items)),
     );
   }
 
   saveShoppingList(list: any) {
-    return this.http.post(
-      `${environment.apiBaseUrl}/shoppingLists/user/${this.authService.currentUserValue.id}`,
-      list,
-      this.getHttpOptions(),
-    );
+    return this.http.post(`shoppingLists/user/${this.authService.currentUserValue.id}`, list);
   }
 
   getAllShoppingLists() {
-    return this.http.get(`${environment.apiBaseUrl}/shoppingLists`, this.getHttpOptions());
+    return this.http.get(`shoppingLists`);
   }
 
   updateShoppingList(id: string, updatedShoppingList: any) {
-    return this.http.put(`${environment.apiBaseUrl}/shoppingLists/${id}`, updatedShoppingList, this.getHttpOptions());
+    return this.http.put(`shoppingLists/${id}`, updatedShoppingList);
   }
 
   deleteShoppingList(listId: string) {
-    return this.http.delete(`${environment.apiBaseUrl}/shoppingLists/${listId}`, this.getHttpOptions());
+    return this.http.delete(`shoppingLists/${listId}`);
   }
 }

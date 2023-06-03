@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 @Service
 public class FamilyService implements IFamilyService {
@@ -82,6 +83,29 @@ public class FamilyService implements IFamilyService {
     }
 
     @Override
+    public Family updateCode(String id, String code) throws FamilyDoesNotExistException, InvalidInviteCodeException {
+        if (isCodeInFormat(code)) {
+            Family family = this.familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+            family.setInviteCode(code);
+            return familyRepository.save(family);
+        }
+        throw new InvalidInviteCodeException();
+    }
+
+
+    @Override
+    public Family update(String id, String name) throws FamilyDoesNotExistException, FamilyNotChangedException {
+        Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+
+        if (!family.getName().equals(name)) {
+            family.setName(name);
+            return familyRepository.save(family);
+
+        }
+        throw new FamilyNotChangedException();
+    }
+
+    @Override
     public List<User> getFamilyMembers(String familyId) throws FamilyDoesNotExistException {
         return userRepository.findByFamilyId(familyId);
     }
@@ -113,6 +137,11 @@ public class FamilyService implements IFamilyService {
         }
         throw new Exception("Failed to delete user from family");
 
+    }
+
+    public boolean isCodeInFormat(String input) {
+        String pattern = "\\w{4}-\\w{4}";
+        return Pattern.matches(pattern, input);
     }
 
 

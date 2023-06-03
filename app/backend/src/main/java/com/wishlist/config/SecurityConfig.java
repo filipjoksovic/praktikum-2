@@ -30,18 +30,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://51.11.244.201")); // CHANGE TO LOCALHOST IF YOU ARE TESTING LOCALLY!
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // CHANGE TO LOCALHOST IF YOU ARE TESTING LOCALLY!
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(
-                    "Authorization",
-                    "Accept",
-                    "Cache-Control",
-                    "Content-Type",
-                    "Origin",
-                    "x-csrf-token",
-                    "x-requested-with"
-            ));
+                "Authorization",
+                "Accept",
+                "Cache-Control",
+                "Content-Type",
+                "Origin",
+                "x-csrf-token",
+                "x-requested-with"
+        ));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -65,7 +65,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 
 
 }

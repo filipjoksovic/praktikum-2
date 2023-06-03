@@ -14,9 +14,20 @@ import { FamilyDataComponent } from './pages/family-data/family-data.component';
 import { FamilyMembersComponent } from './pages/family-members/family-members.component';
 import { FamilyRequestsComponent } from './pages/family-requests/family-requests.component';
 import { FamilyListComponent } from './pages/family-list/family-list.component';
+import { TokenInterceptor } from '../../interceptors/token.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
-  declarations: [FamilyLayoutComponent, FamilyComponent, JoinComponent, CreateComponent, FamilyDataComponent, FamilyMembersComponent, FamilyRequestsComponent, FamilyListComponent],
+  declarations: [
+    FamilyLayoutComponent,
+    FamilyComponent,
+    JoinComponent,
+    CreateComponent,
+    FamilyDataComponent,
+    FamilyMembersComponent,
+    FamilyRequestsComponent,
+    FamilyListComponent,
+  ],
   imports: [
     CommonModule,
     FamilyRoutingModule,

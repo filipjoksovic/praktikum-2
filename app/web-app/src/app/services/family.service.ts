@@ -5,35 +5,48 @@ import { environment } from '../../../environment';
 import { IFamily } from '../models/IFamily';
 import { catchError, EMPTY, Observable, of, tap } from 'rxjs';
 import { User } from '../models/User';
+import { FamilyStoreService } from '../modules/services/stores/family-store.service';
+import { ToasterService } from "./toaster.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class FamilyService {
-  constructor(private authService: AuthService, private http: HttpClient) {}
-
-  private getHttpOptions() {
-    let httpOptions = {};
-    const currentUser = this.authService.currentUserValue;
-    if (currentUser && currentUser.accessToken) {
-      httpOptions = {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${currentUser.accessToken}`,
-        }),
-      };
-    }
-    return httpOptions;
-  }
+  constructor(private authService: AuthService, private http: HttpClient, private familyStore: FamilyStoreService, private toastService:ToasterService) {}
 
   public getFamily() {
     const user = this.authService.currentUserValue;
     if (!user.familyId) {
       return of(null);
     }
-    return this.http.get<IFamily>(`${environment.apiBaseUrl}/families/user/${user.id}`, this.getHttpOptions());
+    return this.http.get<IFamily>(`families/user/${user.id}`);
   }
 
-  public updateFamily() {}
+  public updateFamily(familyPartial: Partial<IFamily>) {
+    const user = this.authService.currentUserValue;
+    if (!user.familyId) {
+      throw new Error('User has no family');
+    }
+    return this.http.put<IFamily>(`families/${user.familyId}`, familyPartial).pipe(
+      tap((family) => {
+        this.familyStore.setFamily(family);
+        this.toastService.success('Success!', 'Family data has been updated');
+      })
+    );
+  }
+
+  public updateFamilyCode(familyCode: string) {
+    const user = this.authService.currentUserValue;
+    if (!user.familyId) {
+      throw new Error('User has no family');
+    }
+    return this.http.post<IFamily>(`families/${user.familyId}/code`, { code: familyCode }).pipe(
+      tap((family) => {
+        this.toastService.success("Success!","Family invite code updated")
+        this.familyStore.setFamily(family);
+      }),
+    );
+  }
 
   public exitFamily() {}
 
@@ -46,24 +59,18 @@ export class FamilyService {
       id: '',
     });
 
-    return this.http.post(
-      `${environment.apiBaseUrl}/joinRequests`,
-      {
-        userId: user.id || '',
-        familyId: '',
-        inviteCode: inviteCode,
-        id: '',
-      },
-      this.getHttpOptions(),
-    );
+    return this.http.post(`joinRequests`, {
+      userId: user.id || '',
+      familyId: '',
+      inviteCode: inviteCode,
+      id: '',
+    });
   }
 
   public getRequests() {
     const user = this.authService.currentUserValue;
 
-    return this.http
-      .get(`${environment.apiBaseUrl}/requestJoins/${user.familyId}`, this.getHttpOptions())
-      .pipe(tap((res) => console.log(res)));
+    return this.http.get(`requestJoins/${user.familyId}`).pipe(tap((res) => console.log(res)));
   }
 
   public acceptRequest() {}
@@ -72,13 +79,11 @@ export class FamilyService {
 
   public getMembers(): Observable<User[]> {
     const user = this.authService.currentUserValue;
-    return this.http
-      .get<User[]>(`${environment.apiBaseUrl}/families/${user.familyId}/members`, this.getHttpOptions())
-      .pipe(
-        catchError((err) => {
-          console.log('Error ', err);
-          return EMPTY;
-        }),
-      );
+    return this.http.get<User[]>(`families/${user.familyId}/members`).pipe(
+      catchError((err) => {
+        console.log('Error ', err);
+        return EMPTY;
+      }),
+    );
   }
 }

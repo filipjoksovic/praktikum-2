@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<User>(`${environment.apiBaseUrl}/auth/login`, { email, password }).pipe(
+    return this.http.post<User>(`auth/login`, { email, password }).pipe(
       map((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this._currentUser$.next(user);
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   register(user: User) {
-    return this.http.post<User>(`${environment.apiBaseUrl}/auth/register`, user);
+    return this.http.post<User>(`auth/register`, user);
   }
 
   logout() {
