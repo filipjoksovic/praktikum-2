@@ -1,5 +1,6 @@
 package com.wishlist.services;
 
+import com.wishlist.exceptions.ShoppingItemDoesNotExistException;
 import com.wishlist.models.ShoppingItem;
 import com.wishlist.repositories.ItemRepository;
 import com.wishlist.services.interfaces.IItemService;
@@ -36,6 +37,7 @@ public class ItemService implements IItemService {
     public ShoppingItem update(ShoppingItem item) {
         return itemRepository.save(item);
     }
+
     @Override
     public boolean delete(String id) {
         Optional<ShoppingItem> itemOptional = itemRepository.findById(id);
@@ -45,6 +47,20 @@ public class ItemService implements IItemService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public ShoppingItem checkItem(String id) {
+        ShoppingItem item = itemRepository.findById(id).orElseThrow(ShoppingItemDoesNotExistException::new);
+        item.setChecked(true);
+        return itemRepository.save(item);
+    }
+
+    @Override
+    public ShoppingItem uncheckItem(String id) {
+        ShoppingItem item = itemRepository.findById(id).orElseThrow(ShoppingItemDoesNotExistException::new);
+        item.setChecked(false);
+        return itemRepository.save(item);
     }
 
 

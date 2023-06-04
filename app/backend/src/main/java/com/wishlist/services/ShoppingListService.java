@@ -1,6 +1,7 @@
 package com.wishlist.services;
 
 import com.wishlist.dto.AddListItemsDTO;
+import com.wishlist.dto.BulkCheckDTO;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
@@ -11,10 +12,7 @@ import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -254,6 +252,32 @@ public class ShoppingListService implements IShoppingListService {
             list.setName(updatedShoppingList.getName());
             shoppingListRepository.save(list);
         }
+        return list;
+    }
+
+    @Override
+    public ShoppingList bulkCheck(BulkCheckDTO dto, String listId) {
+
+        ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
+        Map<String, Boolean> mapped = new HashMap<>();
+        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
+        List<ShoppingItem> updatedItems = new ArrayList<>();
+
+        if (!dto.isAllSelected()) {
+            list.getItemList().forEach(item -> {
+                if (mapped.containsKey(item.getId())) {
+                    item.setChecked(true);
+                }
+                updatedItems.add(item);
+            });
+        } else {
+            list.getItemList().forEach(item -> {
+                item.setChecked(true);
+                updatedItems.add(item);
+            });
+        }
+        list.setItemList(updatedItems);
+        shoppingListRepository.save(list);
         return list;
     }
 

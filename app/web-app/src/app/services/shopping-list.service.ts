@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environment';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { tap } from 'rxjs';
 import { TranscriptStoreService } from './stores/transcript-store.service';
 import { ToasterService } from './toaster.service';
@@ -58,6 +57,15 @@ export class ShoppingListService {
   search(searchList: string) {
     return this.getUserShoppingLists().pipe(
       map((items) => items.filter((item) => item.name.toLowerCase().includes(searchList.toLowerCase()))),
+    );
+  }
+
+  updateItemsStatus(listId: string, idsForCheck: string[], allSelected: boolean) {
+    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkCheck`, { ids: idsForCheck, allSelected }).pipe(
+      tap((response) => {
+        this.shoppingListStore.updateShoppingList(response);
+        this.toaster.success('Success!', 'Shopping list successfully updated.');
+      }),
     );
   }
 }

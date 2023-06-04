@@ -1,6 +1,7 @@
 package com.wishlist.services.interfaces;
 
 import com.wishlist.dto.AddListItemsDTO;
+import com.wishlist.dto.BulkCheckDTO;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
@@ -46,4 +47,6 @@ public interface IShoppingListService {
     ShoppingList findShoppingListIdByItemId(String itemId);
 
     ShoppingList updateList(String id, ShoppingList updatedShoppingList) throws ShoppingListDoesNotExistException;
+
+    ShoppingList bulkCheck(BulkCheckDTO dto, String listId);
 }

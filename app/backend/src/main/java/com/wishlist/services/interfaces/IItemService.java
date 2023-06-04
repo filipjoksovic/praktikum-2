@@ -12,4 +12,7 @@ public interface IItemService {
     Optional<ShoppingItem> findById(String id);
     ShoppingItem update(ShoppingItem item);
     boolean delete(String id);
+
+    ShoppingItem checkItem(String id);
+    ShoppingItem uncheckItem(String id);
 }

@@ -187,4 +187,14 @@ public class ShoppingListController {
         }
     }
 
+    @PostMapping("/{listId}/bulkCheck")
+    public ResponseEntity<?> bulkCheck(@PathVariable String listId, @RequestBody BulkCheckDTO dto, @RequestHeader("Authorization") String jwt) {
+        log.info("bulk check for ls {}", listId);
+        if (jwtValidator.validateShoppingList(jwt, listId)) {
+            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.bulkCheck(dto, listId)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new ApiError("you do not have access to this list"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 }

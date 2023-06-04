@@ -1,25 +1,29 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ShoppingListService } from '../../../../services/shopping-list.service';
 import { ShoppingListStoreService } from '../../../../services/stores/shopping-list-store.service';
-import { BehaviorSubject, fromEvent, take, tap } from 'rxjs';
-import { faCheck, faCheckDouble, faEye, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { fromEvent, Observable, take, tap } from 'rxjs';
+import { faCheck, faCheckDouble, faEye, faPen, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { IShoppingList } from '../../../../models/IShoppingListsResponseDTO';
+import { IListItem, IShoppingList } from '../../../../models/IShoppingListsResponseDTO';
 
 @Component({
   selector: 'app-shopping-lists',
   templateUrl: './shopping-lists.component.html',
 })
 export class ShoppingListsComponent implements OnInit {
-  @ViewChild('contextMenu', { static: true })
-  public contextMenu: ElementRef;
+  @ViewChild('contextListsMenu', { static: true })
+  public contextListstMenu: ElementRef;
+
+  @ViewChild('contextSingleListMenu', { static: true })
+  public contextSingleListMenu: ElementRef;
   idsForCheck: string[] = [];
   allSelected = false;
   faPen = faPen;
 
-  public contextActive = false;
+  public listsContextActive = false;
+  public listItemContextActive = false;
+
   protected readonly faTrash = faTrash;
   protected readonly faFloppyDisk = faFloppyDisk;
   protected readonly faTimes = faTimes;
@@ -27,6 +31,7 @@ export class ShoppingListsComponent implements OnInit {
   protected readonly faCheckDouble = faCheckDouble;
 
   isEditSelectedList = false;
+  isEditSelectedListItem = false;
 
   public selectedList$ = this.shoppingListStore.selectedList$.pipe(
     tap((item) => (this.selectedId = (item && item.id) || '')),
@@ -58,12 +63,14 @@ export class ShoppingListsComponent implements OnInit {
 
   protected readonly faSearch = faSearch;
   isEdit: boolean;
+  selectedListItem$: Observable<IListItem> = this.shoppingListStore.selectedItem$;
 
   toggleEditMode() {
     console.log('editing');
     if (this.isEdit) {
       console.log('Should send req1uest');
       console.log(this.idsForCheck);
+      this.shoppingListService.updateItemsStatus(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
     }
     this.isEdit = !this.isEdit;
   }
@@ -92,34 +99,52 @@ export class ShoppingListsComponent implements OnInit {
 
   listRightClick(event: MouseEvent, list: IShoppingList) {
     this.shoppingListStore.setSelectedListById(list.id);
-    this.contextActive = true;
+    this.listsContextActive = true;
     event.preventDefault();
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'top', event.y + 'px');
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'left', event.x + 'px');
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', event.y + 'px');
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', event.x + 'px');
 
     fromEvent(window, 'click')
       .pipe(take(1))
       .subscribe((event: any) => {
         if (!event.target.className.includes('context-menu')) {
-          this.contextActive = false;
-          this.renderer.setStyle(this.contextMenu.nativeElement, 'top', -1000 + 'px');
-          this.renderer.setStyle(this.contextMenu.nativeElement, 'left', -1000 + 'px');
+          this.listsContextActive = false;
+          this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', -1000 + 'px');
+          this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', -1000 + 'px');
+          this.isEditSelectedList = false;
+        }
+      });
+  }
+
+  listItemRightClick(event: MouseEvent, item: IListItem) {
+    this.shoppingListStore.setSelectedItem(item);
+    this.listItemContextActive = true;
+    event.preventDefault();
+    this.renderer.setStyle(this.contextSingleListMenu.nativeElement, 'top', event.y + 'px');
+    this.renderer.setStyle(this.contextSingleListMenu.nativeElement, 'left', event.x + 'px');
+    fromEvent(window, 'click')
+      .pipe(take(1))
+      .subscribe((event: any) => {
+        if (!event.target.className.includes('context-menu')) {
+          this.listItemContextActive = false;
+          this.renderer.setStyle(this.contextSingleListMenu.nativeElement, 'top', -1000 + 'px');
+          this.renderer.setStyle(this.contextSingleListMenu.nativeElement, 'left', -1000 + 'px');
           this.isEditSelectedList = false;
         }
       });
   }
 
   editSelectedListName() {
-    this.contextActive = false;
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'top', -1000 + 'px');
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'left', -1000 + 'px');
+    this.listsContextActive = false;
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', -1000 + 'px');
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', -1000 + 'px');
     this.isEditSelectedList = true;
   }
 
   deleteSelectedList() {
-    this.contextActive = false;
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'top', -1000 + 'px');
-    this.renderer.setStyle(this.contextMenu.nativeElement, 'left', -1000 + 'px');
+    this.listsContextActive = false;
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', -1000 + 'px');
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', -1000 + 'px');
   }
 
   updateSelectedList(selectedList: IShoppingList) {
@@ -142,4 +167,13 @@ export class ShoppingListsComponent implements OnInit {
         this.shoppingListStore.setShoppingLists(result);
       });
   }
+
+  editSelectedListItemName() {
+    this.listItemContextActive = false;
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', -1000 + 'px');
+    this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', -1000 + 'px');
+    this.isEditSelectedListItem = true;
+  }
+
+  deleteSelectedListItem() {}
 }
