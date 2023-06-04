@@ -92,7 +92,7 @@
 
             <div class="shopping-list-container__item" *ngFor="let item of selectedList.itemList"
                  (contextmenu)="listItemRightClick($event, item)"
-                 (click)="addOrRemove(item.id)">
+                 (click)="isEdit && addOrRemove(item.id)">
               <ng-container *ngIf="isEdit">
                 <div class="d-flex flex-row align-center gap-4">
                   <input type="checkbox" class="form-control__checkbox" id="{{item.id}}"

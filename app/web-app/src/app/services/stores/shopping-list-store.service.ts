@@ -49,4 +49,8 @@ export class ShoppingListStoreService {
   setSelectedItem(item: IListItem) {
     this._selectedItem$.next(item);
   }
+
+  removeList(id: string) {
+    this._shoppingLists$.next(this._shoppingLists$.value.filter((l) => l.id !== id));
+  }
 }

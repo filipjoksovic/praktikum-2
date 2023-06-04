@@ -51,7 +51,12 @@ export class ShoppingListService {
   }
 
   deleteShoppingList(listId: string) {
-    return this.http.delete(`shoppingLists/${listId}`);
+    return this.http.delete<IShoppingList>(`shoppingLists/${listId}`).pipe(
+      tap((list) => {
+        this.shoppingListStore.removeList(list.id);
+        this.toaster.success('Success!', 'Shopping list has been successfully deleted');
+      }),
+    );
   }
 
   search(searchList: string) {
@@ -60,8 +65,17 @@ export class ShoppingListService {
     );
   }
 
-  updateItemsStatus(listId: string, idsForCheck: string[], allSelected: boolean) {
+  bulkCheck(listId: string, idsForCheck: string[], allSelected: boolean) {
     return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkCheck`, { ids: idsForCheck, allSelected }).pipe(
+      tap((response) => {
+        this.shoppingListStore.updateShoppingList(response);
+        this.toaster.success('Success!', 'Shopping list successfully updated.');
+      }),
+    );
+  }
+
+  bulkUncheck(listId: string, idsForCheck: string[], allSelected: boolean) {
+    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkUncheck`, { ids: idsForCheck, allSelected }).pipe(
       tap((response) => {
         this.shoppingListStore.updateShoppingList(response);
         this.toaster.success('Success!', 'Shopping list successfully updated.');

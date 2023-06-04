@@ -281,5 +281,31 @@ public class ShoppingListService implements IShoppingListService {
         return list;
     }
 
+    @Override
+    public ShoppingList bulkUncheck(BulkCheckDTO dto, String listId) {
+
+        ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
+        Map<String, Boolean> mapped = new HashMap<>();
+        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
+        List<ShoppingItem> updatedItems = new ArrayList<>();
+
+        if (!dto.isAllSelected()) {
+            list.getItemList().forEach(item -> {
+                if (mapped.containsKey(item.getId())) {
+                    item.setChecked(false);
+                }
+                updatedItems.add(item);
+            });
+        } else {
+            list.getItemList().forEach(item -> {
+                item.setChecked(false);
+                updatedItems.add(item);
+            });
+        }
+        list.setItemList(updatedItems);
+        shoppingListRepository.save(list);
+        return list;
+    }
+
 
 }

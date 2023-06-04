@@ -49,4 +49,6 @@ public interface IShoppingListService {
     ShoppingList updateList(String id, ShoppingList updatedShoppingList) throws ShoppingListDoesNotExistException;
 
     ShoppingList bulkCheck(BulkCheckDTO dto, String listId);
+
+    ShoppingList bulkUncheck(BulkCheckDTO dto, String listId);
 }

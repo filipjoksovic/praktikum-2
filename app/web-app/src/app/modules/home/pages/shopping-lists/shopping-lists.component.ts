@@ -66,8 +66,13 @@ export class ShoppingListsComponent implements OnInit {
     if (this.isEdit) {
       console.log('Should send req1uest');
       console.log(this.idsForCheck);
-      this.shoppingListService.updateItemsStatus(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
+      this.shoppingListService.bulkCheck(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
     }
+    // else {
+    //   console.log('Should send req1uest');
+    //   console.log(this.idsForCheck);
+    //   this.shoppingListService.bulkUncheck(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
+    // }
     this.isEdit = !this.isEdit;
   }
 
@@ -141,6 +146,7 @@ export class ShoppingListsComponent implements OnInit {
     this.listsContextActive = false;
     this.renderer.setStyle(this.contextListstMenu.nativeElement, 'top', -1000 + 'px');
     this.renderer.setStyle(this.contextListstMenu.nativeElement, 'left', -1000 + 'px');
+    this.shoppingListService.deleteShoppingList(this.selectedId).subscribe();
   }
 
   updateSelectedList(selectedList: IShoppingList) {
