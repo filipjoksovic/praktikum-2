@@ -170,3 +170,8 @@
 .no-shadow {
   box-shadow: none !important;
 }
+
+.disabled {
+  opacity: .65;
+  pointer-events: none;
+}

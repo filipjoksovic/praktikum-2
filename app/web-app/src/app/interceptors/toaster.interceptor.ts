@@ -14,7 +14,11 @@ export class ToasterInterceptor implements HttpInterceptor {
       console.log('here');
       return next.handle(request).pipe(
         catchError((err) => {
-          this.toaster.error('Error!', err.error.message);
+          console.log('error caught');
+          this.toaster.error(
+            'Error!',
+            (err.error && err.error.message) || 'Unknown error occured. Please try again later',
+          );
           return of(err);
         }),
       );

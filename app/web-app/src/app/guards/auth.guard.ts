@@ -12,10 +12,7 @@ export class AuthGuard {
     console.log(this.authService.currentUserValue);
 
     if (!this.authService.currentUserValue) {
-      // this.router.navigate(['/auth']);
-      console.log('Should redirect');
       this.router.navigateByUrl('/auth');
-
       return false;
     }
     return true;

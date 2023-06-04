@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { generateRandomString } from '../../../../shared/helpers';
-import { interval } from 'rxjs';
+import { interval, mergeMap, tap } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FamilyService } from '../../../../services/family.service';
+import { FamilyStoreService } from '../../../services/stores/family-store.service';
 
 @Component({
   selector: 'app-create',
@@ -13,6 +14,7 @@ import { FamilyService } from '../../../../services/family.service';
 export class CreateComponent {
   protected readonly faPlus = faPlus;
   protected readonly faDice = faDice;
+  protected readonly faBan = faBan;
 
   public emailForm: FormGroup = this.fb.group({
     emailToAdd: new FormControl('', [Validators.email]),
@@ -21,11 +23,29 @@ export class CreateComponent {
     familyCode: new FormControl('', Validators.required),
   });
 
-  public code = '';
+  public existingRequest$ = this.familyService.getRequestsForUser().pipe(
+    mergeMap(() => this.familyStore.existingRequest$),
+    tap((request) =>
+      request !== null
+        ? this.joinFamilyForm.disable({
+            onlySelf: false,
+            emitEvent: false,
+          })
+        : this.joinFamilyForm.enable({
+            onlySelf: false,
+            emitEvent: false,
+          }),
+    ),
+  );
+  code = '';
   emailToAdd = '';
   emailsToAdd = [];
 
-  public constructor(private fb: FormBuilder, private familyService: FamilyService) {}
+  public constructor(
+    private fb: FormBuilder,
+    private familyService: FamilyService,
+    private familyStore: FamilyStoreService,
+  ) {}
 
   generateCode() {
     for (let i = 0; i < 100; i++) {
@@ -45,5 +65,9 @@ export class CreateComponent {
 
   sendJoin() {
     this.familyService.sendRequest(this.joinFamilyForm.get('familyCode').value).subscribe();
+  }
+
+  cancelRequest(id: string) {
+    this.familyService.cancelRequest(id).subscribe();
   }
 }

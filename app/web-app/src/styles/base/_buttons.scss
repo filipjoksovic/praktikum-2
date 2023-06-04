@@ -44,4 +44,9 @@ button,
     color: white;
   }
 
+  &:disabled{
+    opacity: .65;
+    cursor: not-allowed;
+  }
+
 }

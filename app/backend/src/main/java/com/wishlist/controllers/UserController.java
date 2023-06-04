@@ -3,6 +3,7 @@ package com.wishlist.controllers;
 import com.wishlist.dto.AccountSetupDTO;
 import com.wishlist.dto.ApiError;
 import com.wishlist.exceptions.AccountSetupFailedException;
+import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.models.User;
 import com.wishlist.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable String id) {
+    public User findById(@PathVariable String id) throws UserDoesNotExistException {
         return userService.getUserById(id);
     }
 
@@ -45,7 +46,7 @@ public class UserController {
 
 
     @PutMapping("/account")
-    public ResponseEntity setupAccount(@RequestBody AccountSetupDTO dto) {
+    public ResponseEntity<?> setupAccount(@RequestBody AccountSetupDTO dto) {
         try {
             return new ResponseEntity(userService.setupAccount(dto), HttpStatus.OK);
         } catch (AccountSetupFailedException e) {

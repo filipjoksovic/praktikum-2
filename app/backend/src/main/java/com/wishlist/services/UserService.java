@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
-    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final IJWTGenerator jwtGenerator;
     private final IEmailSender emailSender;
     private final AuthenticationManager authenticationManager;
@@ -44,8 +44,8 @@ public class UserService implements IUserService, IAuth {
         return userRepository.save(user);
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id).get();
+    public User getUserById(String id) throws UserDoesNotExistException {
+        return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
     public User getUserByEmail(String email) {

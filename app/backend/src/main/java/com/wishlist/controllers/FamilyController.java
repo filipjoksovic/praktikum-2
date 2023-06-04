@@ -1,9 +1,7 @@
 package com.wishlist.controllers;
 
 import com.wishlist.dto.*;
-import com.wishlist.exceptions.FamilyDoesNotExistException;
-import com.wishlist.exceptions.FamilyNotChangedException;
-import com.wishlist.exceptions.InvalidInviteCodeException;
+import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.services.FamilyService;
 import com.wishlist.services.UserService;
@@ -125,13 +123,33 @@ public class FamilyController {
     }
 
     @PostMapping("/leave/{familyId}/{userId}")
-    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId) {
+    public ResponseEntity<?> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId) {
         try {
             return new ResponseEntity<>(familyService.removeUserFromFamily(familyId, userId), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (FailedToRemoveUserException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        } catch (FamilyDoesNotExistException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        } catch (UserDoesNotExistException e) {
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
         }
     }
 
+    @DeleteMapping("/{familyId}/{userId}/remove")
+    public ResponseEntity<?> removeUserFromFamily(@PathVariable String familyId, @PathVariable String userId) {
+        try {
+            logger.info("rmv usr {} from fml {} 200", userId, familyId);
+            return ResponseEntity.ok(familyService.removeUserFromFamily(familyId, userId));
+        } catch (FailedToRemoveUserException e) {
+            logger.info("rmv usr {} from fml {} 500 {}", userId, familyId, e.getMessage());
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        } catch (FamilyDoesNotExistException e) {
+            logger.info("rmv usr {} from fml {} 500 {}", userId, familyId, e.getMessage());
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        } catch (UserDoesNotExistException e) {
+            logger.info("rmv usr {} from fml {} 500 {}", userId, familyId, e.getMessage());
+            return ResponseEntity.internalServerError().body(new ApiError(e.getMessage()));
+        }
+    }
 
 }

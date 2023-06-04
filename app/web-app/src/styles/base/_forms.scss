@@ -28,6 +28,9 @@
     // border: 2px solid $form-control-stroke;
     outline: 2px solid $form-control-stroke;
   }
+  &:disabled{
+    opacity: .65;
+  }
 
   &__checkbox {
     background: $primary-5;
@@ -40,4 +43,7 @@
 textarea.form-control {
   padding: $spacer * 4 $spacer * 4;
   box-shadow: $container-box-shadow;
+  &:disabled{
+    opacity: .65;
+  }
 }

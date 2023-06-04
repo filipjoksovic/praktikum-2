@@ -61,14 +61,14 @@
 
       <ng-container *ngIf="selectedTab === 'members'">
         <ng-container *ngIf="familyMembers$ | async as members">
-          <div *ngFor="let member of members" class="family-member">
+          <div *ngFor="let member of members" class="family-member" [ngClass]="{'disabled':user.id === member.id}">
             <div class="family-member__data">
-              <p>{{member.name || "No first name"}}</p>
-              <p>{{member.surname || "No last name"}}</p>
+              <p>{{member.name || "No first name"}} {{member.surname || "No last name"}} {{member.id === user.id ? "(You)" : ""}}</p>
               <p>{{member.email}}</p>
             </div>
-            <div class="family-member__actions">
-              <button class="btn btn__danger w-64 h-64 round">
+            <div class="family-member__actions" *ngIf="member.id !== user.id">
+              <button class="btn btn__danger w-64 h-64 round" title="Remove user"
+                      (click)="user.id !== member.id && removeUser(member)">
                 <fa-icon [icon]="faBan"></fa-icon>
               </button>
             </div>
@@ -77,7 +77,33 @@
 
       </ng-container>
 
-      <ng-container *ngIf="selectedTab==='requests'"></ng-container>
+      <ng-container *ngIf="selectedTab==='requests'">
+
+        <ng-container *ngIf="pendingRequests$ | async as pendingRequests">
+          <div *ngFor="let request of pendingRequests">
+            <div class="pending-request">
+              <div class="pending-request__data">
+                <p>{{request.name || "No first name"}} {{request.surname || "No last name"}}</p>
+                <p>{{request.email}}</p>
+                <p class="mt-2">{{request.createdAt.split("[")[0] | date:"MMM d, y HH:mm"}}</p>
+              </div>
+              <div class="pending-request__actions">
+                <div class="pending-request__action__reject">
+                  <button class="btn round w-64 h-64" title="Reject request" (click)="rejectRequest(request)">
+                    <fa-icon [icon]="faBan"></fa-icon>
+                  </button>
+                </div>
+                <div class="pending-request__action__accept">
+                  <button class="btn round w-64 h-64" title="Accept request" (click)="acceptRequest(request)">
+                    <fa-icon [icon]="faCheck"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
 
     </div>
   </div>

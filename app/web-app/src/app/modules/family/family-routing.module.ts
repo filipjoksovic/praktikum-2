@@ -9,6 +9,7 @@ import { FamilyDataComponent } from './pages/family-data/family-data.component';
 import { FamilyListComponent } from './pages/family-list/family-list.component';
 import { FamilyMembersComponent } from './pages/family-members/family-members.component';
 import { FamilyRequestsComponent } from './pages/family-requests/family-requests.component';
+import { HasFamilyGuard } from "../../guards/has-family.guard";
 
 const routes: Routes = [
   {
@@ -30,7 +31,7 @@ const routes: Routes = [
       },
       {
         path: 'family/data',
-        component: FamilyDataComponent,
+        component: FamilyDataComponent, canActivate:[HasFamilyGuard],
       },
       { path: 'family/list', component: FamilyListComponent, canActivate: [AuthGuard] },
       {

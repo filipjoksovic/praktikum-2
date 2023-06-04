@@ -46,14 +46,40 @@
 
   <div class="flex-1 mt-4">
     <div class="container">
+
       <h3 class="">Join</h3>
-      <p class="mt-2">If there already is a family you'd like to join, just input the code here</p>
+
+      <ng-container *ngIf="existingRequest$ | async as request; else joinTemplate;">
+        <p>It looks like you already have a request pending. If you'd like to join some other family, please cancel
+          this one</p>
+
+        <div class="banner">
+          <div class="banner__header">
+            <p>
+              {{request.familyName}}
+            </p>
+            <p>
+              {{request.createdAt.split('[')[0] | date:"MM/dd/yy HH:mm"}}
+            </p>
+          </div>
+          <button class="btn w-64 h-64 round banner__actions" (click)="cancelRequest(request.id)">
+            <fa-icon [icon]="faBan"></fa-icon>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #joinTemplate>
+        <p class="mt-2">If there already is a family you'd like to join, just input the code here</p>
+      </ng-template>
+
 
       <form [formGroup]="joinFamilyForm" class="d-flex flex-1 align-center flex-column">
         <div class="form-group mt-8 flex-1">
           <input formControlName="familyCode" class="form-control" placeholder="Code">
         </div>
-        <button class="btn btn__primary mt-8 w-fit" (click)="sendJoin()">Send join request</button>
+        <button class="btn btn__primary mt-8 w-fit" (click)="sendJoin()" [disabled]="joinFamilyForm.disabled">Send join
+          request
+        </button>
       </form>
     </div>
   </div>

@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpHeaders } fro
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { environment } from "../../../environment";
+import { environment } from '../../../environment';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -21,7 +21,6 @@ export class TokenInterceptor implements HttpInterceptor {
           this.router.navigate(['/auth']);
         }
         const reqWithAuth = request.clone({
-          url:`${environment.apiBaseUrl}/${request.url}`,
           headers: new HttpHeaders({
             Authorization: `Bearer ${user.accessToken}`,
           }),

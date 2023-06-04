@@ -13,7 +13,7 @@ import java.util.List;
 public interface IUserService {
     List<User> getAllUsers();
     User createUser(User user);
-    User getUserById(String id);
+    User getUserById(String id) throws UserDoesNotExistException;
     User updateUser(User user);
     void deleteUserById(String id);
     User getUserByEmail(String email);

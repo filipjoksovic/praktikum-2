@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/User';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environment';
 
@@ -36,5 +36,19 @@ export class AuthService {
   logout() {
     localStorage.removeItem('currentUser');
     this._currentUser$.next(null);
+  }
+
+  getLocalUser(): User {
+    return JSON.parse(localStorage.getItem('currentUser')) as User;
+  }
+
+  public getUser() {
+    const localUser = this.getLocalUser();
+    return this.http.get<User>(`users/${localUser.id}`).pipe(
+      tap((user: User) => {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this._currentUser$.next(user);
+      }),
+    );
   }
 }

@@ -10,11 +10,13 @@ import com.wishlist.services.interfaces.IFamilyService;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class FamilyService implements IFamilyService {
@@ -115,28 +117,12 @@ public class FamilyService implements IFamilyService {
         return familyRepository.findByInviteCode(inviteCode);
     }
 
-    public Family removeUserFromFamily(String familyId, String userId) throws Exception {
-        Optional<Family> familyOptional = familyRepository.findById(familyId);
+    public Family removeUserFromFamily(String familyId, String userId) throws FamilyDoesNotExistException, UserDoesNotExistException, FailedToRemoveUserException {
+        Family family = familyRepository.findById(familyId).orElseThrow(FamilyDoesNotExistException::new);
         User user = userService.getUserById(userId);
-        if (!familyOptional.isPresent()) {
-            throw new FamilyNotFoundException();
-        }
-        if (user == null) {
-            throw new UserDoesNotExistException();
-        }
-        Family family = familyOptional.get();
-        List<User> familyUsers = family.getUsers();
-        for (User currentUser : familyUsers) {
-            if (Objects.equals(currentUser.getId(), userId)) {
-                familyUsers.remove(currentUser);
-                user.setFamilyId(null);
-                familyRepository.save(family);
-                userService.updateUser(user);
-                return family;
-            }
-        }
-        throw new Exception("Failed to delete user from family");
-
+        user.setFamilyId(null);
+        userService.updateUser(user);
+        return family;
     }
 
     public boolean isCodeInFormat(String input) {

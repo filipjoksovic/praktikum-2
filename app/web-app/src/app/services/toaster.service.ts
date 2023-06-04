@@ -8,16 +8,18 @@ import { map } from 'rxjs/operators';
 })
 export class ToasterService {
   private _messages$ = new BehaviorSubject<ToastMessage[] | null>(null);
-  public messages$ = this._messages$.asObservable()
+  public messages$ = this._messages$.asObservable();
+
   constructor() {}
 
   public toast(messageType: ToastMessageType, title: string, content: string) {
     if (this._messages$.value) {
+      console.log('here 1');
       this._messages$.next([{ messageType, title, content }, ...this._messages$.value]);
     } else {
+      console.log('here 2');
       this._messages$.next([{ messageType, title, content }]);
     }
-
   }
 
   public success(title: string, content: string) {
@@ -25,6 +27,7 @@ export class ToasterService {
   }
 
   public error(title: string, content: string) {
+    console.log(title, content);
     this.toast(ToastMessageType.DANGER, title, content);
   }
 

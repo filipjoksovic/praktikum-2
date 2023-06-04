@@ -1,0 +1,37 @@
+.pending-request {
+  padding: $spacer * 4;
+  border: 1px solid $light-gray;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 20px;
+  margin-top: $spacer * 2;
+  max-height: 100%;
+  overflow-y: scroll;
+
+  &__actions {
+    display: flex;
+    gap: $spacer*2;
+  }
+
+  &__action__reject button {
+    background-color: $red-500;
+    color: $red-900;
+    transition: 250ms ease-in-out background-color;
+
+    &:hover {
+      background-color: $red-600;
+    }
+  }
+
+  &__action__accept button {
+    background-color: $green-500;
+    color: $green-900;
+    transition: 250ms ease-in-out background-color;
+
+    &:hover {
+      background-color: $green-600;
+    }
+  }
+}
