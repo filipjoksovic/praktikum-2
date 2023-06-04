@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators';
 import { tap } from 'rxjs';
 import { TranscriptStoreService } from './stores/transcript-store.service';
+import { ToasterService } from './toaster.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class ShoppingListService {
     private http: HttpClient,
     private authService: AuthService,
     private transcriptStore: TranscriptStoreService,
+    private toaster: ToasterService,
   ) {}
 
   uploadRecording(data: Blob) {
@@ -35,12 +37,15 @@ export class ShoppingListService {
     return this.http.post(`shoppingLists/user/${this.authService.currentUserValue.id}`, list);
   }
 
-  getAllShoppingLists() {
-    return this.http.get(`shoppingLists`);
+  getUserShoppingLists() {
+    const user = this.authService.getLocalUser();
+    return this.http.get(`shoppingLists/${user.id}`);
   }
 
-  updateShoppingList(id: string, updatedShoppingList: any) {
-    return this.http.put(`shoppingLists/${id}`, updatedShoppingList);
+  updateShoppingList(shoppingListId: string, updatedShoppingList: any) {
+    return this.http
+      .put(`shoppingLists/${shoppingListId}`, updatedShoppingList)
+      .pipe(tap((response) => this.toaster.success('Success!', 'Shopping list successfully updated')));
   }
 
   deleteShoppingList(listId: string) {

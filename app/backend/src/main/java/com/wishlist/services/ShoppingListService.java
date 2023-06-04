@@ -248,5 +248,15 @@ public class ShoppingListService implements IShoppingListService {
         return null;
     }
 
+    @Override
+    public ShoppingList updateList(String id, ShoppingList updatedShoppingList) throws ShoppingListDoesNotExistException {
+        ShoppingList list = shoppingListRepository.findById(id).orElseThrow(ShoppingListDoesNotExistException::new);
+        if (!list.getName().equals(updatedShoppingList.getName())) {
+            list.setName(updatedShoppingList.getName());
+            shoppingListRepository.save(list);
+        }
+        return list;
+    }
+
 
 }

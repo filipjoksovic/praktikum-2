@@ -23,16 +23,42 @@
 
     <!--    Lists container-->
     <div class="shopping-lists-container">
-      <ng-container *ngFor="let list of shoppingLists$ | async">
-        <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)">
-          <div class="d-flex justify-between align-center">
-            <span>{{ list.name }}</span>
-            <ng-container *ngIf="selectedId === list.id">
-              <fa-icon [icon]="faEye" size="lg"></fa-icon>
+      <ng-container *ngIf="shoppingLists$ | async as shoppingLists">
+        <ng-container *ngIf="shoppingLists.length > 0; else noShoppingListsTemplate">
+          <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)"
+               (contextmenu)="listRightClick($event, list)"
+               *ngFor="let list of shoppingLists">
+            <ng-container
+              *ngIf="!isEditSelectedList || (isEditSelectedList && list.id !== selectedId); else selectedListEditTemplate">
+              <div class="d-flex justify-between align-center">
+                <span>{{ list.name }}</span>
+                <ng-container *ngIf="selectedId === list.id">
+                  <fa-icon [icon]="faEye" size="lg"></fa-icon>
+                </ng-container>
+              </div>
             </ng-container>
+            <ng-template #selectedListEditTemplate>
+              <ng-container *ngIf="selectedList$  | async as selectedList">
+                <div class="d-flex align-center justify-between w-100 gap-4">
+                  <input class="form-control form-control__transparent" [(ngModel)]="selectedList.name"
+                         (blur)="updateSelectedList(selectedList)" />
+                  <button class="btn w-64 h-64 round" (click)="cancelEdit()">
+                    <fa-icon [icon]="faTimes"></fa-icon>
+                  </button>
+                </div>
+              </ng-container>
+
+            </ng-template>
           </div>
-        </div>
+        </ng-container>
       </ng-container>
+
+      <ng-template #noShoppingListsTemplate>
+        <div class="no-lists-present">
+          <h3>No lists present on this account</h3>
+          <p>If you'd like to create a list. Go to the <a [routerLink]="'/'">recorder page</a>. </p>
+        </div>
+      </ng-template>
     </div>
     <!--    Lists container end-->
   </div>
@@ -93,5 +119,15 @@
   </div>
 
   <!--  List items container end-->
+</div>
 
+<div #contextMenu [ngClass]="{'context-menu':contextActive,'context-menu__hidden':!contextActive}">
+  <div class="context-menu__item" (click)=editSelectedListName()>
+    <fa-icon [icon]="faPen"></fa-icon>
+    <p>Edit</p>
+  </div>
+  <div class="context-menu__item" (click)="deleteSelectedList()">
+    <fa-icon [icon]="faTrash"></fa-icon>
+    <p>Delete</p>
+  </div>
 </div>

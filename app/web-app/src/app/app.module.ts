@@ -15,9 +15,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { httpInterceptorProviders } from './interceptors';
 import { ToasterComponent } from './shared/components/toaster/toaster.component';
 import { ToastMessageComponent } from './shared/components/toast-message/toast-message.component';
+import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, ToasterComponent, ToastMessageComponent],
+  declarations: [AppComponent, HomeComponent, ToasterComponent, ToastMessageComponent, ContextMenuComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

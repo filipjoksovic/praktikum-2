@@ -55,8 +55,9 @@
 
   & :not(:last-child) {
     border-bottom: 1px solid $light-gray;
-
   }
+
+
 }
 
 app-shopping-lists {
@@ -75,4 +76,18 @@ app-shopping-lists {
 .list-items-actions {
   display: flex;
   gap: $spacer * 4;
+}
+
+.no-lists-present {
+  padding: $spacer * 4;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacer * 4;
+
+  & * {
+    border: none !important;
+  }
 }
