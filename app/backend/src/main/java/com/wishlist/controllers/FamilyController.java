@@ -151,9 +151,9 @@ public class FamilyController {
     }
 
     @PostMapping("/leave/{familyId}/{userId}")
-    public ResponseEntity<?> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId) {
+    public ResponseEntity<?> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId, @RequestHeader("Authorization") String jwt) {
         try {
-            if (!familyService.isOwner(familyId, userId)) {
+            if (jwtValidator.validateFamily(jwt, familyId) && !familyService.isOwner(familyId, userId)) {
                 return new ResponseEntity<>(familyService.removeUserFromFamily(familyId, userId), HttpStatus.OK);
             } else {
                 return new ResponseEntity(new ApiError("Owner cannot leave family"), HttpStatus.INTERNAL_SERVER_ERROR);
