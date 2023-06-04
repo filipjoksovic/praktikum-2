@@ -21,6 +21,11 @@ export class ShoppingListsComponent implements OnInit {
 
   public contextActive = false;
   protected readonly faTrash = faTrash;
+  protected readonly faFloppyDisk = faFloppyDisk;
+  protected readonly faTimes = faTimes;
+  protected readonly faCheck = faCheck;
+  protected readonly faCheckDouble = faCheckDouble;
+
   isEditSelectedList = false;
 
   public selectedList$ = this.shoppingListStore.selectedList$.pipe(
@@ -28,6 +33,8 @@ export class ShoppingListsComponent implements OnInit {
   );
   public shoppingLists$ = this.shoppingListStore.shoppingLists$;
   public selectedId = '';
+
+  searchList: string;
 
   constructor(
     private shoppingListService: ShoppingListService,
@@ -68,11 +75,6 @@ export class ShoppingListsComponent implements OnInit {
       this.idsForCheck.push(id);
     }
   }
-
-  protected readonly faFloppyDisk = faFloppyDisk;
-  protected readonly faTimes = faTimes;
-  protected readonly faCheck = faCheck;
-  protected readonly faCheckDouble = faCheckDouble;
 
   selectAll() {
     this.allSelected = !this.allSelected;
@@ -129,5 +131,15 @@ export class ShoppingListsComponent implements OnInit {
         this.shoppingListStore.updateShoppingList(list);
       });
     }
+  }
+
+  findLists() {
+    this.shoppingListService
+      .search(this.searchList)
+      .pipe(take(1))
+      .subscribe((result) => {
+        console.log(result);
+        this.shoppingListStore.setShoppingLists(result);
+      });
   }
 }

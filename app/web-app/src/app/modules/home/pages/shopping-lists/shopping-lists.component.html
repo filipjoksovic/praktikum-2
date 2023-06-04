@@ -11,9 +11,9 @@
 
       <div class="form-group flex-grow-1">
         <label>Search</label>
-        <input class="form-control">
+        <input class="form-control" [(ngModel)]="searchList">
       </div>
-      <button class="btn btn__success round w-64 h-64">
+      <button class="btn btn__success round w-64 h-64" (click)="findLists()">
         <fa-icon [icon]="faSearch"></fa-icon>
       </button>
 
