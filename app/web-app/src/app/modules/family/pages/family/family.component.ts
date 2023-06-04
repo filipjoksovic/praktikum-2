@@ -5,9 +5,9 @@ import {
   faDatabase,
   faDoorOpen,
   faPeopleGroup,
-  faPlus
-} from "@fortawesome/free-solid-svg-icons";
-import { mergeMap, Observable } from 'rxjs';
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import { mergeMap, Observable, shareReplay } from 'rxjs';
 import { FamilyStoreService } from '../../../services/stores/family-store.service';
 import { FamilyService } from '../../../../services/family.service';
 
@@ -25,6 +25,7 @@ export class FamilyComponent {
       this.familyStore.setFamily(family);
       return this.familyStore.family$;
     }),
+    shareReplay(),
   );
 
   constructor(private familyStore: FamilyStoreService, private familyService: FamilyService) {}

@@ -170,7 +170,8 @@ public class FamilyController {
     @DeleteMapping("/{familyId}/{userId}/remove")
     public ResponseEntity<?> removeUserFromFamily(@PathVariable String familyId, @PathVariable String userId, @RequestHeader("Authorization") String jwt) {
         try {
-            if (jwtValidator.validateUser(jwt, userId) && familyService.isOwner(familyId, userId)) {
+            String requestingUserId = jwtValidator.getUserFromJwt(jwt).getId();
+            if (familyService.isOwner(requestingUserId, familyId)) {
                 logger.info("rmv usr {} from fml {} 200", userId, familyId);
                 return ResponseEntity.ok(familyService.removeUserFromFamily(familyId, userId));
             } else {
