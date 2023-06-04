@@ -35,16 +35,13 @@ app-toaster {
   width: fit-content;
   min-width: 400px;
   max-width: 30vw;
-  padding-left: $spacer*4;
-  padding-right: $spacer*8;
-  padding-top: $spacer*2;
-  padding-bottom: $spacer* 2;
+  padding: $spacer*2 $spacer*8 $spacer* 2 $spacer*4;
   display: flex;
   border-radius: 10px;
   position: relative;
   margin-bottom: $spacer * 2;
   flex-direction: column;
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+  box-shadow: rgba(9, 30, 66, 0.25) 0 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 
   &__title {
     font-weight: bold;
@@ -105,7 +102,6 @@ app-toaster {
     background-color: transparent !important;
     padding: 0;
     margin: 0;
-    top: 0;
     border: none;
     outline: none;
     top: $spacer*2;
@@ -117,7 +113,7 @@ app-toaster {
     width: 100%;
     height: 3px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     left: 2px;
     border-radius: 20px;
 

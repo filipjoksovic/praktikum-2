@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranscriptStoreService } from '../../../../services/stores/transcript-store.service';
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-list-item',
@@ -8,14 +8,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
   styleUrls: ['./add-list-item.component.scss'],
 })
 export class AddListItemComponent {
-  constructor(private transcriptStore: TranscriptStoreService) {}
-
   public item = '';
+  protected readonly faPlus = faPlus;
+
+  constructor(private transcriptStore: TranscriptStoreService) {}
 
   public addItem() {
     console.log('adding', this.item);
     this.transcriptStore.addToList(this.item);
   }
-
-  protected readonly faPlus = faPlus;
 }

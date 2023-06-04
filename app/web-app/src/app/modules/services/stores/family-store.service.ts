@@ -20,8 +20,6 @@ export class FamilyStoreService {
   private _pendingRequests$: BehaviorSubject<JoinRequestDTO[] | null> = new BehaviorSubject(null);
   public pendingRequests$ = this._pendingRequests$.asObservable();
 
-  constructor() {}
-
   public getFamily() {
     return this._family$.value;
   }

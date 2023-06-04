@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { faBan, faDice, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { generateRandomString } from '../../../../shared/helpers';
-import { interval, mergeMap, tap } from 'rxjs';
+import { mergeMap, tap } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FamilyService } from '../../../../services/family.service';
 import { FamilyStoreService } from '../../../services/stores/family-store.service';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create',
@@ -13,10 +13,6 @@ import { Router } from "@angular/router";
   styleUrls: ['./create.component.scss'],
 })
 export class CreateComponent {
-  protected readonly faPlus = faPlus;
-  protected readonly faDice = faDice;
-  protected readonly faBan = faBan;
-
   public emailForm: FormGroup = this.fb.group({
     emailToAdd: new FormControl('', [Validators.email]),
   });
@@ -43,9 +39,14 @@ export class CreateComponent {
           }),
     ),
   );
-  code = '';
-  emailToAdd = '';
-  emailsToAdd = [];
+
+  public code = '';
+  public emailToAdd = '';
+  public emailsToAdd = [];
+
+  protected readonly faPlus = faPlus;
+  protected readonly faDice = faDice;
+  protected readonly faBan = faBan;
 
   public constructor(
     private fb: FormBuilder,
@@ -54,7 +55,7 @@ export class CreateComponent {
     private router: Router,
   ) {}
 
-  generateCode() {
+  public generateCode() {
     for (let i = 0; i < 100; i++) {
       setTimeout(() => {
         this.createFamilyForm.patchValue({ familyCode: generateRandomString() });
@@ -70,15 +71,15 @@ export class CreateComponent {
     }
   }
 
-  sendJoin() {
+  public sendJoin() {
     this.familyService.sendRequest(this.joinFamilyForm.get('familyCode').value).subscribe();
   }
 
-  cancelRequest(id: string) {
+  public cancelRequest(id: string) {
     this.familyService.cancelRequest(id).subscribe();
   }
 
-  createFamily() {
+  public createFamily() {
     this.familyService
       .createFamily({
         name: this.createFamilyForm.get('familyName').value,

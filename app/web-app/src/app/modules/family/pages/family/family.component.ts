@@ -7,7 +7,7 @@ import {
   faPeopleGroup,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { mergeMap, Observable, shareReplay } from 'rxjs';
+import { mergeMap, shareReplay } from 'rxjs';
 import { FamilyStoreService } from '../../../services/stores/family-store.service';
 import { FamilyService } from '../../../../services/family.service';
 
@@ -17,10 +17,7 @@ import { FamilyService } from '../../../../services/family.service';
   styleUrls: ['./family.component.scss'],
 })
 export class FamilyComponent {
-  protected readonly faPlus = faPlus;
-  protected readonly faPeopleGroup = faPeopleGroup;
-  protected readonly faDoorOpen = faDoorOpen;
-  family$ = this.familyService.getFamily().pipe(
+  public family$ = this.familyService.getFamily().pipe(
     mergeMap((family) => {
       this.familyStore.setFamily(family);
       return this.familyStore.family$;
@@ -28,9 +25,12 @@ export class FamilyComponent {
     shareReplay(),
   );
 
-  constructor(private familyStore: FamilyStoreService, private familyService: FamilyService) {}
-
+  protected readonly faPlus = faPlus;
+  protected readonly faPeopleGroup = faPeopleGroup;
+  protected readonly faDoorOpen = faDoorOpen;
   protected readonly faDatabase = faDatabase;
   protected readonly faCodePullRequest = faCodePullRequest;
   protected readonly faCartShopping = faCartShopping;
+
+  constructor(private familyStore: FamilyStoreService, private familyService: FamilyService) {}
 }

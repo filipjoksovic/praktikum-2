@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../models/User';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _currentUser$: BehaviorSubject<User>;
   public currentUser$: Observable<User>;
+
+  private _currentUser$: BehaviorSubject<User>;
 
   constructor(private http: HttpClient) {
     this._currentUser$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -29,7 +29,7 @@ export class AuthService {
     );
   }
 
-  register(user: User) {
+  public register(user: User) {
     return this.http.post<User>(`auth/register`, user);
   }
 
@@ -38,7 +38,7 @@ export class AuthService {
     this._currentUser$.next(null);
   }
 
-  getLocalUser(): User {
+  public getLocalUser(): User {
     return JSON.parse(localStorage.getItem('currentUser')) as User;
   }
 
@@ -52,7 +52,7 @@ export class AuthService {
     );
   }
 
-  updateLocalUser(data: Partial<User>) {
+  public updateLocalUser(data: Partial<User>) {
     const localUser: User = JSON.parse(localStorage.getItem('currentUser'));
     this._currentUser$.next({ ...localUser, ...data });
     localStorage.setItem('currentUser', JSON.stringify({ ...localUser, ...data }));
