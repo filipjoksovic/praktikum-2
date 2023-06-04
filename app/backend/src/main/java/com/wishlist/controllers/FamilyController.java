@@ -140,7 +140,7 @@ public class FamilyController {
     @PostMapping("/remove/{familyId}/{userId}")
     public ResponseEntity<Family> removeFromFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId, @RequestHeader("Authorization") String jwt){
         try {
-            if (jwtValidator.validateUser(jwt, userId) && familyService.isOwner(familyId, userId)){
+            if (jwtValidator.validateFamily(jwt, familyId) && familyService.isOwner(familyId, jwtValidator.getUserFromJwt(jwt).getId())){
                 return new ResponseEntity<>(familyService.removeUserFromFamily(familyId, userId), HttpStatus.OK);
             }
             else {
@@ -152,9 +152,9 @@ public class FamilyController {
     }
 
     @PostMapping("/leave/{familyId}/{userId}")
-    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId) {
+    public ResponseEntity<Family> leaveFamily(@PathVariable("familyId") String familyId, @PathVariable("userId") String userId, @RequestHeader("Authorization") String jwt) {
         try {
-            if (!familyService.isOwner(familyId, userId)){
+            if (jwtValidator.validateFamily(jwt, familyId) && !familyService.isOwner(familyId, userId)){
                 return new ResponseEntity<>(familyService.removeUserFromFamily(familyId, userId), HttpStatus.OK);
             }
             else {
