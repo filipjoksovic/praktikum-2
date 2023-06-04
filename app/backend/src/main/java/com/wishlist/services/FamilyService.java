@@ -117,11 +117,9 @@ public class FamilyService implements IFamilyService {
     @Override
     public Family update(String id, String name) throws FamilyDoesNotExistException, FamilyNotChangedException {
         Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
-
         if (!family.getName().equals(name)) {
             family.setName(name);
             return familyRepository.save(family);
-
         }
         throw new FamilyNotChangedException();
     }

@@ -40,45 +40,28 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity update(@RequestBody User user, @RequestHeader("Authorization") String jwt) {
-        try{
-            if(jwtValidator.validateUser(jwt, user.getId())){
-                return new ResponseEntity(userService.updateUser(user), HttpStatus.OK);
-            }
-            else {
-                return new ResponseEntity(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
-            }
-        }
-        catch (Exception e){
-            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (jwtValidator.validateUser(jwt, user.getId())) {
+            return new ResponseEntity(userService.updateUser(user), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
         }
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id, @RequestHeader("Authorization") String jwt) {
-        userService.deleteUserById(id);
-        try{
-            if(jwtValidator.validateUser(jwt, id)){
-                userService.deleteUserById(id);
-            }
-            else {
-            }
-        }
-        catch (Exception e){
+        if (jwtValidator.validateUser(jwt, id)) {
+            userService.deleteUserById(id);
+        } else {
         }
     }
 
 
     @PutMapping("/account")
     public ResponseEntity<?> setupAccount(@RequestBody AccountSetupDTO dto, @RequestHeader("Authorization") String jwt) {
-        try {
-            if(jwtValidator.validateUser(jwt, dto.getId())){
-                return new ResponseEntity(userService.setupAccount(dto), HttpStatus.OK);
-            }
-            else {
-                return new ResponseEntity(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
-            }
-        } catch (AccountSetupFailedException e) {
-            return new ResponseEntity(new ApiError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (jwtValidator.validateUser(jwt, dto.getId())) {
+            return new ResponseEntity(userService.setupAccount(dto), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
         }
 
     }
