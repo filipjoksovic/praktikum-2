@@ -22,6 +22,9 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
 
+    @Value("${server.cors}")
+    private String corsIp;
+
     public SecurityConfig(JwtFilter jwtFilter, AuthenticationProvider authenticationProvider) {
         this.jwtFilter = jwtFilter;
         this.authenticationProvider = authenticationProvider;
@@ -30,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // CHANGE TO LOCALHOST IF YOU ARE TESTING LOCALLY!
+        configuration.setAllowedOrigins(Arrays.asList(corsIp));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(
@@ -65,6 +68,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
 
 }

@@ -18,10 +18,9 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping
+/*    @GetMapping
     public List<ShoppingItem> getAll() {
         return itemService.getAll();
-    }
-
+    }*/
 
 }
