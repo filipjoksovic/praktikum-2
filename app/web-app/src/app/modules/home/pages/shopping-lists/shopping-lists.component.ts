@@ -17,29 +17,31 @@ export class ShoppingListsComponent implements OnInit {
 
   @ViewChild('contextSingleListMenu', { static: true })
   public contextSingleListMenu: ElementRef;
-  idsForCheck: string[] = [];
-  allSelected = false;
-  faPen = faPen;
 
-  public listsContextActive = false;
-  public listItemContextActive = false;
-
-  protected readonly faTrash = faTrash;
-  protected readonly faFloppyDisk = faFloppyDisk;
-  protected readonly faTimes = faTimes;
-  protected readonly faCheck = faCheck;
-  protected readonly faCheckDouble = faCheckDouble;
-
-  isEditSelectedList = false;
-  isEditSelectedListItem = false;
+  public isEditSelectedList = false;
+  public isEditSelectedListItem = false;
 
   public selectedList$ = this.shoppingListStore.selectedList$.pipe(
     tap((item) => (this.selectedId = (item && item.id) || '')),
   );
   public shoppingLists$ = this.shoppingListStore.shoppingLists$;
   public selectedId = '';
+  public searchList: string;
+  public idsForCheck: string[] = [];
+  public allSelected = false;
+  public listsContextActive = false;
+  public listItemContextActive = false;
+  public isEdit: boolean;
+  public selectedListItem$: Observable<IListItem> = this.shoppingListStore.selectedItem$;
 
-  searchList: string;
+  protected readonly faTrash = faTrash;
+  protected readonly faFloppyDisk = faFloppyDisk;
+  protected readonly faTimes = faTimes;
+  protected readonly faCheck = faCheck;
+  protected readonly faPen = faPen;
+  protected readonly faCheckDouble = faCheckDouble;
+  protected readonly faEye = faEye;
+  protected readonly faSearch = faSearch;
 
   constructor(
     private shoppingListService: ShoppingListService,
@@ -58,12 +60,6 @@ export class ShoppingListsComponent implements OnInit {
     console.log('get shopping list');
     this.shoppingListStore.setSelectedListById(id);
   }
-
-  protected readonly faEye = faEye;
-
-  protected readonly faSearch = faSearch;
-  isEdit: boolean;
-  selectedListItem$: Observable<IListItem> = this.shoppingListStore.selectedItem$;
 
   toggleEditMode() {
     console.log('editing');

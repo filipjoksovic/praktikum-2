@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastMessage } from './models/toaster.model';
+import { Component } from '@angular/core';
 import { ToasterService } from './services/toaster.service';
 import { AuthService } from './services/auth.service';
 
@@ -8,12 +7,8 @@ import { AuthService } from './services/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  title = 'web-app';
+export class AppComponent {
+  public title = 'web-app';
 
   constructor(private toastService: ToasterService, private authService: AuthService) {}
-
-  ngOnInit() {
-    // this.authService.getUser().subscribe();
-  }
 }

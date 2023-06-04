@@ -1,25 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ShoppingListService } from '../../services/shopping-list.service';
 import { VoiceService } from '../../services/voice.service';
-import { AsyncSubject, BehaviorSubject, mergeMap, take, takeUntil, tap } from 'rxjs';
+import { AsyncSubject, mergeMap, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranscriptStoreService } from '../../services/stores/transcript-store.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnDestroy {
-  private ngUnsubscribe$ = new AsyncSubject<void>();
+  ngUnsubscribe$ = new AsyncSubject<void>();
 
-  recording = false;
   public transcript$ = this.transcriptStore.transcript$.pipe(takeUntil(this.ngUnsubscribe$));
-  items: string[] = [];
-  listName = 'New List';
-
-  descriptorTitle = 'Record';
-  descriptorDescription: string =
+  public items: string[] = [];
+  public recording = false;
+  public listName = 'New List';
+  public descriptorTitle = 'Record';
+  public descriptorDescription: string =
     'Press the button to start recording. Upon finishing, the data will be sent for processing, returning the\n' +
     '      recognized shopping list items';
 
@@ -67,6 +65,4 @@ export class HomeComponent implements OnDestroy {
       )
       .subscribe();
   }
-
-
 }
