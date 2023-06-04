@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping("/{id}")
     public User findById(@PathVariable String id) throws UserDoesNotExistException {
         return userService.getUserById(id);
-    }*/
+    }
 
     @PutMapping
     public ResponseEntity update(@RequestBody User user, @RequestHeader("Authorization") String jwt) {

@@ -19,8 +19,6 @@ public interface IFamilyService {
 
     Family save(Family family);
 
-    String generateInviteCode();
-
     Family update(String id, String name) throws FamilyDoesNotExistException, FamilyNotChangedException;
 
     List<User> getFamilyMembers(String familyId) throws FamilyDoesNotExistException;

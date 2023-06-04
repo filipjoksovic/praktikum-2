@@ -51,4 +51,10 @@ export class AuthService {
       }),
     );
   }
+
+  updateLocalUser(data: Partial<User>) {
+    const localUser: User = JSON.parse(localStorage.getItem('currentUser'));
+    this._currentUser$.next({ ...localUser, ...data });
+    localStorage.setItem('currentUser', JSON.stringify({ ...localUser, ...data }));
+  }
 }

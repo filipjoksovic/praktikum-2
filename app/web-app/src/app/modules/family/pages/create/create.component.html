@@ -6,22 +6,24 @@
   <div class="flex-1 mt-4">
     <div class="container">
       <h3>Family data</h3>
-      <div class="d-flex gap-4 mt-2 flex-column">
-        <div class="form-group">
-          <label for="familyName">Family name</label>
-          <input class="form-control" id="familyName">
-        </div>
-
-        <div class="d-flex align-end gap-4">
-          <div class="form-group flex-1">
-            <label for="inviteCode">Invite code</label>
-            <input class="form-control" id="inviteCode" [(ngModel)]="code">
+      <form [formGroup]="createFamilyForm">
+        <div class="d-flex gap-4 mt-2 flex-column">
+          <div class="form-group">
+            <label for="familyName">Family name</label>
+            <input class="form-control" id="familyName" formControlName="familyName">
           </div>
-          <button class="btn round w-64 h-64" (click)="generateCode()">
-            <fa-icon [icon]="faDice"></fa-icon>
-          </button>
+
+          <div class="d-flex align-end gap-4">
+            <div class="form-group flex-1">
+              <label for="inviteCode">Invite code</label>
+              <input class="form-control" id="inviteCode" formControlName="familyCode">
+            </div>
+            <button class="btn round w-64 h-64" (click)="generateCode()">
+              <fa-icon [icon]="faDice"></fa-icon>
+            </button>
+          </div>
         </div>
-      </div>
+      </form>
 
       <div class="flex-1 mt-8">
         <form [formGroup]="emailForm">
@@ -39,7 +41,7 @@
           <p class="text-center">{{emailsToAdd.join(",")}}</p>
         </form>
       </div>
-      <button class="btn btn__primary ml-auto d-block w-fit mt-8">Create</button>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-8" (click)="createFamily()">Create</button>
     </div>
   </div>
 

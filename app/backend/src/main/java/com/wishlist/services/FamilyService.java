@@ -53,29 +53,23 @@ public class FamilyService implements IFamilyService {
         return familyRepository.save(family);
     }
 
-    public Family saveWithOwner(Family family, User owner){
+    public Family saveWithOwner(Family family, User owner) {
         family.setOwner(owner);
+        List<User> familyMembers = family.getUsers();
+        if (familyMembers == null) {
+            familyMembers = new ArrayList<>();
+        }
+        familyMembers.add(owner);
+        family.setUsers(familyMembers);
         return familyRepository.save(family);
     }
 
-/*    public Family update(Family family, String id) throws FamilyDoesNotExistException {
-        Family foundFamily = findById(id);
-        family.setUsers(foundFamily.getUsers());
-        Family updatedFamilyResult = save(family);
+    /*    public Family update(Family family, String id) throws FamilyDoesNotExistException {
+            Family foundFamily = findById(id);
+            family.setUsers(foundFamily.getUsers());
+            Family updatedFamilyResult = save(family);
 
-    }*/
-    public String generateInviteCode() {
-        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        final int LENGTH = 8;
-        SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            int randomIndex = random.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            sb.append(randomChar);
-        }
-        return sb.toString();
-    }
+        }*/
 
     public boolean isOwner(String userId, String familyId) {
         // assuming you have a way to get the family by user id

@@ -136,4 +136,15 @@ export class FamilyService {
       }),
     );
   }
+
+  createFamily(body: { inviteCode: string; name: string }) {
+    const user = this.authService.getLocalUser();
+    return this.http.post<IFamily>(`families/${user.id}`, body).pipe(
+      tap((family: IFamily) => {
+        this.familyStore.setFamily(family);
+        this.authService.updateLocalUser({ familyId: family.id, owner:true });
+        this.toastService.success('Success!', 'Family has been successfully created');
+      }),
+    );
+  }
 }

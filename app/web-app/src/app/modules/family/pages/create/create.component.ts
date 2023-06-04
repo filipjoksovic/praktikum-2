@@ -5,6 +5,7 @@ import { interval, mergeMap, tap } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FamilyService } from '../../../../services/family.service';
 import { FamilyStoreService } from '../../../services/stores/family-store.service';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-create',
@@ -20,6 +21,11 @@ export class CreateComponent {
     emailToAdd: new FormControl('', [Validators.email]),
   });
   public joinFamilyForm: FormGroup = this.fb.group({
+    familyCode: new FormControl('', Validators.required),
+  });
+
+  public createFamilyForm = this.fb.group({
+    familyName: new FormControl('', Validators.required),
     familyCode: new FormControl('', Validators.required),
   });
 
@@ -45,12 +51,13 @@ export class CreateComponent {
     private fb: FormBuilder,
     private familyService: FamilyService,
     private familyStore: FamilyStoreService,
+    private router: Router,
   ) {}
 
   generateCode() {
     for (let i = 0; i < 100; i++) {
       setTimeout(() => {
-        this.code = generateRandomString();
+        this.createFamilyForm.patchValue({ familyCode: generateRandomString() });
       }, 100);
     }
   }
@@ -69,5 +76,16 @@ export class CreateComponent {
 
   cancelRequest(id: string) {
     this.familyService.cancelRequest(id).subscribe();
+  }
+
+  createFamily() {
+    this.familyService
+      .createFamily({
+        name: this.createFamilyForm.get('familyName').value,
+        inviteCode: this.createFamilyForm.get('familyCode').value,
+      })
+      .subscribe(() => {
+        this.router.navigateByUrl('/family');
+      });
   }
 }
