@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { IListItem, IShoppingList } from '../../models/IShoppingListsResponseDTO';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShoppingListStoreService {
-  private readonly _selectedList$ = new BehaviorSubject<any>(null);
+  private readonly _selectedList$: BehaviorSubject<IShoppingList | null> = new BehaviorSubject<any>(null);
   public selectedList$ = this._selectedList$.asObservable();
 
-  private _shoppingLists$ = new BehaviorSubject([]);
+  private _shoppingLists$: BehaviorSubject<IShoppingList[]> = new BehaviorSubject([]);
   public shoppingLists$ = this._shoppingLists$.asObservable();
+
+  private readonly _selectedItem$: BehaviorSubject<IListItem | null> = new BehaviorSubject(null);
+  public readonly selectedItem$ = this._selectedItem$.asObservable();
 
   constructor() {}
 
@@ -34,5 +38,15 @@ export class ShoppingListStoreService {
     if (found) {
       this._selectedList$.next(found);
     }
+  }
+
+  updateShoppingList(list: IShoppingList) {
+    this._shoppingLists$.next(this._shoppingLists$.value.map((l) => (list.id === l.id ? list : l)));
+  }
+
+  setSelectedItemById(id: string) {}
+
+  setSelectedItem(item: IListItem) {
+    this._selectedItem$.next(item);
   }
 }

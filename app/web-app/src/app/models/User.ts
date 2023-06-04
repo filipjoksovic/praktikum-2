@@ -9,11 +9,11 @@ export interface User {
   role: UserRoleEnum;
   accessToken: string;
   refreshToken: string;
+  owner: boolean;
 }
 
-export enum UserRoleEnum {
-  // Define your user role options here
-}
+export enum UserRoleEnum {}
+// Define your user role options here
 
 export interface Role {
   // Define your role properties here

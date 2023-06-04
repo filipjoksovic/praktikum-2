@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
-    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final IJWTGenerator jwtGenerator;
     private final IEmailSender emailSender;
     private final AuthenticationManager authenticationManager;
@@ -49,12 +49,12 @@ public class UserService implements IUserService, IAuth {
         return userRepository.save(user);
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id).get();
+    public User getUserById(String id) throws UserDoesNotExistException {
+        return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email).get();
+        return userRepository.findUserByEmail(email).orElseThrow(UserDoesNotExistException::new);
     }
 
     public User updateUser(User user) {
@@ -81,12 +81,12 @@ public class UserService implements IUserService, IAuth {
 
                 //duplicate code avoids circular dependency
                 boolean isOwner = false;
-                if (user.get().getFamilyId() != null){
+                if (user.get().getFamilyId() != null) {
                     Optional<Family> familyOptional = familyRepository.findById(user.get().getFamilyId());
                     if (familyOptional.isPresent()) {
                         Family family = familyOptional.get();
                         User owner = family.getOwner();
-                        isOwner =  owner.getId().equals(user.get().getId());
+                        isOwner = owner.getId().equals(user.get().getId());
                     }
                 }
                 return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"), isOwner);
@@ -96,12 +96,11 @@ public class UserService implements IUserService, IAuth {
     }
 
 
-    public User register(AuthRequestDTO dto) throws Exception {
+    public User register(AuthRequestDTO dto) throws UserAlreadyExistsException {
         Optional<User> found = userRepository.findUserByEmail(dto.getEmail());
 
         if (found.isPresent()) {
             throw new UserAlreadyExistsException();
-        } else {
         }
         return userRepository.save(AuthRequestDTO.toUser(dto));
     }
@@ -111,10 +110,10 @@ public class UserService implements IUserService, IAuth {
         return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
-    public TokenRefreshResponseDTO refreshTokenFunction(TokenRefreshRequestDTO tokenRefreshRequestDTO) throws Exception {
+    public TokenRefreshResponseDTO refreshTokenFunction(TokenRefreshRequestDTO tokenRefreshRequestDTO) throws NoRefreshTokenException, UserLoginException, RefreshTokenHasExpiredException {
         final String refreshToken = tokenRefreshRequestDTO.getRefreshToken();
         if (refreshToken == null) {
-            throw new Exception("There is no refresh token");
+            throw new NoRefreshTokenException();
         }
         final String userEmail = jwtGenerator.extractEmail(refreshToken);
         User user = this.getUserByEmail(userEmail);

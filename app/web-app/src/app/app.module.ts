@@ -12,9 +12,13 @@ import { VoiceService } from './services/voice.service';
 import { PageDescriptorPillComponent } from './components/page-descriptor-pill/page-descriptor-pill.component';
 import { HomeModule } from './modules/home/home.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { httpInterceptorProviders } from './interceptors';
+import { ToasterComponent } from './shared/components/toaster/toaster.component';
+import { ToastMessageComponent } from './shared/components/toast-message/toast-message.component';
+import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent, ToasterComponent, ToastMessageComponent, ContextMenuComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -26,7 +30,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HomeModule,
     FontAwesomeModule,
   ],
-  providers: [ShoppingListService, VoiceService],
+  providers: [ShoppingListService, VoiceService, httpInterceptorProviders],
   bootstrap: [AppComponent],
   exports: [],
 })

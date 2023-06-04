@@ -6,4 +6,9 @@
   &::-webkit-scrollbar {
     display: none;
   }
+
+  &:disabled{
+    opacity: .65;
+    cursor: not-allowed;
+  }
 }

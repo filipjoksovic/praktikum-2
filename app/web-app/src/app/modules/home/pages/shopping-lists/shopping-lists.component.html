@@ -11,9 +11,9 @@
 
       <div class="form-group flex-grow-1">
         <label>Search</label>
-        <input class="form-control">
+        <input class="form-control" [(ngModel)]="searchList">
       </div>
-      <button class="btn btn__success round w-64 h-64">
+      <button class="btn btn__success round w-64 h-64" (click)="findLists()">
         <fa-icon [icon]="faSearch"></fa-icon>
       </button>
 
@@ -23,16 +23,42 @@
 
     <!--    Lists container-->
     <div class="shopping-lists-container">
-      <ng-container *ngFor="let list of shoppingLists$ | async">
-        <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)">
-          <div class="d-flex justify-between align-center">
-            <span>{{ list.name }}</span>
-            <ng-container *ngIf="selectedId === list.id">
-              <fa-icon [icon]="faEye" size="lg"></fa-icon>
+      <ng-container *ngIf="shoppingLists$ | async as shoppingLists">
+        <ng-container *ngIf="shoppingLists.length > 0; else noShoppingListsTemplate">
+          <div class="shopping-lists-container__item" (click)="getShoppingList(list.id)"
+               (contextmenu)="listRightClick($event, list)"
+               *ngFor="let list of shoppingLists">
+            <ng-container
+              *ngIf="!isEditSelectedList || (isEditSelectedList && list.id !== selectedId); else selectedListEditTemplate">
+              <div class="d-flex justify-between align-center">
+                <span>{{ list.name }}</span>
+                <ng-container *ngIf="selectedId === list.id">
+                  <fa-icon [icon]="faEye" size="lg"></fa-icon>
+                </ng-container>
+              </div>
             </ng-container>
+            <ng-template #selectedListEditTemplate>
+              <ng-container *ngIf="selectedList$  | async as selectedList">
+                <div class="d-flex align-center justify-between w-100 gap-4">
+                  <input class="form-control form-control__transparent" [(ngModel)]="selectedList.name"
+                         (blur)="updateSelectedList(selectedList)" />
+                  <button class="btn w-64 h-64 round" (click)="cancelEdit()">
+                    <fa-icon [icon]="faTimes"></fa-icon>
+                  </button>
+                </div>
+              </ng-container>
+
+            </ng-template>
           </div>
-        </div>
+        </ng-container>
       </ng-container>
+
+      <ng-template #noShoppingListsTemplate>
+        <div class="no-lists-present">
+          <h3>No lists present on this account</h3>
+          <p>If you'd like to create a list. Go to the <a [routerLink]="'/'">recorder page</a>. </p>
+        </div>
+      </ng-template>
     </div>
     <!--    Lists container end-->
   </div>
@@ -65,6 +91,7 @@
           <div class="shopping-list-container">
 
             <div class="shopping-list-container__item" *ngFor="let item of selectedList.itemList"
+                 (contextmenu)="listItemRightClick($event, item)"
                  (click)="addOrRemove(item.id)">
               <ng-container *ngIf="isEdit">
                 <div class="d-flex flex-row align-center gap-4">
@@ -75,9 +102,26 @@
                 </div>
               </ng-container>
               <ng-container *ngIf="!isEdit">
-                <p
-                  [ngClass]="{'text-through':shouldDisplayAsChecked(item)}">{{item.name}}
-                </p>
+                <ng-container *ngIf="!isEdit && !isEditSelectedListItem ; else editListItemTemplate">
+                  <p
+                    [ngClass]="{'text-through':shouldDisplayAsChecked(item)}">{{item.name}}
+                  </p>
+                </ng-container>
+                <ng-template #editListItemTemplate>
+                  <ng-container *ngIf="selectedListItem$ | async as listItem">
+                    <ng-container *ngIf="listItem.id !== item.id">
+                      <p
+                        [ngClass]="{'text-through':shouldDisplayAsChecked(item)}">{{item.name}}
+                      </p>
+                    </ng-container>
+                    <ng-container *ngIf="listItem.id == item.id">
+                      <p
+                        [ngClass]="{'text-through':shouldDisplayAsChecked(item)}">{{item.name}}
+                      </p>
+                    </ng-container>
+
+                  </ng-container>
+                </ng-template>
               </ng-container>
             </div>
           </div>
@@ -93,5 +137,27 @@
   </div>
 
   <!--  List items container end-->
+</div>
 
+<div #contextListsMenu [ngClass]="{'context-menu':listsContextActive,'context-menu__hidden':!listsContextActive}">
+  <div class="context-menu__item" (click)=editSelectedListName()>
+    <fa-icon [icon]="faPen"></fa-icon>
+    <p>Edit</p>
+  </div>
+  <div class="context-menu__item" (click)="deleteSelectedList()">
+    <fa-icon [icon]="faTrash"></fa-icon>
+    <p>Delete</p>
+  </div>
+</div>
+
+<div #contextSingleListMenu
+     [ngClass]="{'context-menu':listItemContextActive,'context-menu__hidden':!listItemContextActive}">
+  <div class="context-menu__item" (click)=editSelectedListItemName()>
+    <fa-icon [icon]="faPen"></fa-icon>
+    <p>Edit item</p>
+  </div>
+  <div class="context-menu__item" (click)="deleteSelectedListItem()">
+    <fa-icon [icon]="faTrash"></fa-icon>
+    <p>Delete</p>
+  </div>
 </div>

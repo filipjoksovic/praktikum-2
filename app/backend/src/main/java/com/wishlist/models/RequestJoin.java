@@ -3,6 +3,8 @@ package com.wishlist.models;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Document
 public class RequestJoin {
@@ -11,14 +13,22 @@ public class RequestJoin {
     private String familyId;
     private String inviteCode;
     private String userId;
-
-    public RequestJoin() {
-    }
+    private String createdAt;
 
     public RequestJoin(String id, String familyId, String userId) {
         this.id = id;
         this.familyId = familyId;
         this.userId = userId;
+    }
+
+    public RequestJoin(String familyId, String userId) {
+        this.familyId = familyId;
+        this.userId = userId;
+        this.createdAt = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+    }
+
+    public RequestJoin() {
+        this.createdAt = ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public String getId() {
@@ -51,5 +61,13 @@ public class RequestJoin {
 
     public void setInviteCode(String inviteCode) {
         this.inviteCode = inviteCode;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }
