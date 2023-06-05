@@ -98,7 +98,6 @@ export class ShoppingListsComponent implements OnInit {
       this.currentItemsList.forEach(item =>{
         item.checked = false;
       })
-      console.log(this.currentItemsList)
     }
     else {
       this.allSelected = true;
