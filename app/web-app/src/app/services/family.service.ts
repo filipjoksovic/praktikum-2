@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { environment } from '../../../environment';
 import { IFamily } from '../models/IFamily';
 import { catchError, EMPTY, Observable, of, tap } from 'rxjs';
 import { User } from '../models/User';
@@ -141,8 +140,17 @@ export class FamilyService {
     return this.http.post<IFamily>(`families/${user.id}`, body).pipe(
       tap((family: IFamily) => {
         this.familyStore.setFamily(family);
-        this.authService.updateLocalUser({ familyId: family.id, owner:true });
+        this.authService.updateLocalUser({ familyId: family.id, owner: true });
         this.toastService.success('Success!', 'Family has been successfully created');
+      }),
+    );
+  }
+
+  inviteMembers(emailsToAdd: string[]) {
+    const user = this.authService.currentUserValue;
+    return this.http.post<any>(`joinRequests/invite/${user.familyId}`, { emails: emailsToAdd }).pipe(
+      tap((res) => {
+        this.toastService.success('Success!', 'Invites have been sent');
       }),
     );
   }

@@ -13,12 +13,20 @@ public class RequestJoin {
     private String familyId;
     private String inviteCode;
     private String userId;
+    private String creatorId;
     private String createdAt;
 
-    public RequestJoin(String id, String familyId, String userId) {
+    public RequestJoin(String id, String familyId, String userId, String creatorId) {
         this.id = id;
         this.familyId = familyId;
         this.userId = userId;
+        this.creatorId = creatorId;
+    }
+
+    public RequestJoin(String familyId, String userId, String creatorId) {
+        this.familyId = familyId;
+        this.userId = userId;
+        this.creatorId = creatorId;
     }
 
     public RequestJoin(String familyId, String userId) {
@@ -69,5 +77,13 @@ public class RequestJoin {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 }

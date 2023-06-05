@@ -4,6 +4,7 @@ import com.wishlist.dto.*;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
+import com.wishlist.models.User;
 import com.wishlist.security.JwtValidator;
 import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
@@ -122,15 +123,16 @@ public class ShoppingListController {
     public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
         log.info("POST createShoppingList for family:" + familyId);
         if (jwtValidator.validateFamily(jwt, familyId)) {
+            User user = jwtValidator.getUserFromJwt(jwt);
             if (!shoppingListService.hasList(familyId)) {
-                ShoppingList shoppingList = shoppingListService.createShoppingListForFamily(familyId, shoppingListDTO);
+                ShoppingList shoppingList = shoppingListService.createShoppingListForFamily(familyId, shoppingListDTO, user.getId());
                 return new ResponseEntity(shoppingList, HttpStatus.CREATED);
 
             } else {
                 log.info("family has list, adding items:" + familyId);
                 log.info("items received", Arrays.toString(shoppingListDTO.items.toArray()));
                 ShoppingList list = shoppingListService.getShoppingListForFamily(familyId).get(0);
-                return new ResponseEntity(shoppingListService.addItemsToShoppingList(new AddListItemsDTO(shoppingListDTO.items.toArray(new String[0])), list.getId()), HttpStatus.OK);
+                return new ResponseEntity(shoppingListService.addItemsToShoppingList(new AddListItemsDTO(shoppingListDTO.items.toArray(new String[0])), list.getId(), user.getId()), HttpStatus.OK);
             }
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this family"), HttpStatus.UNAUTHORIZED);
@@ -150,7 +152,8 @@ public class ShoppingListController {
     @PostMapping("/createItem/{listId}")
     public ResponseEntity<ShoppingList> createShoppingListItem(@PathVariable String listId, @RequestBody ShoppingItem item, @RequestHeader("Authorization") String jwt) { // TODO ADD ITEM TO A CERTAIN SHOPPING LIST
         if (jwtValidator.validateListItem(jwt, listId)) {
-            ShoppingList createdShoppingList = shoppingListService.addItemToShoppingList(item, listId);
+            User user = jwtValidator.getUserFromJwt(jwt);
+            ShoppingList createdShoppingList = shoppingListService.addItemToShoppingList(item, listId, user.getId());
             return new ResponseEntity<>(createdShoppingList, HttpStatus.CREATED);
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this list"), HttpStatus.UNAUTHORIZED);
@@ -181,7 +184,8 @@ public class ShoppingListController {
     public ResponseEntity<?> addItems(@PathVariable String listId, @RequestBody AddListItemsDTO dto, @RequestHeader("Authorization") String jwt) {
         log.info("add itm to ls {}", listId);
         if (jwtValidator.validateShoppingList(jwt, listId)) {
-            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.addItemsToShoppingList(dto, listId)), HttpStatus.OK);
+            User user = jwtValidator.getUserFromJwt(jwt);
+            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.addItemsToShoppingList(dto, listId, user.getId())), HttpStatus.OK);
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this list"), HttpStatus.UNAUTHORIZED);
         }
@@ -196,6 +200,7 @@ public class ShoppingListController {
             return new ResponseEntity(new ApiError("you do not have access to this list"), HttpStatus.UNAUTHORIZED);
         }
     }
+
     @PostMapping("/{listId}/bulkUncheck")
     public ResponseEntity<?> bulkUncheck(@PathVariable String listId, @RequestBody BulkCheckDTO dto, @RequestHeader("Authorization") String jwt) {
         log.info("bulk check for ls {}", listId);
