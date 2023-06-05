@@ -10,15 +10,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./transcribed-list.component.scss'],
 })
 export class TranscribedListComponent {
+  public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
+  public listName = '';
+
   public constructor(
     private transcriptStore: TranscriptStoreService,
     private shoppingListService: ShoppingListService,
     private router: Router,
   ) {}
-
-  public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
-
-  public listName = '';
 
   saveShoppingList() {
     this.transcriptStore.transcribedList$
