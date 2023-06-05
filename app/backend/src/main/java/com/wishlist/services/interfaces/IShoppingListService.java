@@ -20,7 +20,7 @@ public interface IShoppingListService {
 
     ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws ShoppingListIsEmptyException;
 
-    ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto);
+    ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto, String creatorId);
 
     ShoppingList getShoppingList(String id);
 
@@ -30,9 +30,9 @@ public interface IShoppingListService {
 
     ShoppingList deleteList(String listId) throws ListDoesNotExistException;
 
-    ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId) throws ShoppingListDoesNotExistException;
+    ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException;
 
-    ShoppingList addItemsToShoppingList(AddListItemsDTO item, String shoppingListId) throws ShoppingListDoesNotExistException;
+    ShoppingList addItemsToShoppingList(AddListItemsDTO item, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException;
 
     ShoppingList deleteItemFromShoppingList(String userId, String listId, String itemId) throws UserNotAuthorizedException, ShoppingListDoesNotExistException, ShoppingItemDoesNotExistException;
 
