@@ -25,6 +25,8 @@ export class HomeComponent implements OnDestroy {
     '      recognized shopping list items';
   public recorderStopwatch$  = this.transcriptStore.recorderStopwatch$.pipe(map(value=>formatDuration(value))) ;
 
+  protected readonly faStop = faStop;
+
   constructor(
     private apiService: ShoppingListService,
     private voiceService: VoiceService,
@@ -65,7 +67,6 @@ export class HomeComponent implements OnDestroy {
   }
 
   processTranscript() {
-    // TODO refactor to not use any in items
     this.transcript$
       .pipe(
         mergeMap((text) => this.apiService.processText(text)),
@@ -74,9 +75,8 @@ export class HomeComponent implements OnDestroy {
       .subscribe();
   }
 
-  formatSecondsDuration(recorderStopwatch: number) {
-    return this.formatSecondsDuration(recorderStopwatch);
-  }
+  cancelTranscript() {
+    this.transcriptStore.setTranscript("");
 
-  protected readonly faStop = faStop;
+  }
 }
