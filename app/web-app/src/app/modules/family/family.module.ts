@@ -16,6 +16,7 @@ import { FamilyRequestsComponent } from './pages/family-requests/family-requests
 import { FamilyListComponent } from './pages/family-list/family-list.component';
 import { TokenInterceptor } from '../../interceptors/token.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FamilyListItemComponent } from './components/family-list-item/family-list-item.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     FamilyMembersComponent,
     FamilyRequestsComponent,
     FamilyListComponent,
+    FamilyListItemComponent,
   ],
   imports: [
     CommonModule,
