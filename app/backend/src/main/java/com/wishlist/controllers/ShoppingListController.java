@@ -72,7 +72,7 @@ public class ShoppingListController {
 
     @PutMapping("/{listId}/{itemId}/completeItem")
     public ResponseEntity completeListItem(@PathVariable String listId, @PathVariable String itemId, @RequestHeader("Authorization") String jwt) {
-        if (jwtValidator.validateListItem(jwt, listId)) {
+        if (jwtValidator.validateListItem(jwt, itemId)) {
             log.info("PUT completeListItem for lid {} iid {}", listId, itemId);
             return new ResponseEntity(new ShoppingListResponseDTO(shoppingListService.completeListItem(listId, itemId)), HttpStatus.OK);
         } else {
@@ -94,14 +94,8 @@ public class ShoppingListController {
     public ResponseEntity getForFamily(@PathVariable String familyId, @RequestHeader("Authorization") String jwt) {
         log.info("Get shopping lists for family " + familyId);
         if (jwtValidator.validateFamily(jwt, familyId)) {
-            List<ShoppingList> familyLists = shoppingListService.getShoppingListForFamily(familyId);
-            ShoppingListResponseDTO dto;
-            if (familyLists.size() > 0) {
-                dto = new ShoppingListResponseDTO(familyLists.get(0));
-            } else {
-                dto = new ShoppingListResponseDTO(new ShoppingList());
-            }
-            return new ResponseEntity(dto, HttpStatus.OK);
+            ShoppingListDTOV2 familyList = shoppingListService.getShoppingListForFamily(familyId);
+            return new ResponseEntity(familyList, HttpStatus.OK);
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this family"), HttpStatus.UNAUTHORIZED);
         }
@@ -109,7 +103,7 @@ public class ShoppingListController {
 
 
     @PostMapping("user/{userId}")
-    public ResponseEntity createShoppingListForUser(@PathVariable String userId, @RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity createShoppingListForUser(@PathVariable String userId, @RequestBody com.wishlist.dto.ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
         log.info("POST createShoppingList for uid:" + userId);
         if (jwtValidator.validateUser(jwt, userId)) {
             ShoppingList shoppingList = shoppingListService.createShoppingListForUser(userId, shoppingListDTO);
@@ -120,7 +114,7 @@ public class ShoppingListController {
     }
 
     @PostMapping("family/{familyId}")
-    public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity createShoppingListForFamily(@PathVariable String familyId, @RequestBody com.wishlist.dto.ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
         log.info("POST createShoppingList for family:" + familyId);
         if (jwtValidator.validateFamily(jwt, familyId)) {
             User user = jwtValidator.getUserFromJwt(jwt);
@@ -131,11 +125,22 @@ public class ShoppingListController {
             } else {
                 log.info("family has list, adding items:" + familyId);
                 log.info("items received", Arrays.toString(shoppingListDTO.items.toArray()));
-                ShoppingList list = shoppingListService.getShoppingListForFamily(familyId).get(0);
+                ShoppingListDTOV2 list = shoppingListService.getShoppingListForFamily(familyId);
                 return new ResponseEntity(shoppingListService.addItemsToShoppingList(new AddListItemsDTO(shoppingListDTO.items.toArray(new String[0])), list.getId(), user.getId()), HttpStatus.OK);
             }
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this family"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @DeleteMapping("/family/{familyId}/{itemId}")
+    public ResponseEntity<ShoppingListDTOV2> deleteFamilyListItem(@PathVariable String familyId, @PathVariable String itemId, @RequestHeader("Authorization") String jwt) {
+        log.info("del fml {} itm {}", familyId, itemId);
+
+        if (jwtValidator.validateFamily(jwt, familyId)) {
+            return ResponseEntity.ok(shoppingListService.deleteItemFromShoppingList(jwtValidator.getUserFromJwt(jwt).getId(), familyId, itemId));
+        } else {
+            throw new UserNotAuthorizedException();
         }
     }
 
@@ -161,12 +166,12 @@ public class ShoppingListController {
     }
 
     @DeleteMapping("/{userId}/{listId}/{itemId}")
-    public ResponseEntity deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId, @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<ShoppingListDTOV2> deleteShoppingListItem(@PathVariable String userId, @PathVariable String listId, @PathVariable String itemId, @RequestHeader("Authorization") String jwt) {
         log.info("deleteShoppingListItem for uid {} lid {} iid {}", userId, listId, itemId);
         if (jwtValidator.validateListItem(jwt, itemId)) {
-            return new ResponseEntity<>(new ShoppingListResponseDTO(shoppingListService.deleteItemFromShoppingList(userId, listId, itemId)), HttpStatus.OK);
+            return new ResponseEntity<>(shoppingListService.deleteItemFromShoppingList(userId, listId, itemId), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new ApiError("you do not have access to this item"), HttpStatus.UNAUTHORIZED);
+            throw new UserNotAuthorizedException();
         }
     }
 
