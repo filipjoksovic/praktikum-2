@@ -6,14 +6,14 @@ import com.wishlist.models.RequestJoin;
 import com.wishlist.models.User;
 import com.wishlist.repositories.FamilyRepository;
 import com.wishlist.repositories.RequestJoinRepository;
-import com.wishlist.services.dto.CreateJoinRequestDTO;
 import com.wishlist.services.dto.JoinRequestsDTO;
 import com.wishlist.services.interfaces.IFamilyService;
 import com.wishlist.services.interfaces.JoinRequestsService;
 import com.wishlist.services.interfaces.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +25,7 @@ public class RequestJoinService implements JoinRequestsService {
     private final IFamilyService familyService;
     private final IUserService userService;
     private final FamilyRepository familyRepository;
+    private final Logger logger = LoggerFactory.getLogger(RequestJoinService.class);
 
     public RequestJoinService(RequestJoinRepository requestJoinRepository, IFamilyService familyService, IUserService userService,
                               FamilyRepository familyRepository) {
@@ -73,7 +74,7 @@ public class RequestJoinService implements JoinRequestsService {
     }
 
     @Override
-    public JoinRequestsDTO createJoinRequest(String userId, String inviteCode) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException {
+    public JoinRequestsDTO createJoinRequest(String userId, String inviteCode, String senderId) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException {
         final User user = userService.getUserById(userId);
         final Family family = familyService.findByInviteCode(inviteCode);
         if (user.getFamilyId() != null) {
@@ -86,8 +87,8 @@ public class RequestJoinService implements JoinRequestsService {
         if (request.isPresent()) {
             throw new AlreadyRequestedJoinException();
         }
-        final RequestJoin joinRequest = requestJoinRepository.save(new RequestJoin(family.getId(), user.getId()));
-        return new JoinRequestsDTO(joinRequest.getId(), user.getName(), user.getSurname(), user.getEmail(), family.getName(), joinRequest.getCreatedAt());
+        final RequestJoin joinRequest = requestJoinRepository.save(new RequestJoin(family.getId(), user.getId(), senderId));
+        return new JoinRequestsDTO(joinRequest.getId(), user.getName(), user.getSurname(), user.getEmail(), family.getName(), joinRequest.getCreatorId(), joinRequest.getUserId(), joinRequest.getCreatedAt());
     }
 
     @Override
@@ -99,7 +100,7 @@ public class RequestJoinService implements JoinRequestsService {
 
         for (RequestJoin request : requests) {
             User requester = userService.getUserById(request.getUserId());
-            JoinRequestsDTO dto = new JoinRequestsDTO(request.getId(), requester.getName(), requester.getSurname(), requester.getEmail(), family.getName(), request.getCreatedAt());
+            JoinRequestsDTO dto = new JoinRequestsDTO(request.getId(), requester.getName(), requester.getSurname(), requester.getEmail(), family.getName(), request.getCreatorId(), request.getUserId(), request.getCreatedAt());
             requestDtos.add(dto);
         }
         return requestDtos;
@@ -110,7 +111,25 @@ public class RequestJoinService implements JoinRequestsService {
         User user = userService.getUserById(userId);
         RequestJoin requestJoin = requestJoinRepository.findByUserId(userId).orElseThrow(UserHasNoJoinRequestsException::new);
         Family family = familyService.findById(requestJoin.getFamilyId());
-        return new JoinRequestsDTO(requestJoin.getId(), user.getName(), user.getSurname(), user.getEmail(), family.getName(), requestJoin.getCreatedAt());
+        return new JoinRequestsDTO(requestJoin.getId(), user.getName(), user.getSurname(), user.getEmail(), family.getName(), requestJoin.getCreatorId(), requestJoin.getUserId(), requestJoin.getCreatedAt());
+    }
+
+    @Override
+    public void createJoinRequests(String familyId, String[] emails, String senderId) {
+        Family family = familyService.findById(familyId);
+        for (String email : emails) {
+            try {
+                User user = userService.getUserByEmail(email);
+                Optional<RequestJoin> exists = requestJoinRepository.findByFamilyIdAndUserId(familyId, user.getId());
+                if (exists.isEmpty()) {
+                    RequestJoin requestJoin = new RequestJoin(family.getId(), user.getId(), senderId);
+                    //todo send email
+                    requestJoinRepository.save(requestJoin);
+                }
+            } catch (UserDoesNotExistException e) {
+                logger.error("User with email {} does not exist", email);
+            }
+        }
     }
 
     @Override

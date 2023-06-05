@@ -1,6 +1,8 @@
 package com.wishlist.controllers;
 
 
+import com.wishlist.dto.UserEmailsDTO;
+import com.wishlist.security.JwtValidator;
 import com.wishlist.services.UserAlreadyInThisFamilyException;
 import com.wishlist.services.interfaces.JoinRequestsService;
 import org.slf4j.Logger;
@@ -14,17 +16,20 @@ public class JoinRequestsController {
 
     private final Logger log = LoggerFactory.getLogger(JoinRequestsController.class);
     private final JoinRequestsService joinRequestsService;
+    private final JwtValidator jwtValidator;
 
-    public JoinRequestsController(JoinRequestsService requestJoinService) {
+    public JoinRequestsController(JoinRequestsService requestJoinService, JwtValidator jwtValidator) {
         this.joinRequestsService = requestJoinService;
+        this.jwtValidator = jwtValidator;
     }
 
     //TODO remove userId variable after JWT validaton
     @PostMapping("/{userId}/{inviteCode}")
-    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode) throws UserAlreadyInThisFamilyException {
+    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException {
+        String senderId = jwtValidator.getUserFromJwt(jwt).getId();
         log.info("send join req to {} for fam {}", userId, inviteCode);
         log.info("send join req to {} for fam {} success", userId, inviteCode);
-        return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, inviteCode));
+        return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, inviteCode, senderId));
     }
 
     @GetMapping("/{familyId}")
@@ -60,10 +65,18 @@ public class JoinRequestsController {
     }
 
     @PostMapping("/invite/{userId}/{familyId}")
-    public ResponseEntity<?> inviteToFamily(@PathVariable String userId, @PathVariable String familyId) throws UserAlreadyInThisFamilyException {
+    public ResponseEntity<?> inviteToFamily(@PathVariable String userId, @PathVariable String familyId, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException {
         log.info("inv usr {} to fml {} 200", userId, familyId);
         //todo send invite email
-        return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, familyId));
+        String senderId = jwtValidator.getUserFromJwt(jwt).getId();
+        return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, familyId, senderId));
+    }
+
+    @PostMapping("/invite/{familyId}")
+    public ResponseEntity<?> inviteToFamilyMultiple(@PathVariable String familyId, @RequestBody UserEmailsDTO dto, @RequestHeader("Authorization") String jwt) {
+        String senderId = jwtValidator.getUserFromJwt(jwt).getId();
+        this.joinRequestsService.createJoinRequests(familyId, dto.getEmails(),senderId);
+        return ResponseEntity.ok().build();
     }
 }
 

@@ -4,7 +4,6 @@ import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.RequestJoin;
 import com.wishlist.services.UserAlreadyInThisFamilyException;
-import com.wishlist.services.dto.CreateJoinRequestDTO;
 import com.wishlist.services.dto.JoinRequestsDTO;
 
 import java.util.List;
@@ -21,9 +20,11 @@ public interface JoinRequestsService {
 
     Family acceptRequest(String requestJoinId) throws RequestJoinDoesNotExistException, FamilyDoesNotExistException, UserDoesNotExistException;
 
-    JoinRequestsDTO createJoinRequest(String userId, String familyId) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException;
+    JoinRequestsDTO createJoinRequest(String userId, String familyId, String senderId) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException;
 
     List<JoinRequestsDTO> getRequestsForFamily(String familyId) throws FamilyDoesNotExistException, UserDoesNotExistException;
 
     JoinRequestsDTO getRequestsForUser(String userId) throws UserHasNoJoinRequestsException, FamilyDoesNotExistException, UserDoesNotExistException;
+
+    void createJoinRequests(String familyId, String[] emails, String senderId);
 }
