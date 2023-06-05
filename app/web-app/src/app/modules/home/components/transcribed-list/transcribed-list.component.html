@@ -9,7 +9,7 @@
 
         <div class="transcribed-list-container">
           <ng-container *ngFor="let item of items; let i = index">
-            <app-transcribed-list-item [item]="item"></app-transcribed-list-item>
+            <app-transcribed-list-item [item]="item" (itemRemoved)="onItemRemove(item)"></app-transcribed-list-item>
           </ng-container>
         </div>
 

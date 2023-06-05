@@ -1,6 +1,6 @@
 <app-page-descriptor-pill [title]="descriptorTitle" [description]="descriptorDescription"></app-page-descriptor-pill>
 
-<div class="d-flex flex-column recorder">
+<div class="d-flex flex-column recorder ">
   <ng-container *ngIf="(transcript$ | async) === ''">
     <button class="record-button record-button__large record-button__center" (click)="startStopRecording()">
       <button class="record-button record-button__medium">
@@ -26,10 +26,10 @@
     </ng-container>
   </ng-container>
 
-  <div class="d-flex flex-row gap-4 ">
+  <div class="d-flex flex-row gap-4 w-100">
     <ng-container *ngIf="transcript$ | async as transcript">
-      <div class="transcript-section flex-1">
-        <textarea class="form-control form-control__border-dark" rows="15" cols="60" [value]="transcript"></textarea>
+      <div class="transcript-section flex-1 flex-grow-1">
+        <textarea class="form-control form-control__border-dark flex-grow-1" rows="15" cols="60" [value]="transcript"></textarea>
 
         <div class="transcript-section__actions">
           <button (click)="processTranscript()" class="btn btn__primary btn__primary__outline ">Cancel</button>

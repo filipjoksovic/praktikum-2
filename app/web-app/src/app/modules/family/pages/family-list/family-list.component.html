@@ -1,1 +1,10 @@
-<p>family-list works!</p>
+<app-page-descriptor-pill title="Family shopping list" description="Here you can see the shopping list of your family, as well add, edit and remove certain items"></app-page-descriptor-pill>
+
+<ng-container *ngIf="familyList$ | async as familyList; else noListTemplate">
+  <h1>Family list</h1>
+
+</ng-container>
+
+<ng-template #noListTemplate>
+  <h1>Currently there is no list for this family, you can go to the recorder and add it from there</h1>
+</ng-template>

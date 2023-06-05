@@ -15,6 +15,9 @@ export class ShoppingListStoreService {
   private readonly _selectedItem$: BehaviorSubject<IListItem | null> = new BehaviorSubject(null);
   public readonly selectedItem$ = this._selectedItem$.asObservable();
 
+  private readonly _familyList$:BehaviorSubject<IShoppingList | null> = new BehaviorSubject<IShoppingList | null>(null);
+  public readonly familyList$ = this._familyList$.asObservable();
+
   constructor() {}
 
   public getSelectedList() {
@@ -52,5 +55,9 @@ export class ShoppingListStoreService {
 
   removeList(id: string) {
     this._shoppingLists$.next(this._shoppingLists$.value.filter((l) => l.id !== id));
+  }
+
+  setFamilyList(shoppingList: IShoppingList) {
+      this._familyList$.next(shoppingList);
   }
 }

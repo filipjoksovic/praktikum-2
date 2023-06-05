@@ -82,4 +82,8 @@ export class ShoppingListService {
       }),
     );
   }
+
+  getFamilyShoppingList(familyId: string) {
+    return this.http.get<IShoppingList>(`shoppingLists/family/${familyId}`);
+  }
 }

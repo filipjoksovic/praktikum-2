@@ -55,4 +55,8 @@ export class TranscriptStoreService {
     this._isRecording$.complete();
     this.setRecorderStopWatch(0);
   }
+
+  removeItem(item: string) {
+    this._transcribedList$.next(this._transcribedList$.value.filter(i=>i !== item));
+  }
 }

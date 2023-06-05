@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
@@ -9,5 +9,11 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 export class TranscribedListItemComponent {
   @Input()
   item: string;
+  @Output()
+  itemRemoved:EventEmitter<string> = new EventEmitter<string>();
   protected readonly faTimes = faTimes;
+
+  removeItem() {
+    this.itemRemoved.emit(this.item);
+  }
 }

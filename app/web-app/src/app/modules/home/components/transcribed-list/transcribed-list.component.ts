@@ -32,4 +32,8 @@ export class TranscribedListComponent {
       )
       .subscribe(() => this.router.navigate(['/lists']));
   }
+
+  onItemRemove(item: string) {
+    this.transcriptStore.removeItem(item);
+  }
 }
