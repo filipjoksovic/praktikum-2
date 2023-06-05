@@ -77,7 +77,6 @@ export class FamilyService {
     const user = this.authService.currentUserValue;
     return this.http.get<JoinRequestDTO[]>(`joinRequests/${user.familyId}`).pipe(
       tap((res) => {
-        console.log(res);
         this.familyStore.setPendingRequests(res);
       }),
     );

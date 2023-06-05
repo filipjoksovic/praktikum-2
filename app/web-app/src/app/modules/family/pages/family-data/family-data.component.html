@@ -78,8 +78,14 @@
       </ng-container>
 
       <ng-container *ngIf="selectedTab==='requests'">
-
         <ng-container *ngIf="pendingRequests$ | async as pendingRequests">
+          <ng-container *ngIf="pendingRequests.length == 0">
+            <div class="row justify-content-center align-items-center vh-100">
+              <div class="col text-center">
+                <p class="mt-4">There are no requests for joining this family</p>
+              </div>
+            </div>
+          </ng-container>
           <div *ngFor="let request of pendingRequests">
             <div class="pending-request">
               <div class="pending-request__data">
