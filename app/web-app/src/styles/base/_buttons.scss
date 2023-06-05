@@ -44,9 +44,43 @@ button,
     color: white;
   }
 
-  &:disabled{
+  &:disabled {
     opacity: .65;
     cursor: not-allowed;
   }
+}
 
+.segmented-buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    background-color: transparent;
+    border: 1px solid $light-gray;
+
+  }
+
+
+  &__button {
+    border-radius: 0;
+    transition: 250ms ease-in-out all;
+    &:hover {
+      background-color: $light-gray;
+    }
+
+    &__active {
+      background-color: $light-gray !important;
+    }
+
+    &__last {
+      border-radius: 0 20px 20px 0;
+    }
+
+    &__first {
+      border-radius: 20px 0 0 20px;
+
+    }
+  }
 }

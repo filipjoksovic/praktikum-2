@@ -3,6 +3,8 @@ import { TranscriptStoreService } from '../../../../services/stores/transcript-s
 import { mergeMap, pipe, tap } from 'rxjs';
 import { ShoppingListService } from '../../../../services/shopping-list.service';
 import { Router } from '@angular/router';
+import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
+import {faUser} from "@fortawesome/free-regular-svg-icons/faUser";
 
 @Component({
   selector: 'app-transcribed-list',
@@ -12,6 +14,11 @@ import { Router } from '@angular/router';
 export class TranscribedListComponent {
   public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
   public listName = '';
+  public activeSegment:'personal' | 'family';
+
+  protected readonly faHome = faHome;
+  protected readonly faUser = faUser;
+
 
   public constructor(
     private transcriptStore: TranscriptStoreService,
@@ -26,7 +33,7 @@ export class TranscribedListComponent {
           this.shoppingListService.saveShoppingList({
             name: this.listName,
             items: list,
-          }),
+          },this.activeSegment),
         ),
       )
       .subscribe(() => this.router.navigate(['/lists']));
@@ -35,4 +42,9 @@ export class TranscribedListComponent {
   onItemRemove(item: string) {
     this.transcriptStore.removeItem(item);
   }
+
+  setActiveSegment(segment:'family' | 'personal') {
+    this.activeSegment = segment;
+  }
+
 }

@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from './auth.service';
-import { map } from 'rxjs/operators';
-import { tap } from 'rxjs';
-import { TranscriptStoreService } from './stores/transcript-store.service';
-import { ToasterService } from './toaster.service';
-import { ShoppingListStoreService } from './stores/shopping-list-store.service';
-import { IShoppingList } from '../models/IShoppingListsResponseDTO';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {AuthService} from './auth.service';
+import {map} from 'rxjs/operators';
+import {EMPTY, of, tap} from 'rxjs';
+import {TranscriptStoreService} from './stores/transcript-store.service';
+import {ToasterService} from './toaster.service';
+import {ShoppingListStoreService} from './stores/shopping-list-store.service';
+import {IShoppingList} from '../models/IShoppingListsResponseDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,8 @@ export class ShoppingListService {
     private transcriptStore: TranscriptStoreService,
     private toaster: ToasterService,
     private shoppingListStore: ShoppingListStoreService,
-  ) {}
+  ) {
+  }
 
   uploadRecording(data: Blob) {
     console.log('Upload Recording Called');
@@ -29,14 +30,25 @@ export class ShoppingListService {
 
   processText(data: string) {
     console.log('Process Text Called');
-    return this.http.post(`uploads/text`, { text: data }).pipe(
+    return this.http.post(`uploads/text`, {text: data}).pipe(
       map((response: { summary: string[] }) => response.summary),
       tap((items) => this.transcriptStore.setTranscribedList(items)),
     );
   }
 
-  saveShoppingList(list: any) {
-    return this.http.post(`shoppingLists/user/${this.authService.currentUserValue.id}`, list);
+  saveShoppingList(list: { name: string, items: string[] }, activeSegment: 'personal' | 'family') {
+    if (activeSegment === 'personal') {
+      return this.http.post(`shoppingLists/user/${this.authService.currentUserValue.id}`, list).pipe(tap(()=>this.toaster.success("Success!", "New personal shopping list created")));
+    } else if (activeSegment === 'family') {
+      if (this.authService.currentUserValue.familyId) {
+        return this.http.post(`shoppingLists/family/${this.authService.currentUserValue.familyId}`, list).pipe(tap(()=>this.toaster.success("Success!", "Family list updated")));
+      } else {
+        this.toaster.error("Errror", "This user is not in a family")
+        return of(null);
+      }
+    } else {
+      return EMPTY;
+    }
   }
 
   getUserShoppingLists() {
@@ -66,7 +78,7 @@ export class ShoppingListService {
   }
 
   bulkCheck(listId: string, idsForCheck: string[], allSelected: boolean) {
-    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkCheck`, { ids: idsForCheck, allSelected }).pipe(
+    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkCheck`, {ids: idsForCheck, allSelected}).pipe(
       tap((response) => {
         this.shoppingListStore.updateShoppingList(response);
         this.toaster.success('Success!', 'Shopping list successfully updated.');
@@ -75,7 +87,7 @@ export class ShoppingListService {
   }
 
   bulkUncheck(listId: string, idsForCheck: string[], allSelected: boolean) {
-    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkUncheck`, { ids: idsForCheck, allSelected }).pipe(
+    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkUncheck`, {ids: idsForCheck, allSelected}).pipe(
       tap((response) => {
         this.shoppingListStore.updateShoppingList(response);
         this.toaster.success('Success!', 'Shopping list successfully updated.');
