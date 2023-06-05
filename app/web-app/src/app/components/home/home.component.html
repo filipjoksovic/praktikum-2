@@ -1,6 +1,6 @@
 <app-page-descriptor-pill [title]="descriptorTitle" [description]="descriptorDescription"></app-page-descriptor-pill>
 
-<div class="d-flex flex-column">
+<div class="d-flex flex-column recorder">
   <ng-container *ngIf="(transcript$ | async) === ''">
     <button class="record-button record-button__large record-button__center" (click)="startStopRecording()">
       <button class="record-button record-button__medium">
@@ -8,6 +8,22 @@
         </button>
       </button>
     </button>
+
+    <ng-container *ngIf="recorderStopwatch$ | async as recorderStopwatch">
+
+      <div class="recorder-data" *ngIf="recorderStopwatch !== '00:00'">
+        <div class="recorder-indicator">
+          <p class="recorder-indicator__value" >
+            {{recorderStopwatch}}
+          </p>
+
+
+        </div>
+        <button class="btn btn__danger round w-64 h-64" *ngIf="recorderStopwatch !== '00:00'" (click)="startStopRecording()">
+          <fa-icon [icon]="faStop"></fa-icon>
+        </button>
+      </div>
+    </ng-container>
   </ng-container>
 
   <div class="d-flex flex-row gap-4 ">

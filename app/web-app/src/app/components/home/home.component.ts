@@ -4,6 +4,9 @@ import { VoiceService } from '../../services/voice.service';
 import { AsyncSubject, mergeMap, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranscriptStoreService } from '../../services/stores/transcript-store.service';
+import {formatDuration} from "../../shared/helpers";
+import {map} from "rxjs/operators";
+import {faStop} from "@fortawesome/free-solid-svg-icons/faStop";
 
 @Component({
   selector: 'app-home',
@@ -20,6 +23,7 @@ export class HomeComponent implements OnDestroy {
   public descriptorDescription: string =
     'Press the button to start recording. Upon finishing, the data will be sent for processing, returning the\n' +
     '      recognized shopping list items';
+  public recorderStopwatch$  = this.transcriptStore.recorderStopwatch$.pipe(map(value=>formatDuration(value))) ;
 
   constructor(
     private apiService: ShoppingListService,
@@ -48,8 +52,12 @@ export class HomeComponent implements OnDestroy {
     //       });
     //     });
     // }
+    if(!this.recording){
+      this.transcriptStore.startRecording(true);
+    }
     console.log('Recording');
     if (this.recording) {
+      this.transcriptStore.stopRecording();
       // this.transcript = "We'll need some bananas, milk, butter and toilet paper.";
       this.transcriptStore.setTranscript("We'll need some bananas, milk, butter and toilet paper.");
     }
@@ -65,4 +73,10 @@ export class HomeComponent implements OnDestroy {
       )
       .subscribe();
   }
+
+  formatSecondsDuration(recorderStopwatch: number) {
+    return this.formatSecondsDuration(recorderStopwatch);
+  }
+
+  protected readonly faStop = faStop;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, interval, Subject, takeUntil} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +10,11 @@ export class TranscriptStoreService {
 
   private _transcribedList$ = new BehaviorSubject<string[]>([]);
   public transcribedList$ = this._transcribedList$.asObservable();
+
+  private _recorderStopwatch$ = new BehaviorSubject(0);
+  public recorderStopwatch$ = this._recorderStopwatch$.asObservable();
+
+  private _isRecording$ = new Subject();
 
   constructor() {}
 
@@ -32,5 +37,22 @@ export class TranscriptStoreService {
 
   addToList(item: string) {
     this._transcribedList$.next([item, ...this._transcribedList$.value]);
+  }
+
+  public setRecorderStopWatch(value:number){
+    this._recorderStopwatch$.next(value);
+  }
+
+  startRecording(b: boolean) {
+    console.log("starting recording");
+    interval(1000).pipe(takeUntil(this._isRecording$)).subscribe(value=> {
+      console.log(value);
+      this._recorderStopwatch$.next(value + 1)
+    });
+  }
+  stopRecording(){
+    this._isRecording$.next(false);
+    this._isRecording$.complete();
+    this.setRecorderStopWatch(0);
   }
 }

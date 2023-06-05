@@ -31,3 +31,34 @@
   }
 
 }
+
+.recorder{
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 2;
+  align-items: center;
+  margin-top: $spacer * 4;
+}
+
+.recorder-data{
+  display: flex;
+  align-items: center;
+  gap: $spacer * 4;
+  transition: 250ms ease-in-out all;
+}
+.recorder-indicator{
+  background-color: $gray-700;
+  color:$white;
+  padding: $spacer * 2  ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  box-shadow: $container-box-shadow;
+  width: fit-content;
+  &__value{
+    color:white;
+    font-size: xxx-large;
+    width: fit-content;
+  }
+}

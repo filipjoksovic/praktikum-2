@@ -13,3 +13,13 @@ export function generateRandomString() {
 
   return randomString;
 }
+
+export function formatDuration(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const secondsRem = seconds % 60;
+
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(secondsRem).padStart(2, '0');
+
+  return formattedMinutes + ':' + formattedSeconds;
+}
