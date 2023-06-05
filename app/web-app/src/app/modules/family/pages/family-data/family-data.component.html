@@ -46,7 +46,7 @@
           <p class="text-center">{{emailsToAdd.join(",")}}</p>
         </form>
       </div>
-      <button class="btn btn__primary ml-auto d-block w-fit mt-8">Create</button>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-8" (click)="inviteMembers()">Invite</button>
     </div>
     <div class="container flex-1">
 
@@ -93,7 +93,7 @@
                     <fa-icon [icon]="faBan"></fa-icon>
                   </button>
                 </div>
-                <div class="pending-request__action__accept">
+                <div class="pending-request__action__accept" *ngIf="request.creatorId === request.userId">
                   <button class="btn round w-64 h-64" title="Accept request" (click)="acceptRequest(request)">
                     <fa-icon [icon]="faCheck"></fa-icon>
                   </button>

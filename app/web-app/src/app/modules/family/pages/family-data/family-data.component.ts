@@ -63,7 +63,10 @@ export class FamilyDataComponent {
     private fb: FormBuilder,
   ) {}
 
-  public addEmail() {}
+  public addEmail() {
+    this.emailsToAdd.push(this.emailForm.get('emailToAdd').value);
+    this.emailForm.reset();
+  }
 
   public generateCode() {
     for (let i = 0; i < 100; i++) {
@@ -101,5 +104,9 @@ export class FamilyDataComponent {
 
   removeUser(member: User) {
     this.familyService.removeUser(this.user.familyId, member).subscribe();
+  }
+
+  inviteMembers() {
+    this.familyService.inviteMembers(this.emailsToAdd).subscribe();
   }
 }
