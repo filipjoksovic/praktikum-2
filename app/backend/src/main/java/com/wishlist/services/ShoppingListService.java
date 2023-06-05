@@ -1,7 +1,7 @@
 package com.wishlist.services;
 
 import com.wishlist.dto.AddListItemsDTO;
-import com.wishlist.dto.BulkCheckDTO;
+import com.wishlist.dto.BulkEditDTO;
 import com.wishlist.dto.ShoppingListDTO;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
@@ -258,56 +258,21 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public ShoppingList bulkCheck(BulkCheckDTO dto, String listId) {
+    public ShoppingList bulkEdit(BulkEditDTO dto, String listId) {
 
         ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
-        Map<String, Boolean> mapped = new HashMap<>();
-        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
-        List<ShoppingItem> updatedItems = new ArrayList<>();
+        List<ShoppingItem> shoppingListItems = list.getItemList();
+        list.setItemList(dto.getItems());
 
-        if (!dto.isAllSelected()) {
-            list.getItemList().forEach(item -> {
-                if (mapped.containsKey(item.getId())) {
-                    item.setChecked(true);
-                }
-                updatedItems.add(item);
-            });
-        } else {
-            list.getItemList().forEach(item -> {
+        if (dto.isAllSelected()) {
+            for(ShoppingItem item: shoppingListItems) {
                 item.setChecked(true);
-                updatedItems.add(item);
-            });
+            }
+            return list;
         }
-        list.setItemList(updatedItems);
         shoppingListRepository.save(list);
         return list;
+
     }
-
-    @Override
-    public ShoppingList bulkUncheck(BulkCheckDTO dto, String listId) {
-
-        ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
-        Map<String, Boolean> mapped = new HashMap<>();
-        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
-        List<ShoppingItem> updatedItems = new ArrayList<>();
-
-        if (!dto.isAllSelected()) {
-            list.getItemList().forEach(item -> {
-                if (mapped.containsKey(item.getId())) {
-                    item.setChecked(false);
-                }
-                updatedItems.add(item);
-            });
-        } else {
-            list.getItemList().forEach(item -> {
-                item.setChecked(false);
-                updatedItems.add(item);
-            });
-        }
-        list.setItemList(updatedItems);
-        shoppingListRepository.save(list);
-        return list;
-    }
-
 
 }

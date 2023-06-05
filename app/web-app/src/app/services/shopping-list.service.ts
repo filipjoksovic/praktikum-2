@@ -6,12 +6,13 @@ import {EMPTY, of, tap} from 'rxjs';
 import {TranscriptStoreService} from './stores/transcript-store.service';
 import {ToasterService} from './toaster.service';
 import {ShoppingListStoreService} from './stores/shopping-list-store.service';
-import {IShoppingList} from '../models/IShoppingListsResponseDTO';
+import {IListItem, IShoppingList} from '../models/IShoppingListsResponseDTO';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShoppingListService {
+  
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -56,6 +57,7 @@ export class ShoppingListService {
     return this.http.get<IShoppingList[]>(`shoppingLists/${user.id}`);
   }
 
+
   updateShoppingList(shoppingListId: string, updatedShoppingList: any) {
     return this.http
       .put(`shoppingLists/${shoppingListId}`, updatedShoppingList)
@@ -77,20 +79,13 @@ export class ShoppingListService {
     );
   }
 
-  bulkCheck(listId: string, idsForCheck: string[], allSelected: boolean) {
-    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkCheck`, {ids: idsForCheck, allSelected}).pipe(
+  bulkEdit(listId: string, newItems: IListItem[], allSelected: boolean) {
+    console.log(newItems)
+    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkEdit`, {items: newItems, allSelected}).pipe(
       tap((response) => {
         this.shoppingListStore.updateShoppingList(response);
         this.toaster.success('Success!', 'Shopping list successfully updated.');
-      }),
-    );
-  }
-
-  bulkUncheck(listId: string, idsForCheck: string[], allSelected: boolean) {
-    return this.http.post<IShoppingList>(`shoppingLists/${listId}/bulkUncheck`, {ids: idsForCheck, allSelected}).pipe(
-      tap((response) => {
-        this.shoppingListStore.updateShoppingList(response);
-        this.toaster.success('Success!', 'Shopping list successfully updated.');
+        console.log("övo je response" + response.itemList)
       }),
     );
   }
