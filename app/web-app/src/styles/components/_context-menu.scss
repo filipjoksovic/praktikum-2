@@ -14,7 +14,7 @@
 .context-menu {
   background-color: $gray-900;
   position: fixed;
-  min-width: 300px;
+  min-width: 250px;
   border-radius: 20px;
   box-shadow: $container-box-shadow;
   border: 1px solid $gray-500;
@@ -32,7 +32,7 @@
   }
 
   &__item {
-    padding: $spacer * 3;
+    padding: $spacer * 2;
     transition: 250ms ease-in-out background-color;
     display: flex;
     align-items: center;

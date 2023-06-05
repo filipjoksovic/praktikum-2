@@ -7,13 +7,13 @@
 }
 
 .shopping-lists-container {
-  padding: $spacer * 4 $spacer * 4;
+  padding: $spacer * 2 $spacer * 2;
   background-color: $white;
   border-radius: 20px;
   box-shadow: $container-box-shadow;
 
   &__item {
-    padding: $spacer * 4 $spacer * 4;
+    padding: $spacer * 2 $spacer * 2;
     background: $white;
     cursor: pointer;
     filter: brightness(100%);
@@ -34,7 +34,7 @@
   background: $white;
   border-radius: 20px;
   box-shadow: $container-box-shadow;
-  padding: $spacer * 8;
+  padding: $spacer * 4;
 }
 
 .shopping-list-container {
@@ -42,7 +42,7 @@
   border-radius: 20px;
 
   &__item {
-    padding: $spacer * 2 $spacer * 4;
+    padding: $spacer * 2 $spacer * 2;
     background: $white;
     cursor: pointer;
     filter: brightness(100%);

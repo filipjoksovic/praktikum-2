@@ -1,7 +1,7 @@
 .form-group {
   display: flex;
   flex-direction: column;
-
+  margin-top: $spacer * 2;
   & label {
     margin-bottom: $spacer;
   }
@@ -34,8 +34,8 @@
 
   &__checkbox {
     background: $primary-5;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     accent-color: $primary-5;
   }
 
@@ -51,7 +51,7 @@
 }
 
 textarea.form-control {
-  padding: $spacer * 4 $spacer * 4;
+  padding: $spacer * 2 $spacer * 2;
   box-shadow: $container-box-shadow;
 
   &:disabled {

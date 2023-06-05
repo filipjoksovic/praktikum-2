@@ -1,28 +1,31 @@
 <div class="auth-page">
-  <div class="logo">
-    <img src="assets/images/Logo.svg" alt="Wishlist Logo" />
-  </div>
+  <div class="hero-section">
+    <div class="logo">
+      <img src="assets/images/Logo.svg" alt="Wishlist Logo"/>
+    </div>
 
-  <h1>WishList</h1>
+    <h1>WishList</h1>
+  </div>
 
   <div class="form-container">
     <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="form-group">
-        <label class="label" for="inputEmail">Email</label>
-        <input type="text" class="form-control" id="inputEmail" formControlName="email" />
-        <div *ngIf="form.get('email').invalid && form.get('email').touched" class="text-danger">
-          Please provide a valid email.
+      <div>
+        <div class="form-group">
+          <label class="label" for="inputEmail">Email</label>
+          <input type="text" class="form-control" id="inputEmail" formControlName="email"/>
+          <div *ngIf="form.get('email').invalid && form.get('email').touched" class="text-danger">
+            Please provide a valid email.
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="label" for="inputPassword">Password</label>
-        <input type="password" class="form-control" id="inputPassword" formControlName="password" />
-        <div *ngIf="form.get('password').invalid && form.get('password').touched" class="text-danger">
-          Please provide a password.
+        <div class="form-group">
+          <label class="label" for="inputPassword">Password</label>
+          <input type="password" class="form-control" id="inputPassword" formControlName="password"/>
+          <div *ngIf="form.get('password').invalid && form.get('password').touched" class="text-danger">
+            Please provide a password.
+          </div>
         </div>
-      </div>
-      <div class="form-button">
-        <button [disabled]="!form.valid" class="btn btn__primary">{{ modeButtonString }}</button>
+        <button [disabled]="!form.valid"
+                class="btn btn__primary mt-2 d-block mx-auto w-fit">{{ modeButtonString }}</button>
       </div>
       <div class="display-mode-message">
         <a class="text-muted" (click)="onSwitchMode()">{{ displayModeString }}</a>

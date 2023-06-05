@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { User } from '../models/User';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {User} from '../models/User';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {Router} from "@angular/router";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AuthService {
   public currentUser$: Observable<User>;
 
   private _currentUser$: BehaviorSubject<User>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this._currentUser$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser$ = this._currentUser$.asObservable();
   }
@@ -20,22 +21,27 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<User>(`auth/login`, { email, password }).pipe(
-      map((user) => {
+    return this.http.post<User>(`auth/login`, {email, password}).pipe(
+      tap((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this._currentUser$.next(user);
-        return user;
       }),
     );
   }
 
   public register(user: User) {
-    return this.http.post<User>(`auth/register`, user);
+    return this.http.post<User>(`auth/register`, user).pipe(
+      tap((user) => {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this._currentUser$.next(user);
+      })
+    );
   }
 
   logout() {
     localStorage.removeItem('currentUser');
     this._currentUser$.next(null);
+    this.router.navigateByUrl("/auth");
   }
 
   public getLocalUser(): User {
@@ -54,7 +60,7 @@ export class AuthService {
 
   public updateLocalUser(data: Partial<User>) {
     const localUser: User = JSON.parse(localStorage.getItem('currentUser'));
-    this._currentUser$.next({ ...localUser, ...data });
-    localStorage.setItem('currentUser', JSON.stringify({ ...localUser, ...data }));
+    this._currentUser$.next({...localUser, ...data});
+    localStorage.setItem('currentUser', JSON.stringify({...localUser, ...data}));
   }
 }

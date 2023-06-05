@@ -13,7 +13,7 @@
   <div class="d-flex flex-row gap-4 ">
     <ng-container *ngIf="transcript$ | async as transcript">
       <div class="transcript-section flex-1">
-        <textarea class="form-control form-control__border-dark" rows="30" cols="60" [value]="transcript"></textarea>
+        <textarea class="form-control form-control__border-dark" rows="15" cols="60" [value]="transcript"></textarea>
 
         <div class="transcript-section__actions">
           <button (click)="processTranscript()" class="btn btn__primary btn__primary__outline ">Cancel</button>
