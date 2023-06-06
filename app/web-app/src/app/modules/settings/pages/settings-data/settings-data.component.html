@@ -1,0 +1,41 @@
+<app-page-descriptor-pill title="Settings" description="Your data">
+
+</app-page-descriptor-pill>
+
+
+<div class="container mt-6">
+
+    <div class="form-group flex-grow-1">
+      <label>Name</label>
+      <input class="form-control" value="{{user.name}}" [(ngModel)]="accountSetupDTO.firstName">
+    </div>
+    <div class="form-group flex-grow-1">
+        <label>Surname</label>
+        <input class="form-control" value="{{user.surname}}" [(ngModel)]="accountSetupDTO.lastName">
+      </div>
+      <div class="form-group flex-grow-1">
+        <label>Email</label>
+        <input class="form-control" value="{{user.email}}" [readonly]="true"  >
+      </div>
+      <div class="form-group flex-grow-1">
+        <label>Password</label>
+        <input class="form-control" value="●●●●●●●●●●●●●●●" [readonly]="true">
+      </div>
+      <div class="form-group flex-grow-1">
+        <label>Date of birth</label>
+        <input class="form-control" value="{{user.dob}}" [(ngModel)]="accountSetupDTO.dob" >
+      </div>
+      <div class="form-group flex-grow-1">
+        <label>Family</label>
+        <input class="form-control" value="{{familyName}}" [readonly]="true">
+      </div>
+
+      <div class="text-center mt-4"> 
+        <button class="btn btn__primary" (click)="setupAccount()">
+            Save Changes
+          </button>
+      </div>
+      
+      
+ 
+</div>
