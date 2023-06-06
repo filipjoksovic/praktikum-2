@@ -264,6 +264,7 @@ public class ShoppingListService implements IShoppingListService {
         List<ShoppingItem> shoppingListItems = list.getItemList();
         list.setItemList(dto.getItems());
 
+
         if (dto.isAllSelected()) {
             for(ShoppingItem item: shoppingListItems) {
                 item.setChecked(true);

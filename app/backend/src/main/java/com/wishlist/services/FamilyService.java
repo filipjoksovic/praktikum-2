@@ -1,6 +1,5 @@
 package com.wishlist.services;
 
-import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.User;
@@ -9,14 +8,11 @@ import com.wishlist.repositories.UserRepository;
 import com.wishlist.services.interfaces.IFamilyService;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class FamilyService implements IFamilyService {
@@ -45,6 +41,10 @@ public class FamilyService implements IFamilyService {
 
     public Family delete(String id) throws FamilyDoesNotExistException {
         Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+        List<User> usersInFamily = family.getUsers();
+        for (User user : usersInFamily) {
+            user.setFamilyId(null);
+        }
         familyRepository.deleteById(id);
         return family;
     }

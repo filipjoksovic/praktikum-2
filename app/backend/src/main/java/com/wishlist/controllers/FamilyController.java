@@ -1,10 +1,11 @@
 package com.wishlist.controllers;
 
-import com.wishlist.dto.*;
-import com.wishlist.exceptions.*;
+import com.wishlist.dto.CreateFamilyRequestDTO;
+import com.wishlist.dto.FamilyMemberDTO;
+import com.wishlist.dto.UpdateFamilyCodeDTO;
+import com.wishlist.dto.UpdateFamilyRequestDTO;
+import com.wishlist.exceptions.UserNotAuthorizedException;
 import com.wishlist.models.Family;
-import com.wishlist.models.User;
-import com.wishlist.security.JwtGeneratorImpl;
 import com.wishlist.security.JwtValidator;
 import com.wishlist.services.FamilyService;
 import com.wishlist.services.UserService;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -93,7 +93,7 @@ public class FamilyController {
 
     }
 
-    //Beni doesn't like this route
+    //Beni doesn't like this route     ahahahahahahhaahha
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody UpdateFamilyRequestDTO updatedFamily) {
         //todo move to service layer
