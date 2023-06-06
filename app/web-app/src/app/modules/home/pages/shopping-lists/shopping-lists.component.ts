@@ -29,7 +29,7 @@ export class ShoppingListsComponent implements OnInit {
   public searchList: string;
   public idsForCheck: string[] = [];
   public allSelected = false;
-  public allDeSelected = false;
+  public allDeselected = false;
   public listsContextActive = false;
   public listItemContextActive = false;
   public isEdit: boolean;
@@ -63,10 +63,10 @@ export class ShoppingListsComponent implements OnInit {
 
   getShoppingList(id) {
     this.shoppingListStore.setSelectedListById(id);
-    this.currentList = this.shoppingListStore.getSelectedList();
-    this.currentItemsList = this.currentList.itemList
-    console.log(this.currentItemsList)
-  }
+    this.shoppingListStore.selectedList$.subscribe(list =>{
+      this.currentItemsList = list.itemList;
+    })
+}
 
   toggleEditMode() {
     if (this.isEdit) {
@@ -94,14 +94,14 @@ export class ShoppingListsComponent implements OnInit {
     }
     else if (this.allSelected) {
       this.allSelected = false;
-      this.allDeSelected = true;
+      this.allDeselected = true;
       this.currentItemsList.forEach(item =>{
         item.checked = false;
       })
     }
     else {
       this.allSelected = true;
-      this.allDeSelected = false;
+      this.allDeselected = false;
       this.currentItemsList.forEach(item =>{
         item.checked = true;
       })

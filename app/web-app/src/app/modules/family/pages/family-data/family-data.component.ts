@@ -83,7 +83,7 @@ export class FamilyDataComponent {
   public loadRequests() {
     this.selectedTab = 'requests';
     this.familyService.getRequests().subscribe()
-    };
+  }
 
   public editFamilyEmail() {
     //todo implement isSame check
