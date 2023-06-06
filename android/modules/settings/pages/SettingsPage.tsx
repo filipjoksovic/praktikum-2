@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {View, TextInput} from 'react-native';
 import {
   Avatar,
   Button,
@@ -8,8 +8,9 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React from 'react';
+import React, { useState } from 'react';
 import {AuthService} from '../../../services/AuthService';
+import {FamilyService} from '../../../services/FamilyService';
 import {AccountSetup} from '../../account/account/pages/AccountSetup';
 import {FamilyPage} from '../../family/pages/FamilyPage';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
@@ -33,6 +34,7 @@ const SettingsStackNavigation = () => {
 
 export const SettingsPage = ({navigation}) => {
   const theme = useTheme();
+  const [inviteCode, setInviteCode] = useState('');
 
   const logout = async () => {
     try {
@@ -42,6 +44,15 @@ export const SettingsPage = ({navigation}) => {
       console.log('[SettingsPage]: Error occurred when logging out', e);
     }
   };
+
+  const sendJoinRequest = async () => {
+    try {
+      await FamilyService.sendJoinRequest(inviteCode);
+    } catch (e) {
+      console.log('[SettingsPage]: Error occurred when sending join request', e);
+    }
+  }
+
   return (
     <View
       style={{
@@ -72,6 +83,14 @@ export const SettingsPage = ({navigation}) => {
           }}>
           Family
         </Button>
+      </Surface>
+      <Surface style={{marginTop: 10}}> 
+        <Text>Invite Code</Text> 
+        <TextInput style={{backgroundColor: "#fffff3"}}
+          value={inviteCode} 
+          onChangeText={text => setInviteCode(text)} 
+        />
+        <Button onPress={sendJoinRequest}>Send Family Join Request</Button>
       </Surface>
       <Button onPress={logout}>Logout</Button>
     </View>

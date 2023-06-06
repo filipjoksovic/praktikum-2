@@ -25,11 +25,18 @@ public class JoinRequestsController {
 
     //TODO remove userId variable after JWT validaton
     @PostMapping("/{userId}/{inviteCode}")
-    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException {
-        String senderId = jwtValidator.getUserFromJwt(jwt).getId();
-        log.info("send join req to {} for fam {}", userId, inviteCode);
-        log.info("send join req to {} for fam {} success", userId, inviteCode);
-        return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, inviteCode, senderId));
+    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode, @RequestHeader("Authorization") String jwt) {
+        try{
+            String senderId = jwtValidator.getUserFromJwt(jwt).getId();
+            log.info("send join req to {} for fam {}", userId, inviteCode);
+            log.info("send join req to {} for fam {} success", userId, inviteCode);
+            return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, inviteCode, senderId));
+        }
+        catch (Exception e) {
+            return (ResponseEntity<?>) ResponseEntity.internalServerError();
+        } catch (UserAlreadyInThisFamilyException e) {
+            return (ResponseEntity<?>) ResponseEntity.internalServerError();
+        }
     }
 
     @GetMapping("/{familyId}")

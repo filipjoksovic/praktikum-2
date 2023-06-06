@@ -79,11 +79,11 @@ export const RegisterPage = ({navigation}: any) => {
         compact={false}
         rippleColor={'red'}
         onPress={submitForm}>
-        Log in
+        Register
       </Button>
 
       <Text style={{marginTop: 20}}>
-        Already have an account? Login <Link to={'/Login'}>here</Link>
+        <Link to={'/Login'}>Already have an account? Login here</Link>
       </Text>
     </ScrollView>
   );
