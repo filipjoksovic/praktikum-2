@@ -41,10 +41,15 @@ export const FamilyList = (props: IFamilyListProps) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('here');
-      console.log('Should get family members');
-      setFamilyList(null);
-      getFamilyList();
+      try{
+        console.log('here');
+        console.log('Should get family members');
+        setFamilyList(null);
+        getFamilyList();
+      }
+      catch (e){
+        console.log('get family members', e);
+      }
     }, []),
   );
 
