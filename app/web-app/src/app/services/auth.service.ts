@@ -4,6 +4,9 @@ import {User} from '../models/User';
 import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Router} from "@angular/router";
+import { AccountSetupDTO } from '../models/AccountSetupDTO';
+import { ToastMessage } from '../models/toaster.model';
+import { ToasterService } from './toaster.service';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -11,7 +14,7 @@ export class AuthService {
 
   private _currentUser$: BehaviorSubject<User>;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private toastService : ToasterService) {
     this._currentUser$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser$ = this._currentUser$.asObservable();
   }
@@ -58,9 +61,28 @@ export class AuthService {
     );
   }
 
+  public setupAccount(dto: AccountSetupDTO) {
+    return this.http.put<User>(`users/account`, dto).pipe(
+      tap((updatedUser: User) => {
+        this.toastService.success('Success!', 'You completed the setup and the data has been updated');
+        this.setupAccountUpdate(dto);
+      }),
+    );
+}   
+
+  public setupAccountUpdate(dto:AccountSetupDTO) {
+    const localUser: User = JSON.parse(localStorage.getItem('currentUser'));
+    localUser.name = dto.firstName
+    localUser.surname = dto.lastName
+    localUser.dob = dto.dob
+    this.updateLocalUser(localUser)
+  }
+
   public updateLocalUser(data: Partial<User>) {
+    console.log(data)
     const localUser: User = JSON.parse(localStorage.getItem('currentUser'));
     this._currentUser$.next({...localUser, ...data});
     localStorage.setItem('currentUser', JSON.stringify({...localUser, ...data}));
   }
+
 }

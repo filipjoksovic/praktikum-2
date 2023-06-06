@@ -61,4 +61,14 @@ public class FullUserDetailsDTO {
     public void setDob(String dob) {
         this.dob = dob;
     }
+
+    @Override
+    public String toString() {
+        return "FullUserDetailsDTO{" +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dob='" + dob + '\'' +
+                '}';
+    }
 }

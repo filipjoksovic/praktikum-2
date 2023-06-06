@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SettingsLayoutComponent } from './pages/settings-layout/settings-layout.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AuthGuard } from '../../guards/auth.guard';
+import { SettingsDataComponent } from './pages/settings-data/settings-data.component';
 
 const routes: Routes = [
   {
@@ -10,8 +11,19 @@ const routes: Routes = [
     component: SettingsLayoutComponent,
     canActivate: [AuthGuard],
 
-    children: [{ path: 'settings', component: SettingsComponent }],
-  },
+    children: [
+    { 
+     path: 'settings',
+     component: SettingsComponent 
+    },
+    { 
+      path: 'settings/data',
+      component: SettingsDataComponent 
+     },
+    
+
+  ],
+},
 ];
 
 @NgModule({

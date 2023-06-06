@@ -28,7 +28,7 @@ import { ContextMenuComponent } from './shared/components/context-menu/context-m
     PageDescriptorPillComponent,
     NavbarComponent,
     HomeModule,
-    FontAwesomeModule,
+    FontAwesomeModule
   ],
   providers: [ShoppingListService, VoiceService, httpInterceptorProviders],
   bootstrap: [AppComponent],
