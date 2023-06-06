@@ -42,6 +42,7 @@ export const FamilyListComponent = (props: IFamilyListComponentProps) => {
       }>
       {list.items.map(item => (
         <FamilyListItemComponent
+          listId={list.id}
           item={item}
           key={item.id}
           onLongPress={itemLongPressed}

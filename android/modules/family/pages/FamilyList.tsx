@@ -106,7 +106,7 @@ export const FamilyList = (props: IFamilyListProps) => {
           color={MD2Colors.amber900}
         />
       )}
-      {familyList ? (
+      {familyList && familyList.items && familyList.items.length > 0 ? (
         <FamilyListComponent
           list={familyList}
           onListPressed={handleWholeListPress}
@@ -115,7 +115,10 @@ export const FamilyList = (props: IFamilyListProps) => {
         />
       ) : (
         <>
-          <Text>No shopping list for family</Text>
+          <Text>
+            Your shopping list is currently empty. Go to the recorder page to
+            add some items
+          </Text>
         </>
       )}
       <FAB.Group
@@ -128,11 +131,6 @@ export const FamilyList = (props: IFamilyListProps) => {
             icon: 'bell',
             label: 'Remind',
             onPress: () => console.log('Pressed remind'),
-          },
-          {
-            icon: 'trash-can',
-            label: 'Delete',
-            onPress: handleDelete,
           },
           {
             icon: 'radiobox-marked',
