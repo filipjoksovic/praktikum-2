@@ -1,12 +1,15 @@
 import {Checkbox, Divider, List, Surface, Text} from 'react-native-paper';
 import {Pressable, View} from 'react-native';
 import React from 'react';
-import {IListItem} from '../../../models/IShoppingListsResponseDTO';
+import {
+  IListItem,
+  ListItemDTOV2,
+} from '../../../models/IShoppingListsResponseDTO';
 
 export interface IFamilyListItemComponentProps {
-  item: IListItem;
-  onLongPress: (item: IListItem) => void;
-  onPress?: (item: IListItem) => void;
+  item: ListItemDTOV2;
+  onLongPress: (item: ListItemDTOV2) => void;
+  onPress?: (item: ListItemDTOV2) => void;
 }
 
 export const FamilyListItemComponent = (
@@ -21,7 +24,11 @@ export const FamilyListItemComponent = (
             return (
               <View>
                 <Text variant="bodyMedium">{item.name}</Text>
-                <Text variant="bodySmall">Added by: TODO</Text>
+                <Text variant="bodySmall">
+                  Added by:{' '}
+                  {(item.addedBy.name && ' ' && item.addedBy.surname) ||
+                    item.addedBy.email}
+                </Text>
               </View>
             );
           }}

@@ -3,6 +3,7 @@ import {LocalStorageService} from './LocalStorageService';
 import {Environment} from '../environment';
 import {IFamily} from '../models/IFamily';
 import {makeRequest} from '../modules/shared/helpers';
+import {name} from 'axios';
 
 export class FamilyService {
   static async getFamilyMembers() {
@@ -43,6 +44,20 @@ export class FamilyService {
       return await makeRequest(`families/user/${user.id}`, 'get');
     } catch (err) {
       console.error('getFamilyForUser error', err);
+    }
+  }
+
+  static async updateFamily(
+    id: string,
+    familyData: {inviteCode: string; name: string},
+  ) {
+    try {
+      await makeRequest(`families/${id}`, 'put', {name: familyData.name});
+      await makeRequest(`families/${id}/code`, 'post', {
+        code: familyData.inviteCode,
+      });
+    } catch (err) {
+      console.error('updateFamily error', err);
     }
   }
 }

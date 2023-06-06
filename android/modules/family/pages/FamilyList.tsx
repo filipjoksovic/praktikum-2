@@ -2,7 +2,10 @@ import {ActivityIndicator, GestureResponderEvent, View} from 'react-native';
 import {FAB, List, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
-import {IShoppingListResponse} from '../../../models/IShoppingListsResponseDTO';
+import {
+  IShoppingListResponse,
+  ShoppingListDTOV2,
+} from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 import {error} from 'console';
 import {useFocusEffect} from '@react-navigation/native';
@@ -16,11 +19,9 @@ export interface IFamilyListProps {}
 export const FamilyList = (props: IFamilyListProps) => {
   const theme = useTheme();
   const [familyList, setFamilyList] =
-    React.useState<IShoppingListResponse | null>();
+    React.useState<ShoppingListDTOV2 | null>();
   const [state, setState] = React.useState({open: false});
-  const [listForFab, setListForFab] = useState<IShoppingListResponse | null>(
-    null,
-  );
+  const [listForFab, setListForFab] = useState<ShoppingListDTOV2 | null>(null);
   const [recorderVisible, setRecorderVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,8 +31,8 @@ export const FamilyList = (props: IFamilyListProps) => {
 
   async function getFamilyList() {
     try {
-      const list = await ShoppingListService.getFamilyList();
-      console.log(list);
+      const list: ShoppingListDTOV2 = await ShoppingListService.getFamilyList();
+      console.log('Family list', list);
       setFamilyList(prevState => list);
     } catch (e) {
       console.error('FamilyList getFamilyList', e);
@@ -120,7 +121,7 @@ export const FamilyList = (props: IFamilyListProps) => {
       <FAB.Group
         open={open}
         visible
-        label={open ? listForFab && listForFab.shoppingList.name : ''}
+        label={open ? listForFab && listForFab.name : ''}
         icon={open ? 'close' : 'pencil'}
         actions={[
           {
