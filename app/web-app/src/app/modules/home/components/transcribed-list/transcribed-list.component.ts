@@ -37,6 +37,7 @@ export class TranscribedListComponent {
     this.transcriptStore.transcribedList$
       .pipe(
         mergeMap((list) =>
+
           this.shoppingListService.saveShoppingList({
             name: this.listName,
             items: list,

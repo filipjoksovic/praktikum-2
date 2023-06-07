@@ -11,7 +11,8 @@
   background-color: $white;
   border-radius: 20px;
   box-shadow: $container-box-shadow;
-
+  max-height: 50vh;
+  overflow-y: scroll;
   &__item {
     padding: $spacer * 2 $spacer * 2;
     background: $white;
