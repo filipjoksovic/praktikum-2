@@ -1,0 +1,35 @@
+.navbar {
+  min-width: 80px;
+  height: 100%;
+  width: 5vw;
+  max-width: 300px;
+  background: $primary-6;
+  box-shadow: $container-box-shadow;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacer * 4;
+  padding-block: $spacer * 2;
+
+  & .navbar-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer * 2
+  }
+
+  & .navbar-link {
+    width: 64px;
+    height: 64px;
+    background-color: $primary-7;
+    border-radius: 1000rem;
+    color: $font-light !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .nav-icon {
+      color: $font-light !important;
+    }
+  }
+}

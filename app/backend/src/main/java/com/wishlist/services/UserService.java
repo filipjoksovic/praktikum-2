@@ -2,7 +2,9 @@ package com.wishlist.services;
 
 import com.wishlist.dto.*;
 import com.wishlist.exceptions.*;
+import com.wishlist.models.Family;
 import com.wishlist.models.User;
+import com.wishlist.repositories.FamilyRepository;
 import com.wishlist.repositories.UserRepository;
 import com.wishlist.security.IJWTGenerator;
 import com.wishlist.services.interfaces.IAuth;
@@ -22,15 +24,18 @@ import java.util.logging.Logger;
 @Service
 public class UserService implements IUserService, IAuth {
     private final UserRepository userRepository;
-    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final IJWTGenerator jwtGenerator;
     private final IEmailSender emailSender;
     private final AuthenticationManager authenticationManager;
+
+    private final FamilyRepository familyRepository;
     Logger logger = Logger.getLogger(UserService.class.getName());
 
     @Autowired
-    public UserService(UserRepository userRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender, AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, FamilyRepository familyRepository, IJWTGenerator jwtGenerator, IEmailSender emailSender, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.familyRepository = familyRepository;
         this.jwtGenerator = jwtGenerator;
         this.emailSender = emailSender;
         this.authenticationManager = authenticationManager;
@@ -44,12 +49,12 @@ public class UserService implements IUserService, IAuth {
         return userRepository.save(user);
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id).get();
+    public User getUserById(String id) throws UserDoesNotExistException {
+        return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email).get();
+        return userRepository.findUserByEmail(email).orElseThrow(UserDoesNotExistException::new);
     }
 
     public User updateUser(User user) {
@@ -72,20 +77,30 @@ public class UserService implements IUserService, IAuth {
             if (passwordEncoder.matches(dto.getPassword(), user.get().getPassword())) {
                 Map<String, String> jwt = jwtGenerator.generateToken(user.get());
                 Map<String, String> jwtRefresh = jwtGenerator.generateRefreshToken(user.get());
-                logger.info("Generated JWT: " + jwt);
-                return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"));
+                logger.info("Generated JWT 123 : " + jwt);
+
+                //duplicate code avoids circular dependency
+                boolean isOwner = false;
+                if (user.get().getFamilyId() != null) {
+                    Optional<Family> familyOptional = familyRepository.findById(user.get().getFamilyId());
+                    if (familyOptional.isPresent()) {
+                        Family family = familyOptional.get();
+                        User owner = family.getOwner();
+                        isOwner = owner.getId().equals(user.get().getId());
+                    }
+                }
+                return AuthResponseDTO.to(user.get(), jwt.get("token"), jwtRefresh.get("refreshToken"), isOwner);
             }
         }
         throw new Exception("Invalid credentials");
     }
 
 
-    public User register(AuthRequestDTO dto) throws Exception {
+    public User register(AuthRequestDTO dto) throws UserAlreadyExistsException {
         Optional<User> found = userRepository.findUserByEmail(dto.getEmail());
 
         if (found.isPresent()) {
             throw new UserAlreadyExistsException();
-        } else {
         }
         return userRepository.save(AuthRequestDTO.toUser(dto));
     }
@@ -95,10 +110,10 @@ public class UserService implements IUserService, IAuth {
         return userRepository.findById(id).orElseThrow(UserDoesNotExistException::new);
     }
 
-    public TokenRefreshResponseDTO refreshTokenFunction(TokenRefreshRequestDTO tokenRefreshRequestDTO) throws Exception {
+    public TokenRefreshResponseDTO refreshTokenFunction(TokenRefreshRequestDTO tokenRefreshRequestDTO) throws NoRefreshTokenException, UserLoginException, RefreshTokenHasExpiredException {
         final String refreshToken = tokenRefreshRequestDTO.getRefreshToken();
         if (refreshToken == null) {
-            throw new Exception("There is no refresh token");
+            throw new NoRefreshTokenException();
         }
         final String userEmail = jwtGenerator.extractEmail(refreshToken);
         User user = this.getUserByEmail(userEmail);
@@ -131,17 +146,25 @@ public class UserService implements IUserService, IAuth {
 
     @Override
     public FullUserDetailsDTO setupAccount(AccountSetupDTO dto) throws AccountSetupFailedException {
+
         Optional<User> found = userRepository.findById(dto.getId());
         if (found.isEmpty()) {
             throw new AccountSetupFailedException("Account setup failed because the user doesn't exist");
         }
-        User user = found.get();
-        user.setName(dto.getFirstName());
-        user.setSurname(dto.getLastName());
 
-        user.setDob(dto.getDob());
+        User user = found.get();
+        if (dto.getFirstName() != null) {
+            user.setName(dto.getFirstName());
+        }
+        if (dto.getLastName() != null) {
+            user.setSurname(dto.getLastName());
+        }
+        if (dto.getDob() != null) {
+            user.setDob(dto.getDob());
+        }
         userRepository.save(user);
         emailSender.sendNewAccountEmail(user.getEmail(), user.getName(), user.getSurname());
+        System.out.print(FullUserDetailsDTO.to(user));
         return FullUserDetailsDTO.to(user);
 
     }

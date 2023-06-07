@@ -10,12 +10,18 @@ public class ShoppingListResponseDTO {
 
     public ShoppingListResponseDTO(ShoppingList shoppingList) {
         this.shoppingList = shoppingList;
+        if (shoppingList.getItemList() == null) {
+            allChecked = false;
+        }
         for (ShoppingItem item : shoppingList.getItemList()) {
             if (!item.isChecked()) {
                 allChecked = false;
                 break;
             }
         }
+    }
+
+    public ShoppingListResponseDTO() {
     }
 
     public ShoppingList getShoppingList() {

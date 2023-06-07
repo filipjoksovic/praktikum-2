@@ -13,7 +13,6 @@ public class ShoppingList {
     private String userId;
     private String familyId;
     private List<ShoppingItem> shoppingItemList;
-
     public ShoppingList() {
     }
 

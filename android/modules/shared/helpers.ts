@@ -23,7 +23,7 @@ export async function makeRequest(
   body: any = {},
   preAuth: boolean = true,
 ): Promise<any> {
-  console.log(`${method} request at ${url}`);
+  console.log(`${method} request at ${Environment.BACKEND_URL}/${url}`);
   console.log('body:', body);
   let user = undefined;
   if (preAuth) {

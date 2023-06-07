@@ -5,8 +5,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['../../../sass/main.scss']
+  templateUrl: 'auth-component.html',
+  styleUrls: ['../../../styles/main.scss']
 })
 export class AuthComponent {
 

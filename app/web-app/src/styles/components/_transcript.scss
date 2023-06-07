@@ -1,0 +1,11 @@
+.transcript-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer*4;
+  margin-top: $spacer*4;
+
+  &__actions {
+    display: flex;
+    gap: $spacer * 3;
+  }
+}

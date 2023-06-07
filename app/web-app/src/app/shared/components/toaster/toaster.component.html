@@ -1,0 +1,10 @@
+<ng-container *ngIf="messages$ | async as messages">
+  <div class="toaster-wrapper">
+
+    <ng-container *ngFor="let message of messages;">
+      <app-toast-message [message]="message"></app-toast-message>
+    </ng-container>
+
+  </div>
+</ng-container>
+

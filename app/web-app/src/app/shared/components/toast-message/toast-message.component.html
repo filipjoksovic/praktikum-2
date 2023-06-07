@@ -1,0 +1,16 @@
+<div class="toaster-message "
+     [ngClass]="{'toaster-message__success':message.messageType === ToastMessageType.SUCCESS,
+           'toaster-message__danger':message.messageType === ToastMessageType.DANGER,
+           'toaster-message__warning':message.messageType === ToastMessageType.WARNING,
+           'toaster-message__primary':message.messageType === ToastMessageType.PRIMARY,}">
+  <p class="toaster-message__title">{{message.title}}</p>
+  <p class="toaster-message__text">{{message.content}}</p>
+  <button class="toaster-message__dismiss-btn" (click)="removeMessage(message)">
+    <fa-icon [icon]="faTimes"></fa-icon>
+  </button>
+  <div class="toaster-message__loader" [ngClass]="{'toaster-message__loader__success':message.messageType === ToastMessageType.SUCCESS,
+           'toaster-message__loader__danger':message.messageType === ToastMessageType.DANGER,
+           'toaster-message__loader__warning':message.messageType === ToastMessageType.WARNING,
+           'toaster-message__loader__primary':message.messageType === ToastMessageType.PRIMARY,}"></div>
+
+</div>

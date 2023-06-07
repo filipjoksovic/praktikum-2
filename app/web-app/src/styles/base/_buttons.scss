@@ -1,0 +1,86 @@
+button,
+.btn {
+  padding: $spacer * 2 $spacer * 4;
+  border-radius: 20px;
+  outline: none;
+  border: 1px solid $form-control-stroke;
+  background-color: $form-control-bg;
+  cursor: pointer;
+
+  &__primary {
+    background-color: $primary-5;
+    color: $primary-9;
+    border: 1px solid $primary-6;
+
+    &__outline {
+      border: 2px solid $primary-7;
+      color: $primary-7;
+      background-color: transparent;
+    }
+  }
+
+  &__success {
+    background-color: $green-300;
+    color: $green-900;
+  }
+
+  &__toggle {
+    background-color: transparent;
+    border-width: 2px;
+    transition: 250ms ease-in-out background-color;
+    border-radius: 30px;
+
+    &__active {
+      background-color: $green-100;
+    }
+
+    &:hover {
+      background-color: $green-100;
+    }
+  }
+
+  &__danger {
+    background-color: $red-500;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+  }
+}
+
+.segmented-buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    background-color: transparent;
+    border: 1px solid $light-gray;
+
+  }
+
+
+  &__button {
+    border-radius: 0;
+    transition: 250ms ease-in-out all;
+    &:hover {
+      background-color: $light-gray;
+    }
+
+    &__active {
+      background-color: $light-gray !important;
+    }
+
+    &__last {
+      border-radius: 0 20px 20px 0;
+    }
+
+    &__first {
+      border-radius: 20px 0 0 20px;
+
+    }
+  }
+}

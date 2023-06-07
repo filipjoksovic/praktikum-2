@@ -12,6 +12,7 @@ import {AuthService} from '../../../services/AuthService';
 import {Text, useTheme} from 'react-native-paper';
 import {TextInput, Button} from 'react-native-paper';
 import {Link, useNavigation} from '@react-navigation/native';
+import {SnackBarStore} from '../../shared/state/SnackBarStore';
 export const LoginPage = ({navigation}: any) => {
   const [userAuth, setUserAuth] = React.useState<{
     email: string;
@@ -38,11 +39,18 @@ export const LoginPage = ({navigation}: any) => {
       const result = await AuthService.login(userAuth);
       console.log(result);
       console.log('Navigating home');
-      navigation.navigate('Home');
-    } catch (error) {
+      if (result) {
+        navigation.navigate('Home');
+      } else {
+        throw new Error('Credentials are not valid.');
+      }
+    } catch (error: any) {
       if (error instanceof Error) {
         ToastAndroid.CENTER;
         ToastAndroid.showWithGravity(error.message, 1000, ToastAndroid.TOP);
+        SnackBarStore.update(s => {
+          return {isOpen: true, text: error.message};
+        });
       }
     }
   };
@@ -84,16 +92,12 @@ export const LoginPage = ({navigation}: any) => {
         />
       </View>
 
-      <Button
-        mode={'contained'}
-        compact={false}
-        rippleColor={'red'}
-        onPress={submitForm}>
+      <Button mode={'contained'} compact={false} onPress={submitForm}>
         Log in
       </Button>
 
       <Text style={{marginTop: 20}}>
-        No account? Register <Link to={'/Register'}>here</Link>
+        <Link to={'/Register'}>No account? Register here</Link>
       </Text>
     </ScrollView>
   );

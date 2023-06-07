@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("api/uploads")
 public class OpenAiController {
@@ -20,30 +22,20 @@ public class OpenAiController {
     }
 
     @PostMapping("/text")
-    public ResponseEntity<String> uploadText(@RequestBody TextUploadRequestDTO textRequest) {
+    public ResponseEntity<String> uploadText(@RequestBody TextUploadRequestDTO textRequest) throws Exception {
         log.info("Received uploaded text {}", textRequest.getText());
-        try {
-            log.info("Processing text request");
-            String response = "{\"summary\":" + openAiService.processText(textRequest.getText()) + "}";
-            log.info("Request processed, sending back response");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("Error occurred when processing request {}. Returning HTTP 500", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+        log.info("Processing text request");
+        String response = "{\"summary\":" + openAiService.processText(textRequest.getText()) + "}";
+        log.info("Request processed, sending back response: " + response);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/wav")
-    public ResponseEntity<String> uploadWav(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadWav(@RequestParam("file") MultipartFile file) throws IOException {
         log.info("Received uploaded file");
-        try {
-            log.info("Processing uploaded file");
-            String response = "{\"transcript\":\"" + openAiService.processWavFile(file) + "\"}";
-            log.info("Uploaded file processed. Returning response");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("Error occurred when processing request {}. Returning HTTP 500", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+        log.info("Processing uploaded file");
+        String response = "{\"transcript\":\"" + openAiService.processWavFile(file) + "\"}";
+        log.info("Uploaded file processed. Returning response");
+        return ResponseEntity.ok(response);
     }
 }
