@@ -8,6 +8,9 @@ export class TranscriptStoreService {
   private _transcript$ = new BehaviorSubject<string>('');
   public transcript$ = this._transcript$.asObservable();
 
+  private _showItems$ = new BehaviorSubject<boolean>(false);
+  public showItems$ = this._showItems$.asObservable();
+
   private _transcribedList$ = new BehaviorSubject<string[]>([]);
   public transcribedList$ = this._transcribedList$.asObservable();
 
@@ -24,6 +27,14 @@ export class TranscriptStoreService {
 
   public getTranscriptValue(): string {
     return this._transcript$.value;
+  }
+
+  public setShowItems(showItems: boolean): void {
+    this._showItems$.next(showItems);
+  }
+
+  public getShowItemsValue(): boolean {
+    return this._showItems$.value;
   }
 
   public setTranscribedList(list: string[]) {

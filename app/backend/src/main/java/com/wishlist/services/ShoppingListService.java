@@ -10,7 +10,10 @@ import com.wishlist.services.interfaces.IItemService;
 import com.wishlist.services.interfaces.IShoppingListService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -77,7 +80,6 @@ public class ShoppingListService implements IShoppingListService {
         dto.setItems(dtoItems);
         return dto;
     }
-
     @Override
     public ShoppingList deleteList(String listId) throws ListDoesNotExistException {
         // TODO CHECK THE USER AND LIST BEFORE DELETING
@@ -145,7 +147,7 @@ public class ShoppingListService implements IShoppingListService {
     public ShoppingList addItemsToShoppingList(AddListItemsDTO items, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException {
         ShoppingList list = shoppingListRepository.findById(shoppingListId).orElseThrow(ShoppingListDoesNotExistException::new);
         for (String item : items.getItems()) {
-            ShoppingItem saved = itemService.save(new ShoppingItem(item, creatorId));
+            ShoppingItem saved = itemService.save(new ShoppingItem(item,creatorId));
             list.getItemList().add(saved);
         }
         shoppingListRepository.save(list);
@@ -183,14 +185,26 @@ public class ShoppingListService implements IShoppingListService {
 
     @Override
     public ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws ShoppingItemDoesNotExistException, ShoppingListDoesNotExistException {
-        ShoppingItem foundItem = itemService.findById(itemId).orElseThrow(ShoppingItemDoesNotExistException::new);
+        Optional<ShoppingItem> shoppingItemOptional = itemService.findById(itemId);
+        if (shoppingItemOptional.isEmpty()) {
+            throw new ShoppingItemDoesNotExistException();
+        }
+        ShoppingItem foundItem = shoppingItemOptional.get();
         foundItem.setName(item.getName());
         foundItem.setChecked(item.isChecked());
-        ShoppingList foundList = shoppingListRepository.findById(listId).orElseThrow(ShoppingListIsEmptyException::new);
+        Optional<ShoppingList> listOptional = shoppingListRepository.findById(listId);
+        if (listOptional.isEmpty()) {
+            throw new ShoppingListDoesNotExistException();
+        }
+        ShoppingList foundList = listOptional.get();
         List<ShoppingItem> listOfItems = foundList.getItemList();
-        ShoppingItem foundListItem = listOfItems.stream().filter(i -> i.getId().equals(itemId)).findFirst().orElseThrow(ShoppingItemDoesNotExistException::new);
-        if (item.getName() != null) {
-            foundListItem.setName(item.getName());
+
+        for (ShoppingItem shoppingItem : listOfItems) {
+            if (shoppingItem.getId().equals(itemId)) {
+                int index = listOfItems.indexOf(shoppingItem);
+                listOfItems.set(index, item);
+                break;
+            }
         }
         foundList.setItemList(listOfItems);
         shoppingListRepository.save(foundList);
@@ -259,56 +273,22 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public ShoppingList bulkCheck(BulkCheckDTO dto, String listId) {
+    public ShoppingList bulkEdit(BulkEditDTO dto, String listId) {
 
         ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
-        Map<String, Boolean> mapped = new HashMap<>();
-        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
-        List<ShoppingItem> updatedItems = new ArrayList<>();
+        List<ShoppingItem> shoppingListItems = list.getItemList();
+        list.setItemList(dto.getItems());
 
-        if (!dto.isAllSelected()) {
-            list.getItemList().forEach(item -> {
-                if (mapped.containsKey(item.getId())) {
-                    item.setChecked(true);
-                }
-                updatedItems.add(item);
-            });
-        } else {
-            list.getItemList().forEach(item -> {
+
+        if (dto.isAllSelected()) {
+            for(ShoppingItem item: shoppingListItems) {
                 item.setChecked(true);
-                updatedItems.add(item);
-            });
+            }
+            return list;
         }
-        list.setItemList(updatedItems);
         shoppingListRepository.save(list);
         return list;
+
     }
-
-    @Override
-    public ShoppingList bulkUncheck(BulkCheckDTO dto, String listId) {
-
-        ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
-        Map<String, Boolean> mapped = new HashMap<>();
-        Arrays.stream(dto.getIds()).forEach(id -> mapped.put(id, true));
-        List<ShoppingItem> updatedItems = new ArrayList<>();
-
-        if (!dto.isAllSelected()) {
-            list.getItemList().forEach(item -> {
-                if (mapped.containsKey(item.getId())) {
-                    item.setChecked(false);
-                }
-                updatedItems.add(item);
-            });
-        } else {
-            list.getItemList().forEach(item -> {
-                item.setChecked(false);
-                updatedItems.add(item);
-            });
-        }
-        list.setItemList(updatedItems);
-        shoppingListRepository.save(list);
-        return list;
-    }
-
 
 }

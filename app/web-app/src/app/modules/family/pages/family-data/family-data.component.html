@@ -47,6 +47,12 @@
         </form>
       </div>
       <button class="btn btn__primary ml-auto d-block w-fit mt-8" (click)="inviteMembers()">Invite</button>
+      <ng-container *ngIf="!isOwner">
+        <button class="btn btn__danger ml-auto d-block w-fit mt-8" (click)="leaveFamily()">Leave Family</button>
+      </ng-container>
+      <ng-container *ngIf="isOwner">
+        <button class="btn btn__danger ml-auto d-block w-fit mt-8" (click)="deleteFamily()">Delete Family</button>
+      </ng-container>
     </div>
     <div class="container flex-1">
 
@@ -78,8 +84,12 @@
       </ng-container>
 
       <ng-container *ngIf="selectedTab==='requests'">
-
         <ng-container *ngIf="pendingRequests$ | async as pendingRequests">
+          <ng-container *ngIf="pendingRequests.length == 0">
+              <div class="text-center flex-grow-1">
+                <p class="mt-4">There are no requests for joining this family</p>
+            </div>
+          </ng-container>
           <div *ngFor="let request of pendingRequests">
             <div class="pending-request">
               <div class="pending-request__data">

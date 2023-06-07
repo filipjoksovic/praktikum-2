@@ -2,7 +2,6 @@ package com.wishlist.controllers;
 
 import com.wishlist.dto.AccountSetupDTO;
 import com.wishlist.dto.ApiError;
-import com.wishlist.exceptions.AccountSetupFailedException;
 import com.wishlist.exceptions.UserDoesNotExistException;
 import com.wishlist.models.User;
 import com.wishlist.security.JwtValidator;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -59,9 +56,10 @@ public class UserController {
     @PutMapping("/account")
     public ResponseEntity<?> setupAccount(@RequestBody AccountSetupDTO dto, @RequestHeader("Authorization") String jwt) {
         if (jwtValidator.validateUser(jwt, dto.getId())) {
-            return new ResponseEntity(userService.setupAccount(dto), HttpStatus.OK);
+            System.out.println(userService.setupAccount(dto).toString());
+            return new ResponseEntity<>(userService.setupAccount(dto), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
         }
 
     }

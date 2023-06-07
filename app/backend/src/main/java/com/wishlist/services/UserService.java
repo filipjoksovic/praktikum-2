@@ -146,6 +146,7 @@ public class UserService implements IUserService, IAuth {
 
     @Override
     public FullUserDetailsDTO setupAccount(AccountSetupDTO dto) throws AccountSetupFailedException {
+
         Optional<User> found = userRepository.findById(dto.getId());
         if (found.isEmpty()) {
             throw new AccountSetupFailedException("Account setup failed because the user doesn't exist");
@@ -163,6 +164,7 @@ public class UserService implements IUserService, IAuth {
         }
         userRepository.save(user);
         emailSender.sendNewAccountEmail(user.getEmail(), user.getName(), user.getSurname());
+        System.out.print(FullUserDetailsDTO.to(user));
         return FullUserDetailsDTO.to(user);
 
     }

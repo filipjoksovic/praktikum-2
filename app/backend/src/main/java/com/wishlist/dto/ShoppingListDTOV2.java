@@ -1,14 +1,9 @@
 package com.wishlist.dto;
 
-import com.wishlist.dto.ShoppingItemDTO;
-import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
 import com.wishlist.models.User;
-import com.wishlist.services.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShoppingListDTOV2 {
     private String id;

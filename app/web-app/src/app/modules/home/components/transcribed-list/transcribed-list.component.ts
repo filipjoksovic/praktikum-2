@@ -15,6 +15,7 @@ export class TranscribedListComponent {
   public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
   public listName = '';
   public activeSegment:'personal' | 'family';
+  public showList: boolean = false;
 
   protected readonly faHome = faHome;
   protected readonly faUser = faUser;
@@ -25,6 +26,12 @@ export class TranscribedListComponent {
     private shoppingListService: ShoppingListService,
     private router: Router,
   ) {}
+
+  ngOnInit() {
+    this.transcriptStore.showItems$.subscribe(data =>{
+      this.showList = data;
+    })
+  }
 
   saveShoppingList() {
     this.transcriptStore.transcribedList$

@@ -2,16 +2,14 @@ package com.wishlist.security;
 
 import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.exceptions.ShoppingItemDoesNotExistException;
-import com.wishlist.models.Family;
 import com.wishlist.models.Invitation;
-import com.wishlist.models.ShoppingList;
 import com.wishlist.models.ShoppingItem;
+import com.wishlist.models.ShoppingList;
 import com.wishlist.models.User;
 import com.wishlist.services.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

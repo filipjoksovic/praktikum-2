@@ -1,8 +1,8 @@
 <div class="d-flex flex-column gap-4 flex-1 h-100">
   <ng-container *ngIf="items$ | async as items">
-    <ng-container *ngIf="items.length > 0">
+    <ng-container *ngIf="showList">
 
-      <div class="items-section flex-1" [ngClass]="{ 'transcribed-list': (items$ | async).length > 0 }">
+      <div class="items-section flex-1" [ngClass]="{ 'transcribed-list': (items$ | async).length >= 0 }">
         <div class="segmented-buttons">
           <button class="segmented-buttons__button segmented-buttons__button__first"
                   (click)="setActiveSegment('family')"
@@ -41,7 +41,7 @@
       </div>
       <button (click)="saveShoppingList()" class="btn btn__primary w-fit ml-auto d-block">Create List</button>
     </ng-container>
-    <ng-container *ngIf="items.length === 0">
+    <ng-container *ngIf="!showList">
       <div class="d-flex flex-column align-center justify-center flex-1 h-100">
         <p>When processed, your list items will appear here</p>
       </div>

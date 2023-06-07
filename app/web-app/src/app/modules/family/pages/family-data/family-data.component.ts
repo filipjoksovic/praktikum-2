@@ -19,6 +19,9 @@ export class FamilyDataComponent {
   public code = '';
   public emailsToAdd: string[] = [];
   public selectedTab: 'members' | 'requests' = 'members';
+  private isOwner: boolean;
+  public familyOwner: string;
+  private familyId: string;
 
   public family$ = this.familyService.getFamily().pipe(
     tap((family) => {
@@ -30,7 +33,7 @@ export class FamilyDataComponent {
       return this.familyStore.family$;
     }),
     shareReplay(),
-  );
+  ); // pogledaj ovo 
 
   public user = this.authService.getLocalUser();
 
@@ -63,6 +66,16 @@ export class FamilyDataComponent {
     private fb: FormBuilder,
   ) {}
 
+  ngOnInit(): void {
+    this.familyService.getFamily().subscribe(data =>{
+      this.familyOwner = data.owner.id 
+      this.familyId = data.id
+      if (this.familyOwner == this.user.id) {
+        this.isOwner = true;
+      }
+    })
+  }
+
   public addEmail() {
     this.emailsToAdd.push(this.emailForm.get('emailToAdd').value);
     this.emailForm.reset();
@@ -82,7 +95,7 @@ export class FamilyDataComponent {
 
   public loadRequests() {
     this.selectedTab = 'requests';
-    this.familyService.getRequests().subscribe();
+    this.familyService.getRequests().subscribe()
   }
 
   public editFamilyEmail() {
@@ -92,6 +105,14 @@ export class FamilyDataComponent {
 
   public editFamilyCode() {
     this.familyService.updateFamilyCode(this.familyForm.get('inviteCode').value).subscribe();
+  }
+
+  public deleteFamily() {
+    this.familyService.deleteFamily(this.familyId).subscribe();
+  }
+
+  public leaveFamily() {
+    this.familyService.leaveFamily(this.familyId, this.user).subscribe();
   }
 
   rejectRequest(request: JoinRequestDTO) {
@@ -110,3 +131,7 @@ export class FamilyDataComponent {
     this.familyService.inviteMembers(this.emailsToAdd).subscribe();
   }
 }
+function ngOnInit(): (target: FamilyDataComponent, propertyKey: "") => void {
+  throw new Error('Function not implemented.');
+}
+

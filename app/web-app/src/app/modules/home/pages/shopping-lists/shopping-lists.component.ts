@@ -29,10 +29,15 @@ export class ShoppingListsComponent implements OnInit {
   public searchList: string;
   public idsForCheck: string[] = [];
   public allSelected = false;
+  public allDeselected = false;
   public listsContextActive = false;
   public listItemContextActive = false;
   public isEdit: boolean;
   public selectedListItem$: Observable<IListItem> = this.shoppingListStore.selectedItem$;
+  public firstTimeOpening: boolean = true;
+  public currentList: IShoppingList;
+  public currentItemsList: IListItem[];
+
 
   protected readonly faTrash = faTrash;
   protected readonly faFloppyDisk = faFloppyDisk;
@@ -57,45 +62,62 @@ export class ShoppingListsComponent implements OnInit {
   }
 
   getShoppingList(id) {
-    console.log('get shopping list');
     this.shoppingListStore.setSelectedListById(id);
-  }
+    this.shoppingListStore.selectedList$.subscribe(list =>{
+      this.currentItemsList = list.itemList;
+    })
+}
 
   toggleEditMode() {
-    console.log('editing');
     if (this.isEdit) {
-      console.log('Should send req1uest');
-      console.log(this.idsForCheck);
-      this.shoppingListService.bulkCheck(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
+      console.log(this.allSelected)
+      this.shoppingListService.bulkEdit(this.selectedId, this.currentItemsList, this.allSelected).subscribe();
     }
-    // else {
-    //   console.log('Should send req1uest');
-    //   console.log(this.idsForCheck);
-    //   this.shoppingListService.bulkUncheck(this.selectedId, this.idsForCheck, this.allSelected).subscribe();
-    // }
     this.isEdit = !this.isEdit;
   }
 
   addOrRemove(id: string) {
-    if (this.idsForCheck.includes(id)) {
-      this.idsForCheck = this.idsForCheck.filter((itemId) => itemId !== id);
-    } else {
-      this.idsForCheck.push(id);
+    const item = this.currentItemsList.find((item) => item.id === id);
+    if (item) {
+      item.checked = !item.checked;
     }
   }
+  
 
   selectAll() {
-    this.allSelected = !this.allSelected;
+    if (this.firstTimeOpening) {
+      this.firstTimeOpening = false;
+      this.allSelected = true;
+      this.currentItemsList.forEach(item =>{
+        item.checked = true;
+      })
+    }
+    else if (this.allSelected) {
+      this.allSelected = false;
+      this.allDeselected = true;
+      this.currentItemsList.forEach(item =>{
+        item.checked = false;
+      })
+    }
+    else {
+      this.allSelected = true;
+      this.allDeselected = false;
+      this.currentItemsList.forEach(item =>{
+        item.checked = true;
+      })
+    }
   }
 
   cancelEdit() {
     this.idsForCheck = [];
     this.isEdit = false;
     this.isEditSelectedList = false;
+    this.firstTimeOpening = true;
+    this.allSelected = false;
   }
 
   shouldDisplayAsChecked(item) {
-    return this.allSelected || item.checked || this.idsForCheck.includes(item.id);
+    return this.allSelected || (this.firstTimeOpening && item.checked);
   }
 
   listRightClick(event: MouseEvent, list: IShoppingList) {

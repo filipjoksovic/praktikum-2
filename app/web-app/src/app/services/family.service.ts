@@ -53,8 +53,6 @@ export class FamilyService {
     );
   }
 
-  public exitFamily() {}
-
   public sendRequest(inviteCode: string) {
     const user = this.authService.currentUserValue;
     console.log({
@@ -76,7 +74,6 @@ export class FamilyService {
     const user = this.authService.currentUserValue;
     return this.http.get<JoinRequestDTO[]>(`joinRequests/${user.familyId}`).pipe(
       tap((res) => {
-        console.log(res);
         this.familyStore.setPendingRequests(res);
       }),
     );
@@ -118,6 +115,16 @@ export class FamilyService {
     );
   }
 
+  deleteFamily(familyId: string) {
+    return this.http.delete(`families/${familyId}`).pipe(
+      tap((response) => {
+        this.familyStore.setExistingRequest(null);
+        this.toastService.success('Success!', 'Family is successfully deleted');
+        this.familyStore.setFamily(null);
+      }),
+    );
+  }
+
   cancelRequest(requestId: string) {
     return this.http.delete(`joinRequests/${requestId}`).pipe(
       tap((response) => {
@@ -132,6 +139,15 @@ export class FamilyService {
       tap((response: IFamily) => {
         this.toastService.success('Success!', 'User successfully removed from the family');
         this.familyStore.setFamily(response);
+      }),
+    );
+  }
+
+  leaveFamily(familyId: string, user: User) {
+    return this.http.post<IFamily>(`families/leave/${familyId}/${user.id}`, {}).pipe(
+      tap((response: IFamily) => {
+        this.toastService.success('Success!', 'You have left the family!');
+        this.familyStore.setFamily(null);
       }),
     );
   }
