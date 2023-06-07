@@ -1,5 +1,13 @@
 import {ActivityIndicator, GestureResponderEvent, View} from 'react-native';
-import {FAB, List, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
+import {
+  FAB,
+  List,
+  MD2Colors,
+  Portal,
+  Surface,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
 import {
@@ -41,13 +49,12 @@ export const FamilyList = (props: IFamilyListProps) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      try{
+      try {
         console.log('here');
         console.log('Should get family members');
         setFamilyList(null);
         getFamilyList();
-      }
-      catch (e){
+      } catch (e) {
         console.log('get family members', e);
       }
     }, []),
@@ -119,12 +126,19 @@ export const FamilyList = (props: IFamilyListProps) => {
           onItemLongPressed={handleSingleListItemLongPress}
         />
       ) : (
-        <>
-          <Text>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text variant={'displayLarge'}>¯\_(ツ)_/¯</Text>
+          <Text style={{textAlign: 'center'}}>
             Your shopping list is currently empty. Go to the recorder page to
             add some items
           </Text>
-        </>
+        </View>
       )}
       <FAB.Group
         open={open}
