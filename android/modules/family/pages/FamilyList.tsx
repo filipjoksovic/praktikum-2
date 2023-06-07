@@ -86,6 +86,10 @@ export const FamilyList = (props: IFamilyListProps) => {
       });
       console.log('Result', result);
       console.log(result.summary);
+      if (!result.summary) {
+        setIsLoading(false);
+        throw new Error('No items detected');
+      }
       const updatedList = await ShoppingListService.addFamilyListItems(
         // listForFab.shoppingList.id,
         result.summary,
@@ -108,6 +112,14 @@ export const FamilyList = (props: IFamilyListProps) => {
     } catch (err) {
       console.log('Error:', err);
       setIsLoading(false);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: "Couldn't add items"};
+      });
+      setTimeout(() => {
+        SnackBarStore.update(s => {
+          return {isOpen: false, text: ''};
+        });
+      }, 3000);
     }
   };
   const recordingCancelled = () => {

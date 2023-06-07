@@ -96,6 +96,10 @@ export const ShoppingListsPage = () => {
         text: transcript,
       });
       console.log(result.summary);
+      if (!result.summary) {
+        setIsLoading(false);
+        throw new Error('No summary found');
+      }
       const updatedList = await ShoppingListService.addListItems(
         listForFab.shoppingList.id,
         result.summary,
@@ -118,6 +122,14 @@ export const ShoppingListsPage = () => {
     } catch (err) {
       console.log('Error:', err);
       setIsLoading(false);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'Error adding items'};
+      });
+      setTimeout(() => {
+        SnackBarStore.update(s => {
+          return {isOpen: false, text: ''};
+        });
+      }, 3000);
     }
   };
 
