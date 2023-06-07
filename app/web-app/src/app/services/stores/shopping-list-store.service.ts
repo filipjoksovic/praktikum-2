@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, tap} from 'rxjs';
 import { IListItem, IShoppingList, ShoppingListDTOV2 } from '../../models/IShoppingListsResponseDTO';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class ShoppingListStoreService {
   public selectedList$ = this._selectedList$.asObservable();
 
   private _shoppingLists$: BehaviorSubject<IShoppingList[]> = new BehaviorSubject([]);
-  public shoppingLists$ = this._shoppingLists$.asObservable();
+  public shoppingLists$ = this._shoppingLists$.asObservable().pipe(tap(value=>console.log(value)));
 
   private readonly _selectedItem$: BehaviorSubject<IListItem | null> = new BehaviorSubject(null);
   public readonly selectedItem$ = this._selectedItem$.asObservable();

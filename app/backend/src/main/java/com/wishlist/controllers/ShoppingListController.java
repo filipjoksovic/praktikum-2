@@ -74,10 +74,9 @@ public class ShoppingListController {
     @GetMapping("/user/{userId}")
     public ResponseEntity getForUser(@PathVariable String userId, @RequestHeader("Authorization") String jwt) {
         if (jwtValidator.validateUser(jwt, userId)) {
-            log.info("GET slis for uid {}", userId);
-            return new ResponseEntity(new ShoppingListsResponseDTO(shoppingListService.getShoppingListForUser(userId).stream().map(ShoppingListResponseDTO::new).toList()), HttpStatus.OK);
+            return ResponseEntity.ok(shoppingListService.getShoppingListForUser(userId));
         } else {
-            return new ResponseEntity(new ApiError("you do not have access to this user"), HttpStatus.UNAUTHORIZED);
+            throw new UserNotAuthorizedException();
         }
     }
 
