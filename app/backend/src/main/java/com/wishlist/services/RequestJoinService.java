@@ -74,7 +74,7 @@ public class RequestJoinService implements JoinRequestsService {
     }
 
     @Override
-    public JoinRequestsDTO createJoinRequest(String userId, String inviteCode, String senderId) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException {
+    public JoinRequestsDTO createJoinRequest(String userId, String inviteCode, String senderId) throws Exception, UserAlreadyInThisFamilyException {
         final User user = userService.getUserById(userId);
         final Family family = familyService.findByInviteCode(inviteCode);
         if (user.getFamilyId() != null) {

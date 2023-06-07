@@ -20,7 +20,7 @@ public interface JoinRequestsService {
 
     Family acceptRequest(String requestJoinId) throws RequestJoinDoesNotExistException, FamilyDoesNotExistException, UserDoesNotExistException;
 
-    JoinRequestsDTO createJoinRequest(String userId, String familyId, String senderId) throws UserDoesNotExistException, UserAlreadyHasAFamilyException, UserAlreadyInThisFamilyException, FamilyDoesNotExistException, AlreadyRequestedJoinException;
+    JoinRequestsDTO createJoinRequest(String userId, String familyId, String senderId) throws Exception, UserAlreadyInThisFamilyException;
 
     List<JoinRequestsDTO> getRequestsForFamily(String familyId) throws FamilyDoesNotExistException, UserDoesNotExistException;
 
