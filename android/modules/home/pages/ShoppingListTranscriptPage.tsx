@@ -46,7 +46,7 @@ export const ShoppingListTranscriptPage = (
   };
 
   return (
-    <ScrollView>
+    <View style={{height: '100%'}}>
       {shoppingListPrompt ? (
         <>
           <Text variant={'headlineMedium'}>Transcription complete</Text>
@@ -84,9 +84,8 @@ export const ShoppingListTranscriptPage = (
           </View>
         </>
       ) : (
-        <RecorderPage
-          onTranscriptReceived={setShoppingListPrompt}></RecorderPage>
+        <RecorderPage onTranscriptReceived={setShoppingListPrompt} />
       )}
-    </ScrollView>
+    </View>
   );
 };

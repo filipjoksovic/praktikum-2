@@ -26,7 +26,11 @@ export const FamilyLink = (props: IFamilyLinkProps) => {
   const {text, iconName, navigationLink} = props;
   const theme = useTheme();
   return (
-    <TouchableNativeFeedback
+    <Card
+      style={{
+        marginVertical: 5,
+        borderRadius: 10,
+      }}
       onPress={() => {
         props.onPress(navigationLink);
       }}>
@@ -39,14 +43,13 @@ export const FamilyLink = (props: IFamilyLinkProps) => {
           paddingHorizontal: 20,
           borderRadius: 10,
           alignItems: 'center',
-          backgroundColor: theme.colors.surface,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-          <Icon name={iconName} size={16} color={theme.colors.tertiary}></Icon>
+          <Icon name={iconName} size={24} color={theme.colors.tertiary} />
           <Text>{text}</Text>
         </View>
-        <Icon name="chevron-right"></Icon>
+        <Icon name="chevron-right" />
       </View>
-    </TouchableNativeFeedback>
+    </Card>
   );
 };

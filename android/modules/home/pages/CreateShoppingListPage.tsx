@@ -139,14 +139,14 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
       <ScrollView style={{margin: -12}} contentContainerStyle={{padding: 12}}>
         {shoppingList.map((item, index) => {
           return (
-            <>
+            <View key={index}>
               <ShoppingListItem
                 key={index}
                 shoppingItem={item}
                 onRemoveItem={removeItem}
               />
               <Divider />
-            </>
+            </View>
           );
         })}
       </ScrollView>

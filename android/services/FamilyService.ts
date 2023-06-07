@@ -1,9 +1,7 @@
-import {error} from 'console';
 import {LocalStorageService} from './LocalStorageService';
-import {Environment} from '../environment';
 import {IFamily} from '../models/IFamily';
 import {makeRequest} from '../modules/shared/helpers';
-import {name} from 'axios';
+import {IFamilyMember} from '../models/IFamilyMember';
 
 export class FamilyService {
   static async getFamilyMembers() {
@@ -60,6 +58,21 @@ export class FamilyService {
       console.error('updateFamily error', err);
     }
   }
+
+  static async removeFamilyMember(member: IFamilyMember) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    try {
+      await makeRequest(
+        `families/${user.familyId}/${member.id}/remove`,
+        'delete',
+      );
+    } catch (err) {
+      console.error('removeFamilyMember error', err);
+    }
+  }
   public static async getFamilyJoinRequests() {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
@@ -77,10 +90,7 @@ export class FamilyService {
       if (!user) {
         throw new Error('User not logged in');
       }
-      return await makeRequest(
-        `joinRequests/${requestJoinId}/reject`,
-        'post',
-      );
+      return await makeRequest(`joinRequests/${requestJoinId}/reject`, 'post');
     } catch (err: any) {
       console.error('approveFamilyJoinRequest error', err.message);
     }
@@ -91,10 +101,7 @@ export class FamilyService {
       if (!user) {
         throw new Error('User not logged in');
       }
-      return await makeRequest(
-        `joinRequests/${requestJoinId}/accept`,
-        'post',
-      );
+      return await makeRequest(`joinRequests/${requestJoinId}/accept`, 'post');
     } catch (err: any) {
       console.error('approveFamilyJoinRequest error', err.message);
     }
@@ -107,10 +114,7 @@ export class FamilyService {
       }
       console.log(inviteCode);
       console.log(user.id);
-      return await makeRequest(
-        `joinRequests/${user.id}/${inviteCode}`,
-        'post',
-      );
+      return await makeRequest(`joinRequests/${user.id}/${inviteCode}`, 'post');
     } catch (err: any) {
       console.error('sendJoinRequest error', err.message);
     }

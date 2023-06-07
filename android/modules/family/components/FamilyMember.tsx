@@ -22,22 +22,12 @@ export const FamilyMember = (props: IFamilyMemberProps) => {
       <Text>{member.surname || 'No last name'}</Text>
       <Text>{member.email}</Text>
       <Card.Actions>
-        <Tooltip title="View details">
-          <IconButton
-            icon="account-eye"
-            size={24}
-            onPress={() => {
-              props.onRemove(member);
-            }}
-            mode="contained"
-          />
-        </Tooltip>
         <Tooltip title="Remove from family">
           <IconButton
             icon="account-remove"
             size={24}
             onPress={() => {
-              props.onViewDetails(member);
+              props.onRemove(member);
             }}
             mode="contained"
           />

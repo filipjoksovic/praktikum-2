@@ -1,5 +1,5 @@
 import {Animated, View} from 'react-native';
-import {Button, Surface, Text, useTheme} from 'react-native-paper';
+import {Button, IconButton, Surface, Text, useTheme} from 'react-native-paper';
 import {BigAssRecordButton} from '../components/BigAssRecordButton';
 import {useEffect, useRef, useState} from 'react';
 import {
@@ -54,6 +54,35 @@ export const RecorderPage = (props: IRecorderPageProps) => {
     setTimeout(() => {
       setIsRecording(false);
       onStopRecord();
+    }, 500);
+  };
+  const cancelRecording = async () => {
+    console.log('called');
+    setTimeout(() => {
+      Animated.spring(springButtonAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+        friction: 5,
+        tension: 100,
+      }).start();
+      Animated.timing(moveButtonAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      setTimeout(() => {
+        Animated.timing(moveTimerAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }).start();
+      }, 300);
+    }, 300);
+    setTimeout(async () => {
+      setIsRecording(false);
+      const path = await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
+      setRecordingTime('00:00');
     }, 500);
   };
 
@@ -121,13 +150,13 @@ export const RecorderPage = (props: IRecorderPageProps) => {
       tension: 100,
     }).start();
     Animated.timing(moveButtonAnim, {
-      toValue: -300,
+      toValue: -100,
       duration: 500,
       useNativeDriver: true,
     }).start();
     setTimeout(() => {
       Animated.timing(moveTimerAnim, {
-        toValue: -200,
+        toValue: -100,
         duration: 500,
         useNativeDriver: true,
       }).start();
@@ -144,8 +173,11 @@ export const RecorderPage = (props: IRecorderPageProps) => {
   };
 
   return (
-    <View>
-      <View style={{marginBottom: 150}}>
+    <View
+      style={{
+        flexGrow: 1,
+      }}>
+      <View>
         <Text variant="displayLarge">Record</Text>
         <Text variant="bodyMedium">
           Once you start recording, we will automatically create a shopping list
@@ -153,7 +185,7 @@ export const RecorderPage = (props: IRecorderPageProps) => {
         </Text>
       </View>
 
-      <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'center', marginTop: 50}}>
         <Animated.View
           style={{
             transform: [
@@ -161,18 +193,35 @@ export const RecorderPage = (props: IRecorderPageProps) => {
               {translateY: moveButtonAnim},
             ],
           }}>
-          <BigAssRecordButton
-            mainCircleWidth={300}
-            onPress={startRecording}></BigAssRecordButton>
+          <BigAssRecordButton mainCircleWidth={300} onPress={startRecording} />
         </Animated.View>
         {isRecording ? (
           <Animated.View style={{transform: [{translateY: moveTimerAnim}]}}>
-            <Surface
-              style={{alignItems: 'center', padding: 20, borderRadius: 50}}
-              theme={{...theme, roundness: 50}}>
-              <Text variant="displayLarge">{recordingTime}</Text>
-            </Surface>
-            <Button onPress={stopRecording}>Stop recording</Button>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Surface
+                style={{
+                  alignItems: 'center',
+                  padding: 20,
+                  paddingHorizontal: 40,
+                  borderRadius: 50,
+                }}
+                theme={{...theme, roundness: 50}}>
+                <Text variant="displayLarge">{recordingTime}</Text>
+              </Surface>
+              <IconButton
+                icon={'stop-circle'}
+                size={64}
+                iconColor={theme.colors.tertiary}
+                onPress={stopRecording}
+              />
+            </View>
+            <Button onPress={cancelRecording} style={{marginTop: 20}}>
+              Cancel
+            </Button>
           </Animated.View>
         ) : (
           <></>
