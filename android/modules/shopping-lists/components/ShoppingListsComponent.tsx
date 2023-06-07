@@ -44,24 +44,32 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
   };
 
   const handleSingleListItemLongPress = (item: any) => {
-    ShoppingListStore.update(s => {
-      return {...s, selectedListItem: item};
-    });
-    ShoppingListStore.update(s => {
-      return {...s, selectedList: null};
-    });
-    setIsDialogVisible(prevState => true);
+    try {
+      ShoppingListStore.update(s => {
+        return {...s, selectedListItem: item};
+      });
+      ShoppingListStore.update(s => {
+        return {...s, selectedList: null};
+      });
+      setIsDialogVisible(prevState => true);
+    } catch {
+      console.log('shopping list selection failed');
+    }
   };
 
   const dialogDismissed = () => {
-    ShoppingListStore.update(s => {
-      return {
-        ...selectedList,
-        selectedListItem: undefined,
-        selectedList: undefined,
-      };
-    });
-    setIsDialogVisible(false);
+    try {
+      ShoppingListStore.update(s => {
+        return {
+          ...s, //fixed
+          selectedListItem: undefined,
+          selectedList: undefined,
+        };
+      });      
+      setIsDialogVisible(false);
+    } catch {
+      console.log('shopping list selection failed');
+    }
   };
 
   const dialogConfirmed = async () => {

@@ -44,12 +44,12 @@ export const LoginPage = ({navigation}: any) => {
       } else {
         throw new Error('Credentials are not valid.');
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof Error) {
         ToastAndroid.CENTER;
         ToastAndroid.showWithGravity(error.message, 1000, ToastAndroid.TOP);
         SnackBarStore.update(s => {
-          return {isOpen: true, text: error};
+          return {isOpen: true, text: error.message};
         });
       }
     }
@@ -97,7 +97,7 @@ export const LoginPage = ({navigation}: any) => {
       </Button>
 
       <Text style={{marginTop: 20}}>
-        No account? Register <Link to={'/Register'}>here</Link>
+        <Link to={'/Register'}>No account? Register here</Link>
       </Text>
     </ScrollView>
   );

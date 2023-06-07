@@ -2,23 +2,21 @@ import {View} from 'react-native';
 import {
   Avatar,
   Button,
-  Card,
   Surface,
   Text,
   TextInput,
   useTheme,
 } from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React from 'react';
+import React, {useState} from 'react';
 import {AuthService} from '../../../services/AuthService';
-import {AccountSetup} from '../../account/account/pages/AccountSetup';
-import {FamilyPage} from '../../family/pages/FamilyPage';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
+import {FamilyService} from '../../../services/FamilyService';
 import {useFocusEffect} from '@react-navigation/native';
+import {User} from '../../../models/User';
 
 export const SettingsPage = ({navigation}) => {
   const theme = useTheme();
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState<User | null>(null);
 
   const getUser = async () => {
     try {
@@ -35,6 +33,7 @@ export const SettingsPage = ({navigation}) => {
       getUser();
     }, []),
   );
+  const [inviteCode, setInviteCode] = useState('');
 
   const logout = async () => {
     try {
@@ -44,6 +43,18 @@ export const SettingsPage = ({navigation}) => {
       console.log('[SettingsPage]: Error occurred when logging out', e);
     }
   };
+
+  const sendJoinRequest = async () => {
+    try {
+      await FamilyService.sendJoinRequest(inviteCode);
+    } catch (e) {
+      console.log(
+        '[SettingsPage]: Error occurred when sending join request',
+        e,
+      );
+    }
+  };
+
   return (
     user && (
       <View
@@ -95,6 +106,18 @@ export const SettingsPage = ({navigation}) => {
             value={user.email}
           />
         </View>
+        {!user.familyId && (
+          <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
+            <TextInput
+              value={inviteCode}
+              label={'Family invite code'}
+              mode={'outlined'}
+              onChangeText={text => setInviteCode(text)}
+            />
+            <Button onPress={sendJoinRequest}>Send Family Join Request</Button>
+          </Surface>
+        )}
+
         <Button onPress={logout}>Logout</Button>
       </View>
     )
