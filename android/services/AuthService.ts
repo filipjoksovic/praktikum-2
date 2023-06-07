@@ -91,4 +91,20 @@ export class AuthService {
       console.log('Error at getUser, ', err);
     }
   }
+
+  static async updateUser(updatedUser: User | null) {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+      return makeRequest('users/account', 'put', {
+        firstName: updatedUser?.name,
+        lastName: updatedUser?.surname,
+        id: user.id,
+      });
+    } catch (err) {
+      console.log('Error at updateUser, ', err);
+    }
+  }
 }

@@ -150,11 +150,17 @@ public class UserService implements IUserService, IAuth {
         if (found.isEmpty()) {
             throw new AccountSetupFailedException("Account setup failed because the user doesn't exist");
         }
-        User user = found.get();
-        user.setName(dto.getFirstName());
-        user.setSurname(dto.getLastName());
 
-        user.setDob(dto.getDob());
+        User user = found.get();
+        if (dto.getFirstName() != null) {
+            user.setName(dto.getFirstName());
+        }
+        if (dto.getLastName() != null) {
+            user.setSurname(dto.getLastName());
+        }
+        if (dto.getDob() != null) {
+            user.setDob(dto.getDob());
+        }
         userRepository.save(user);
         emailSender.sendNewAccountEmail(user.getEmail(), user.getName(), user.getSurname());
         return FullUserDetailsDTO.to(user);

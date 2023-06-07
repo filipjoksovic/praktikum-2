@@ -21,7 +21,7 @@ public class AccountSetupDTO {
     }
 
     public AccountSetupDTO to(User user) {
-        return new AccountSetupDTO(user.getId(), user.getName(), user.getSurname(), user.getDob().toString());
+        return new AccountSetupDTO(user.getId(), user.getName(), user.getSurname(), user.getDob());
     }
 
     public User from(AccountSetupDTO dto) {

@@ -21,6 +21,9 @@ import {ShoppingListComponent} from '../../shopping-lists/components/ShoppingLis
 import {FamilyListComponent} from '../components/FamilyListComponent';
 import {MiniRecorderComponent} from '../../shopping-lists/components/MiniRecorderComponent';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
+import DatePicker from 'react-native-date-picker';
+import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
+import {SnackBarStore} from '../../shared/state/SnackBarStore';
 
 export interface IFamilyListProps {}
 
@@ -107,6 +110,65 @@ export const FamilyList = (props: IFamilyListProps) => {
       setIsLoading(false);
     }
   };
+  const recordingCancelled = () => {
+    setRecorderVisible(false);
+  };
+
+  const [date, setDate] = React.useState(new Date());
+  const [openPicker, setOpenPicker] = React.useState(false);
+
+  const onDismissSingle = React.useCallback(() => {
+    setOpenPicker(false);
+  }, [setOpenPicker]);
+
+  const onConfirmSingle = React.useCallback(
+    params => {
+      setOpenPicker(false);
+      setDate(params.date);
+    },
+    [setOpenPicker, setDate],
+  );
+  const createReminder = async (date: Date) => {
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    onCreateTriggerNotification(date);
+  };
+
+  async function onCreateTriggerNotification(date: Date) {
+    console.log('Creating notification');
+    const trigger: TimestampTrigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp: date.getTime(),
+    };
+
+    // Create a trigger notification
+    await notifee.createTriggerNotification(
+      {
+        title: 'List reminder',
+        body: 'This is a reminder to look at your family list',
+        android: {
+          channelId: 'default',
+          smallIcon: 'ic_stat_name',
+        },
+      },
+      trigger,
+    );
+    SnackBarStore.update(s => {
+      return {isOpen: true, text: 'Reminder created'};
+    });
+
+    setTimeout(() => {
+      SnackBarStore.update(s => {
+        return {isOpen: false, text: ''};
+      });
+    }, 1000);
+  }
+
   return (
     <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
@@ -149,7 +211,7 @@ export const FamilyList = (props: IFamilyListProps) => {
           {
             icon: 'bell',
             label: 'Remind',
-            onPress: () => console.log('Pressed remind'),
+            onPress: () => setOpenPicker(true),
           },
           {
             icon: 'radiobox-marked',
@@ -168,6 +230,7 @@ export const FamilyList = (props: IFamilyListProps) => {
         <Portal>
           <MiniRecorderComponent
             onTranscriptReceived={transcriptReceived}
+            onRecordingCancelled={recordingCancelled}
             recordingStopped={() => {
               setRecorderVisible(false);
             }}
@@ -175,6 +238,20 @@ export const FamilyList = (props: IFamilyListProps) => {
           />
         </Portal>
       )}
+      <DatePicker
+        modal
+        open={openPicker}
+        mode={'datetime'}
+        date={date}
+        onConfirm={date => {
+          setDate(date);
+          setOpenPicker(false);
+          createReminder(date);
+        }}
+        onCancel={() => {
+          setOpenPicker(false);
+        }}
+      />
     </View>
   );
 };

@@ -1,5 +1,12 @@
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
+import {ActivityIndicator, Modal, StyleSheet, View} from 'react-native';
+import {
+  Button,
+  FAB,
+  MD2Colors,
+  Portal,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ListContextSelectorComponent} from '../components/ListContextSelectorComponent';
@@ -13,6 +20,9 @@ import {
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
 import {useFocusEffect} from '@react-navigation/native';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
+import DatePicker from 'react-native-date-picker';
+import {DatePickerModal} from 'react-native-paper-dates';
+import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 
 export const ShoppingListsPage = () => {
   const theme = useTheme();
@@ -86,7 +96,7 @@ export const ShoppingListsPage = () => {
         text: transcript,
       });
       console.log(result.summary);
-      const updatedList = await ShoppingListService.addFamilyListItems(
+      const updatedList = await ShoppingListService.addListItems(
         listForFab.shoppingList.id,
         result.summary,
       );
@@ -110,6 +120,61 @@ export const ShoppingListsPage = () => {
       setIsLoading(false);
     }
   };
+
+  const [date, setDate] = React.useState(new Date());
+  const [openPicker, setOpenPicker] = React.useState(false);
+
+  const onDismissSingle = React.useCallback(() => {
+    setOpenPicker(false);
+  }, [setOpenPicker]);
+
+  const onConfirmSingle = React.useCallback(
+    params => {
+      setOpenPicker(false);
+      setDate(params.date);
+    },
+    [setOpenPicker, setDate],
+  );
+  const createReminder = async (date: Date) => {
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    onCreateTriggerNotification(date);
+  };
+
+  async function onCreateTriggerNotification(date: Date) {
+    console.log('Creating notification');
+    const trigger: TimestampTrigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp: date.getTime(),
+    };
+
+    // Create a trigger notification
+    await notifee.createTriggerNotification(
+      {
+        title: 'List reminder',
+        body: `This is a reminder to look at your ${listForFab?.shoppingList.name} list`,
+        android: {
+          channelId: 'default',
+          smallIcon: 'ic_stat_name',
+        },
+      },
+      trigger,
+    );
+    SnackBarStore.update(s => {
+      return {isOpen: true, text: 'Reminder created'};
+    });
+
+    setTimeout(() => {
+      SnackBarStore.update(s => {
+        return {isOpen: false, text: ''};
+      });
+    }, 1000);
+  }
   return (
     <View
       style={{
@@ -141,7 +206,7 @@ export const ShoppingListsPage = () => {
             {
               icon: 'bell',
               label: 'Remind',
-              onPress: () => console.log('Pressed remind'),
+              onPress: () => setOpenPicker(true),
             },
             {
               icon: 'trash-can',
@@ -171,10 +236,28 @@ export const ShoppingListsPage = () => {
             recordingStopped={() => {
               setRecorderVisible(false);
             }}
+            onRecordingCancelled={() => {
+              setRecorderVisible(false);
+            }}
             recorderVisible={recorderVisible}
           />
         </Portal>
       )}
+
+      <DatePicker
+        modal
+        open={openPicker}
+        mode={'datetime'}
+        date={date}
+        onConfirm={date => {
+          setDate(date);
+          setOpenPicker(false);
+          createReminder(date);
+        }}
+        onCancel={() => {
+          setOpenPicker(false);
+        }}
+      />
     </View>
   );
 };

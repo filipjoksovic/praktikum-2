@@ -55,70 +55,104 @@ export const SettingsPage = ({navigation}) => {
     }
   };
 
+  const updateUser = async () => {
+    try {
+      await AuthService.updateUser(user);
+    } catch (e) {
+      console.log('[SettingsPage]: Error occurred when updating user', e);
+    }
+  };
+
   return (
     user && (
       <View
         style={{
           ...LAYOUT.container,
           backgroundColor: theme.colors.background,
+          height: '100%',
+          justifyContent: 'space-between',
         }}>
-        <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
-          Settings
-        </Text>
+        <View>
+          <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
+            Settings
+          </Text>
 
-        <View
-          style={{
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 20,
-          }}>
-          <Avatar.Text
-            label={
-              user.name && user.surname ? user.name[0] + user.surname[0] : 'U'
-            }
-            style={{height: 150, width: 150, borderRadius: 10000}}
-          />
-        </View>
-
-        <View style={{gap: 10}}>
-          <View style={{flexDirection: 'row', gap: 20}}>
-            <TextInput
-              style={{flex: 1}}
-              placeholder={'First name'}
-              label={'First name'}
-              mode={'outlined'}
-              value={user.name}
-            />
-            <TextInput
-              style={{flex: 1}}
-              placeholder={'Last name'}
-              label={'Last name'}
-              mode={'outlined'}
-              value={user.surname}
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 20,
+            }}>
+            <Avatar.Text
+              label={
+                user.name && user.surname ? user.name[0] + user.surname[0] : 'U'
+              }
+              style={{height: 150, width: 150, borderRadius: 10000}}
             />
           </View>
 
-          <TextInput
-            placeholder={'Email'}
-            label={'Email'}
-            mode={'outlined'}
-            value={user.email}
-          />
-        </View>
-        {!user.familyId && (
-          <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
-            <TextInput
-              value={inviteCode}
-              label={'Family invite code'}
-              mode={'outlined'}
-              onChangeText={text => setInviteCode(text)}
-            />
-            <Button onPress={sendJoinRequest}>Send Family Join Request</Button>
-          </Surface>
-        )}
+          <View style={{gap: 10}}>
+            <View style={{flexDirection: 'row', gap: 20}}>
+              <TextInput
+                style={{flex: 1}}
+                placeholder={'First name'}
+                label={'First name'}
+                mode={'outlined'}
+                onChangeText={text => {
+                  setUser({...user, name: text});
+                }}
+                value={user.name}
+              />
+              <TextInput
+                style={{flex: 1}}
+                placeholder={'Last name'}
+                onChangeText={text => {
+                  setUser({...user, surname: text});
+                }}
+                label={'Last name'}
+                mode={'outlined'}
+                value={user.surname}
+              />
+            </View>
 
-        <Button onPress={logout}>Logout</Button>
+            <TextInput
+              placeholder={'Email'}
+              label={'Email'}
+              mode={'outlined'}
+              value={user.email}
+            />
+
+            {!user.familyId && (
+              <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
+                <TextInput
+                  value={inviteCode}
+                  label={'Family invite code'}
+                  mode={'outlined'}
+                  onChangeText={text => setInviteCode(text)}
+                />
+                <Button onPress={sendJoinRequest}>
+                  Send Family Join Request
+                </Button>
+              </Surface>
+            )}
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 20,
+          }}>
+          <Button onPress={updateUser} mode={'contained'}>
+            Save
+          </Button>
+          <Button onPress={logout} mode={'outlined'}>
+            Logout
+          </Button>
+        </View>
       </View>
     )
   );
