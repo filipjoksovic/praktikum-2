@@ -90,7 +90,7 @@ public class FamilyService implements IFamilyService {
         if (inviteCode.length() != 8) {
             throw new InvalidInviteCodeFormatException();
         }
-        Family family = familyRepository.findByInviteCode(inviteCode);
+        Family family = familyRepository.findByInviteCode(inviteCode).orElseThrow(FamilyDoesNotExistException::new);
         if (family == null) {
             throw new InvalidInviteCodeException();
         }
@@ -131,7 +131,7 @@ public class FamilyService implements IFamilyService {
 
     @Override
     public Family findByInviteCode(String inviteCode) {
-        return familyRepository.findByInviteCode(inviteCode);
+        return familyRepository.findByInviteCode(inviteCode).orElseThrow(FamilyDoesNotExistException::new);
     }
 
     public Family removeUserFromFamily(String familyId, String userId) throws FamilyDoesNotExistException, UserDoesNotExistException, FailedToRemoveUserException {

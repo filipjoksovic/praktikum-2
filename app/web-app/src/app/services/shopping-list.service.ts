@@ -12,7 +12,7 @@ import {IListItem, IShoppingList, ListItemDTOV2, ShoppingListDTOV2} from '../mod
   providedIn: 'root',
 })
 export class ShoppingListService {
-  
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,

@@ -62,7 +62,7 @@ export class TranscriptStoreService {
     });
   }
   stopRecording(){
-    this._isRecording$.next(false);
+    this._isRecording$.next(true);
     this._isRecording$.complete();
     this.setRecorderStopWatch(0);
   }

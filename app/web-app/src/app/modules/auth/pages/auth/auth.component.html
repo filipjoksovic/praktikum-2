@@ -27,9 +27,10 @@
         <button [disabled]="!form.valid"
                 class="btn btn__primary mt-2 d-block mx-auto w-fit">{{ modeButtonString }}</button>
       </div>
-      <div class="display-mode-message">
-        <a class="text-muted" (click)="onSwitchMode()">{{ displayModeString }}</a>
-      </div>
+
     </form>
+    <div class="display-mode-message">
+      <a class="text-muted" (click)="onSwitchMode()">{{ displayModeString }}</a>
+    </div>
   </div>
 </div>

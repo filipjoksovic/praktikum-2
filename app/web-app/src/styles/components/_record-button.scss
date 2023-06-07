@@ -8,9 +8,9 @@
   transition: 500ms cubic-bezier(.57,.21,.69,1.25) transform;
   max-width: 300px;
   &:hover{
-    transform: scale(110%);
+    transform: scale(130%);
     & *{
-      transform: scale(110%);
+      transform: scale(130%);
 
     }
   }
@@ -38,6 +38,11 @@
   gap: $spacer * 2;
   align-items: center;
   margin-top: $spacer * 4;
+  flex-grow: 1;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacer * 5;
 }
 
 .recorder-data{

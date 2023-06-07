@@ -46,12 +46,12 @@
           <p class="text-center">{{emailsToAdd.join(",")}}</p>
         </form>
       </div>
-      <button class="btn btn__primary ml-auto d-block w-fit mt-8" (click)="inviteMembers()">Invite</button>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-4" (click)="inviteMembers()">Invite</button>
       <ng-container *ngIf="!isOwner">
-        <button class="btn btn__danger ml-auto d-block w-fit mt-8" (click)="leaveFamily()">Leave Family</button>
+        <button class="btn btn__danger ml-auto d-block w-fit mt-4" (click)="leaveFamily()">Leave Family</button>
       </ng-container>
       <ng-container *ngIf="isOwner">
-        <button class="btn btn__danger ml-auto d-block w-fit mt-8" (click)="deleteFamily()">Delete Family</button>
+        <button class="btn btn__danger ml-auto d-block w-fit mt-4" (click)="deleteFamily()">Delete Family</button>
       </ng-container>
     </div>
     <div class="container flex-1">

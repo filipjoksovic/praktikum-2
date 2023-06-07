@@ -1,12 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ShoppingListService } from '../../services/shopping-list.service';
 import { VoiceService } from '../../services/voice.service';
-import { AsyncSubject, mergeMap, takeUntil } from 'rxjs';
+import {AsyncSubject, mergeMap, take, takeUntil} from 'rxjs';
 import { Router } from '@angular/router';
 import { TranscriptStoreService } from '../../services/stores/transcript-store.service';
 import {formatDuration} from "../../shared/helpers";
 import {map} from "rxjs/operators";
 import {faStop} from "@fortawesome/free-solid-svg-icons/faStop";
+import {UploadRecordingResponse} from "../../models/UploadRecordingResponse";
 
 @Component({
   selector: 'app-home',
@@ -43,28 +44,31 @@ export class HomeComponent implements OnDestroy {
   startStopRecording() {
     // TODO bring this back once actual impl goes up. Remove store setting from component;
 
-    // if (!this.recording) {
-    //   this.voiceService.startRecording();
-    // } else {
-    //   this.voiceService
-    //     .stopRecording()
-    //     .pipe(take(1))
-    //     .subscribe((recording) => {
-    //       this.apiService.uploadRecording(recording).subscribe((response: UploadRecordingResponse) => {
-    //         this.transcript = response.transcript;
-    //       });
-    //     });
-    // }
-    if(!this.recording){
+    if (!this.recording) {
+      this.voiceService.startRecording();
       this.transcriptStore.startRecording(true);
-    }
-    console.log('Recording');
-    if (this.recording) {
+    } else {
       this.transcriptStore.stopRecording();
-      // this.transcript = "We'll need some bananas, milk, butter and toilet paper.";
-      this.transcriptStore.setTranscript("We'll need some bananas, milk, butter and toilet paper.");
+      this.voiceService
+        .stopRecording()
+        .pipe(take(1))
+        .subscribe((recording) => {
+          this.apiService.uploadRecording(recording).subscribe((response: UploadRecordingResponse) => {
+            this.transcriptStore.setTranscript(response.transcript);
+          });
+        });
     }
     this.recording = !this.recording;
+    // if(!this.recording){
+    //   this.transcriptStore.startRecording(true);
+    // }
+    // console.log('Recording');
+    // if (this.recording) {
+    //   this.transcriptStore.stopRecording();
+    //   // this.transcript = "We'll need some bananas, milk, butter and toilet paper.";
+    //   this.transcriptStore.setTranscript("We'll need some bananas, milk, butter and toilet paper.");
+    // }
+    // this.recording = !this.recording;
   }
 
   processTranscript() {

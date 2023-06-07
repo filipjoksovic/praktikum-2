@@ -223,3 +223,10 @@
   opacity: .65;
   pointer-events: none;
 }
+
+app-home{
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
