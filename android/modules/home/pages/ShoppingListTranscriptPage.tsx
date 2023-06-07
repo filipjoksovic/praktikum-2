@@ -12,9 +12,7 @@ export const ShoppingListTranscriptPage = (
   props: IShoppingListTranscriptPage,
 ) => {
   const theme = useTheme();
-  const [shoppingListPrompt, setShoppingListPrompt] = useState(
-    'We need some milk, oranges, apples and bananas today.',
-  );
+  const [shoppingListPrompt, setShoppingListPrompt] = useState('');
 
   // Additional state for recording
   const [isRecording, setIsRecording] = useState(false);
