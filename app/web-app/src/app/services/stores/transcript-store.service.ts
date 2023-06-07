@@ -55,6 +55,7 @@ export class TranscriptStoreService {
   }
 
   startRecording(b: boolean) {
+    this._isRecording$ = new Subject();
     console.log("starting recording");
     interval(1000).pipe(takeUntil(this._isRecording$)).subscribe(value=> {
       console.log(value);
@@ -62,7 +63,7 @@ export class TranscriptStoreService {
     });
   }
   stopRecording(){
-    this._isRecording$.next(true);
+    this._isRecording$.next(false);
     this._isRecording$.complete();
     this.setRecorderStopWatch(0);
   }
