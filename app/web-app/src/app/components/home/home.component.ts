@@ -15,7 +15,7 @@ import {faStop} from "@fortawesome/free-solid-svg-icons/faStop";
 export class HomeComponent implements OnDestroy {
   ngUnsubscribe$ = new AsyncSubject<void>();
 
-  public transcript$ = this.transcriptStore.transcript$.pipe(takeUntil(this.ngUnsubscribe$));
+  public transcript$ = this.transcriptStore.transcript$.pipe(takeUntil(this.ngUnsubscribe$)); // pogledaj ovo
   public items: string[] = [];
   public recording = false;
   public listName = 'New List';

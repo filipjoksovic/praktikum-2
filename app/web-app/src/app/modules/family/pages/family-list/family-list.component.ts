@@ -28,5 +28,9 @@ export class FamilyListComponent {
     private shoppingListStore: ShoppingListStoreService) {
   }
 
+  ngOnInit() {
+    console.log(this.familyList$)
+  }
+
 
 }

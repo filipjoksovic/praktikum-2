@@ -33,7 +33,7 @@ export class FamilyDataComponent {
       return this.familyStore.family$;
     }),
     shareReplay(),
-  );
+  ); // pogledaj ovo 
 
   public user = this.authService.getLocalUser();
 
