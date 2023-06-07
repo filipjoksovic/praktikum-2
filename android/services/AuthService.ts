@@ -1,9 +1,9 @@
-import {UserAuthDTO} from '../models/UserAuthDTO';
-import {ApiError} from '../models/ApiError';
-import {User} from '../models/User';
-import {Environment} from '../environment';
-import {LocalStorageService} from './LocalStorageService';
-import {makeRequest} from '../modules/shared/helpers';
+import { UserAuthDTO } from '../models/UserAuthDTO';
+import { ApiError } from '../models/ApiError';
+import { User } from '../models/User';
+import { Environment } from '../environment';
+import { LocalStorageService } from './LocalStorageService';
+import { makeRequest } from '../modules/shared/helpers';
 
 export const isUser = (obj: User): obj is User => {
   return (obj as User).id !== undefined;
@@ -25,7 +25,12 @@ export class AuthService {
 
   public static async register(authRequest: UserAuthDTO) {
     try {
-      return await makeRequest('auth/register', 'post', authRequest, false);
+      const user = await makeRequest('auth/register', 'post', authRequest, false);
+      if (!isUser(user)) {
+        throw new Error((user as ApiError).message);
+      }
+      await LocalStorageService.saveUserToLocalStorage(user);
+      return user;
     } catch (err) {
       console.log('Error at register, ', err);
     }
@@ -67,7 +72,7 @@ export class AuthService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({...param, id: user.id}),
+      body: JSON.stringify({ ...param, id: user.id }),
     }).then(response => {
       if (response.ok) {
         return response.json();
