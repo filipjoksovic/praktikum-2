@@ -1,0 +1,28 @@
+
+.banner {
+  padding: $spacer * 2 $spacer * 4;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  border: 1px solid $light-gray;
+  border-radius: 20px;
+  margin-top: $spacer * 2;
+  gap: $spacer * 2;
+
+  &__header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__actions {
+    background-color: $red-500;
+    color: $red-900;
+    transition: 250ms ease-in-out background-color;
+    &:hover{
+      background-color: $red-600;
+    }
+  }
+}

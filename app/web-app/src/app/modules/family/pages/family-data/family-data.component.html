@@ -1,0 +1,120 @@
+<app-page-descriptor-pill title="Family Data"
+                          description="Here you can see and edit the name of your families, have an overview of the members, and kick them out if necessary"></app-page-descriptor-pill>
+
+<ng-container *ngIf="family$ | async">
+  <div class="d-flex flex-grow-1 gap-4 mt-4">
+
+    <div class="container flex-1">
+      <h3>Data</h3>
+      <form [formGroup]="familyForm">
+        <div class="d-flex gap-4 mt-2 flex-column">
+          <div class="form-group">
+            <label for="familyName">Family name</label>
+            <input class="form-control" id="familyName" formControlName="familyName" (blur)="editFamilyEmail()">
+          </div>
+
+          <div class="d-flex align-end gap-4">
+            <div class="form-group flex-1">
+              <label for="inviteCode">Invite code</label>
+              <input class="form-control" id="inviteCode" formControlName="inviteCode">
+            </div>
+            <ng-container>
+              <button class="btn round w-64 h-64" (click)="editFamilyCode()">
+                <fa-icon [icon]="faFloppyDisk"></fa-icon>
+              </button>
+              <button class="btn round w-64 h-64" (click)="generateCode()">
+                <fa-icon [icon]="faDice"></fa-icon>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+
+      <div class="flex-1 mt-8">
+        <form [formGroup]="emailForm">
+          <h3>Invite members</h3>
+          <p class="mt-2 mb-1">Invited members will get an invite link requesting them to join</p>
+          <div class="d-flex gap-4 ">
+            <div class="form-group flex-1">
+              <input class="form-control" placeholder="Email" formControlName="emailToAdd"
+                     [ngClass]="{'border-red':emailForm.invalid && !emailForm.pristine}">
+            </div>
+            <button class="btn btn__primary round w-64 h-64" (click)="addEmail()">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+          </div>
+          <p class="text-center">{{emailsToAdd.join(",")}}</p>
+        </form>
+      </div>
+      <button class="btn btn__primary ml-auto d-block w-fit mt-4" (click)="inviteMembers()">Invite</button>
+      <ng-container *ngIf="!isOwner">
+        <button class="btn btn__danger ml-auto d-block w-fit mt-4" (click)="leaveFamily()">Leave Family</button>
+      </ng-container>
+      <ng-container *ngIf="isOwner">
+        <button class="btn btn__danger ml-auto d-block w-fit mt-4" (click)="deleteFamily()">Delete Family</button>
+      </ng-container>
+    </div>
+    <div class="container flex-1">
+
+      <div class="d-flex w-100 justify-center gap-4">
+        <button class="btn btn__toggle" [ngClass]="{'btn__toggle__active':selectedTab==='members'}"
+                (click)="loadMembers()">Members
+        </button>
+        <button class="btn btn__toggle" [ngClass]="{'btn__toggle__active':selectedTab==='requests'}"
+                (click)="loadRequests()">Requests
+        </button>
+      </div>
+
+      <ng-container *ngIf="selectedTab === 'members'">
+        <ng-container *ngIf="familyMembers$ | async as members">
+          <div *ngFor="let member of members" class="family-member" [ngClass]="{'disabled':user.id === member.id}">
+            <div class="family-member__data">
+              <p>{{member.name || "No first name"}} {{member.surname || "No last name"}} {{member.id === user.id ? "(You)" : ""}}</p>
+              <p>{{member.email}}</p>
+            </div>
+            <div class="family-member__actions" *ngIf="member.id !== user.id">
+              <button class="btn btn__danger w-64 h-64 round" title="Remove user"
+                      (click)="user.id !== member.id && removeUser(member)">
+                <fa-icon [icon]="faBan"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+      <ng-container *ngIf="selectedTab==='requests'">
+        <ng-container *ngIf="pendingRequests$ | async as pendingRequests">
+          <ng-container *ngIf="pendingRequests.length == 0">
+              <div class="text-center flex-grow-1">
+                <p class="mt-4">There are no requests for joining this family</p>
+            </div>
+          </ng-container>
+          <div *ngFor="let request of pendingRequests">
+            <div class="pending-request">
+              <div class="pending-request__data">
+                <p>{{request.name || "No first name"}} {{request.surname || "No last name"}}</p>
+                <p>{{request.email}}</p>
+                <p class="mt-2">{{request.createdAt.split("[")[0] | date:"MMM d, y HH:mm"}}</p>
+              </div>
+              <div class="pending-request__actions">
+                <div class="pending-request__action__reject">
+                  <button class="btn round w-64 h-64" title="Reject request" (click)="rejectRequest(request)">
+                    <fa-icon [icon]="faBan"></fa-icon>
+                  </button>
+                </div>
+                <div class="pending-request__action__accept" *ngIf="request.creatorId === request.userId">
+                  <button class="btn round w-64 h-64" title="Accept request" (click)="acceptRequest(request)">
+                    <fa-icon [icon]="faCheck"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+    </div>
+  </div>
+</ng-container>

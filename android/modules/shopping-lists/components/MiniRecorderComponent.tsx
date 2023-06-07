@@ -2,7 +2,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useEffect, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {Surface, Text, TouchableRipple} from 'react-native-paper';
+import {IconButton, Surface, Text, TouchableRipple} from 'react-native-paper';
 import AudioService from '../../../services/AudioService';
 import RNFS from 'react-native-fs';
 import {ShoppingListService} from '../../../services/ShoppingListService';
@@ -15,6 +15,7 @@ export interface IMiniRecorderComponent {
   recorderVisible: boolean;
   recordingStopped: any;
   onTranscriptReceived: any;
+  onRecordingCancelled: any;
 }
 
 export const MiniRecorderComponent = (props: IMiniRecorderComponent) => {
@@ -94,6 +95,18 @@ export const MiniRecorderComponent = (props: IMiniRecorderComponent) => {
       if (transcript) {
         props.onTranscriptReceived(transcript);
       }
+    } catch (error) {
+      console.log('Error in stopping the recorder: ', error);
+    }
+  };
+
+  const cancelRecording = async () => {
+    try {
+      const path = await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
+      setRecordingTime('00:00');
+      props.onRecordingCancelled();
+      //   return;
     } catch (error) {
       console.log('Error in stopping the recorder: ', error);
     }
@@ -208,7 +221,7 @@ export const MiniRecorderComponent = (props: IMiniRecorderComponent) => {
                       shadowColor: 'black',
                       elevation: 10,
                     }}>
-                    <View></View>
+                    <View />
                   </TouchableRipple>
                 </View>
               </TouchableRipple>
@@ -219,6 +232,11 @@ export const MiniRecorderComponent = (props: IMiniRecorderComponent) => {
           When done speaking, press the button and the items will be added to
           the list.
         </Text>
+        <IconButton
+          style={{position: 'absolute', top: 0, right: 0}}
+          icon={'close'}
+          onPress={cancelRecording}
+        />
       </Surface>
     </Animated.View>
   ) : (

@@ -1,0 +1,58 @@
+@keyframes context-menu-grow {
+  from {
+    transform: scaleY(0);
+
+    opacity: .5;
+  }
+  to {
+    transform: scaleY(100%);
+    opacity: 1;
+
+  }
+}
+
+.context-menu {
+  background-color: $gray-900;
+  position: fixed;
+  min-width: 250px;
+  border-radius: 20px;
+  box-shadow: $container-box-shadow;
+  border: 1px solid $gray-500;
+  overflow: clip;
+  animation-name: context-menu-grow;
+  animation-duration: 150ms;
+  opacity: 1;
+
+  &__hidden {
+    animation: none;
+    opacity: 0;
+    left: -1000px;
+    top: -1000px;
+    position: fixed;
+  }
+
+  &__item {
+    padding: $spacer * 2;
+    transition: 250ms ease-in-out background-color;
+    display: flex;
+    align-items: center;
+    gap: $spacer * 2;
+
+    & * {
+      color: $gray-400 !important;
+    }
+
+    & fa-icon {
+      font-size: x-large;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $gray-700;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: $gray-700;
+    }
+  }
+}

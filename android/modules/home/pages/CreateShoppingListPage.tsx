@@ -81,16 +81,18 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
               data will be updated while avoiding duplicates.
             </Text>
           )}
-          <View>
-            <TextInput
-              label={'Name'}
-              style={{marginTop: 10}}
-              theme={{...theme, roundness: 20}}
-              mode={'outlined'}
-              value={shoppingListName}
-              onChangeText={setShoppingListName}
-            />
-          </View>
+          {listPrivacyValue === 'per' && (
+            <View>
+              <TextInput
+                label={'Name'}
+                style={{marginTop: 10}}
+                theme={{...theme, roundness: 20}}
+                mode={'outlined'}
+                value={shoppingListName}
+                onChangeText={setShoppingListName}
+              />
+            </View>
+          )}
         </View>
       )}
       <View
@@ -108,7 +110,8 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
           mode="contained-tonal"
           onPress={() => {
             setIsAdding(prevState => !prevState);
-          }}></IconButton>
+          }}
+        />
       </View>
       {isAdding && (
         <View
@@ -123,25 +126,27 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
             mode="outlined"
             label={'Item name'}
             style={{flex: 1}}
-            onChangeText={setNewItem}></TextInput>
+            onChangeText={setNewItem}
+          />
           <IconButton
             icon={'plus'}
             iconColor={theme.colors.primary}
             mode="contained-tonal"
-            onPress={addNewItem}></IconButton>
+            onPress={addNewItem}
+          />
         </View>
       )}
-      <ScrollView>
-        {shoppingList.map(item => {
+      <ScrollView style={{margin: -12}} contentContainerStyle={{padding: 12}}>
+        {shoppingList.map((item, index) => {
           return (
-            <>
+            <View key={index}>
               <ShoppingListItem
-                key={item}
+                key={index}
                 shoppingItem={item}
                 onRemoveItem={removeItem}
               />
-              <Divider></Divider>
-            </>
+              <Divider />
+            </View>
           );
         })}
       </ScrollView>

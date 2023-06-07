@@ -14,6 +14,21 @@ export interface IPromptRequest {
 }
 
 export class ShoppingListService {
+  static async getFamilyList() {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('User not defined');
+      }
+      if (!user.familyId) {
+        throw new Error('User has no family');
+      }
+      return await makeRequest(`shoppingLists/family/${user.familyId}`, 'get');
+    } catch (err) {
+      console.error('Error at getFamilyList', err);
+    }
+  }
+
   static async createListForFamily(data: {name: string; items: string[]}) {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
@@ -32,6 +47,7 @@ export class ShoppingListService {
       console.log('Error at createList', err);
     }
   }
+
   static async addListItems(id: string, summary: string) {
     try {
       return await makeRequest(`shoppingLists/${id}/items`, 'post', {
@@ -41,6 +57,25 @@ export class ShoppingListService {
       console.error(e);
     }
   }
+
+  static async addFamilyListItems(summary: string) {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+      return await makeRequest(
+        `shoppingLists/family/${user.familyId}`,
+        'post',
+        {
+          items: summary,
+        },
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   static async deleteList(listId: string) {
     try {
       return await makeRequest(`shoppingLists/${listId}`, 'delete');
@@ -48,6 +83,7 @@ export class ShoppingListService {
       console.log('Error at deleteList, ', err);
     }
   }
+
   static async deleteListItem(listId: string, itemId: string) {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
@@ -62,6 +98,7 @@ export class ShoppingListService {
       console.log('Error at deleteListItem', err);
     }
   }
+
   public static async createRequest(promptRequest: IPromptRequest) {
     try {
       return await makeRequest('uploads/text', 'post', promptRequest);
@@ -124,6 +161,7 @@ export class ShoppingListService {
       console.log('Error at getShoppingLists', err);
     }
   }
+
   public static async completeList(listId: string) {
     try {
       return await makeRequest(`shoppingLists/${listId}/completeList`, 'put');
@@ -131,6 +169,7 @@ export class ShoppingListService {
       console.log('Error at completeList', this.completeList);
     }
   }
+
   public static async checkOffListItem(listId: string, itemId: string) {
     try {
       return await makeRequest(

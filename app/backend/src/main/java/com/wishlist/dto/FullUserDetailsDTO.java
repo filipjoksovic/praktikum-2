@@ -18,7 +18,7 @@ public class FullUserDetailsDTO {
     }
 
     public static FullUserDetailsDTO to(User user) {
-        return new FullUserDetailsDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getDob().toString());
+        return new FullUserDetailsDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getDob());
     }
 
     public String getId() {
@@ -60,5 +60,15 @@ public class FullUserDetailsDTO {
 
     public void setDob(String dob) {
         this.dob = dob;
+    }
+
+    @Override
+    public String toString() {
+        return "FullUserDetailsDTO{" +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dob='" + dob + '\'' +
+                '}';
     }
 }

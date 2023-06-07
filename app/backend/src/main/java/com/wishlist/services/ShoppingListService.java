@@ -1,7 +1,6 @@
 package com.wishlist.services;
 
-import com.wishlist.dto.AddListItemsDTO;
-import com.wishlist.dto.ShoppingListDTO;
+import com.wishlist.dto.*;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class ShoppingListService implements IShoppingListService {
@@ -60,15 +58,28 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public List<ShoppingList> getShoppingListForFamily(String familyId) throws Exception {
+    public ShoppingListDTOV2 getShoppingListForFamily(String familyId) throws ShoppingListIsEmptyException {
         List<ShoppingList> shoppingListsforFamily = shoppingListRepository.findByFamilyId(familyId);
-        if (shoppingListsforFamily.isEmpty()) {
-            throw new Exception();
-        } else {
-            return shoppingListsforFamily;
-        }
-    }
 
+        if (shoppingListsforFamily.isEmpty()) {
+            throw new ShoppingListIsEmptyException();
+        }
+        ShoppingList list = shoppingListsforFamily.get(0);
+        ShoppingListDTOV2 dto = new ShoppingListDTOV2();
+        dto.setId(list.getId());
+        dto.setName(list.getName());
+        dto.setFamilyId(list.getFamilyId());
+
+        List<ShoppingItem> items = list.getItemList();
+        List<ShoppingItemDTO> dtoItems = new ArrayList<>();
+        for (ShoppingItem item : items) {
+            User addedByUser = userService.getUserById(item.getUserId());
+            ShoppingItemDTO dtoItem = new ShoppingItemDTO(item, addedByUser);
+            dtoItems.add(dtoItem);
+        }
+        dto.setItems(dtoItems);
+        return dto;
+    }
     @Override
     public ShoppingList deleteList(String listId) throws ListDoesNotExistException {
         // TODO CHECK THE USER AND LIST BEFORE DELETING
@@ -84,29 +95,30 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto) throws Exception {
+    public ShoppingList createShoppingListForFamily(String familyId, ShoppingListDTO dto, String creatorId) {
         // TODO ADD THE LOGIC FOR FAMILY IF NOT EXISTING
         ShoppingList list = new ShoppingList("My Shopping List");
 
         list.setName(dto.name.isBlank() ? "No name" : dto.name);
         list.setFamilyId(familyId);
-        return getShoppingList(dto, list);
+        return getShoppingList(dto, list, creatorId);
     }
 
-    public ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws Exception {
+    public ShoppingList createShoppingListForUser(String userId, ShoppingListDTO dto) throws ShoppingListIsEmptyException {
         // TODO ADD THE LOGIC FOR USER IF NOT EXISTING
         ShoppingList list = new ShoppingList();
 
         list.setName(dto.name.isBlank() ? "No name" : dto.name);
         list.setUserId(userId);
-        return getShoppingList(dto, list);
+        return getShoppingList(dto, list, userId);
     }
 
-    private ShoppingList getShoppingList(ShoppingListDTO dto, ShoppingList list) {
+    private ShoppingList getShoppingList(ShoppingListDTO dto, ShoppingList list, String creatorId) {
         List<ShoppingItem> newItems = new ArrayList<>();
 
         for (String itemName : dto.items) {
             ShoppingItem itemForDb = new ShoppingItem(itemName);
+            itemForDb.setUserId(creatorId);
             itemService.save(itemForDb);
             newItems.add(itemForDb);
         }
@@ -117,8 +129,9 @@ public class ShoppingListService implements IShoppingListService {
 
 
     @Override
-    public ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId) throws ShoppingListDoesNotExistException {
+    public ShoppingList addItemToShoppingList(ShoppingItem item, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException {
         Optional<ShoppingList> optionalShoppingList = shoppingListRepository.findById(shoppingListId);
+        item.setUserId(creatorId);
         if (optionalShoppingList.isEmpty()) {
             throw new ShoppingListDoesNotExistException();
         }
@@ -131,10 +144,10 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public ShoppingList addItemsToShoppingList(AddListItemsDTO items, String shoppingListId) throws ShoppingListDoesNotExistException {
+    public ShoppingList addItemsToShoppingList(AddListItemsDTO items, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException {
         ShoppingList list = shoppingListRepository.findById(shoppingListId).orElseThrow(ShoppingListDoesNotExistException::new);
         for (String item : items.getItems()) {
-            ShoppingItem saved = itemService.save(new ShoppingItem(item));
+            ShoppingItem saved = itemService.save(new ShoppingItem(item,creatorId));
             list.getItemList().add(saved);
         }
         shoppingListRepository.save(list);
@@ -142,35 +155,36 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
-    public ShoppingList deleteItemFromShoppingList(String userId, String listId, String itemId) throws Exception {
+    public ShoppingListDTOV2 deleteItemFromShoppingList(String userId, String listId, String itemId) throws UserNotAuthorizedException, ShoppingListDoesNotExistException, ShoppingItemDoesNotExistException {
         User user = userService.getUserById(userId);
-        Optional<ShoppingList> shoppingListOptional = shoppingListRepository.findById(listId);
-        if (shoppingListOptional.isEmpty()) {
-            throw new ShoppingListDoesNotExistException();
-        }
-        ShoppingList shoppingList = shoppingListOptional.get();
-        if (!Objects.equals(shoppingList.getUserId(), user.getId())) {
-            //TODO custom exception
-            throw new Exception("User does not have access to that list");
+        ShoppingList shoppingList = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
+
+        if (!Objects.equals(shoppingList.getUserId(), user.getId()) && !Objects.equals(shoppingList.getFamilyId(), user.getFamilyId())) {
+            throw new UserNotAuthorizedException();
         }
 
-        Optional<ShoppingItem> itemToRemoveOptional = itemService.findById(itemId);
-        if (itemToRemoveOptional.isEmpty()) {
-            //TODO custom exception
-            throw new Exception("This item is not inside the provided shopping list");
-        }
+        ShoppingItem itemToRemove = itemService.findById(itemId).orElseThrow(ShoppingItemDoesNotExistException::new);
 
         List<ShoppingItem> currentItems = shoppingList.getItemList();
-        ShoppingItem itemToRemove = itemToRemoveOptional.get();
         currentItems.removeIf(item -> item.getId().equals(itemToRemove.getId()));
         itemService.delete(itemId);
         shoppingList.setItemList(currentItems);
         shoppingListRepository.save(shoppingList);
-        return shoppingList;
+        List<ShoppingItemDTO> dtoItems = new ArrayList<>();
+        for (ShoppingItem item : currentItems) {
+            User addedByUser = userService.getUserById(item.getUserId());
+            ShoppingItemDTO dtoItem = new ShoppingItemDTO(item, addedByUser);
+            dtoItems.add(dtoItem);
+        }
+
+        ShoppingListDTOV2 dto = new ShoppingListDTOV2(shoppingList, user);
+        dto.setItems(dtoItems);
+
+        return dto;
     }
 
     @Override
-    public ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws Exception {
+    public ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws ShoppingItemDoesNotExistException, ShoppingListDoesNotExistException {
         Optional<ShoppingItem> shoppingItemOptional = itemService.findById(itemId);
         if (shoppingItemOptional.isEmpty()) {
             throw new ShoppingItemDoesNotExistException();
@@ -235,5 +249,46 @@ public class ShoppingListService implements IShoppingListService {
         return true;
     }
 
+    @Override
+    public ShoppingList findShoppingListIdByItemId(String itemId) {
+        List<ShoppingList> allShoppingLists = shoppingListRepository.findAll();
+        for (ShoppingList shoppingList : allShoppingLists) {
+            for (ShoppingItem shoppingItem : shoppingList.getItemList()) {
+                if (shoppingItem.getId().equals(itemId)) {
+                    return shoppingList;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ShoppingList updateList(String id, ShoppingList updatedShoppingList) throws ShoppingListDoesNotExistException {
+        ShoppingList list = shoppingListRepository.findById(id).orElseThrow(ShoppingListDoesNotExistException::new);
+        if (!list.getName().equals(updatedShoppingList.getName())) {
+            list.setName(updatedShoppingList.getName());
+            shoppingListRepository.save(list);
+        }
+        return list;
+    }
+
+    @Override
+    public ShoppingList bulkEdit(BulkEditDTO dto, String listId) {
+
+        ShoppingList list = shoppingListRepository.findById(listId).orElseThrow(ShoppingListDoesNotExistException::new);
+        List<ShoppingItem> shoppingListItems = list.getItemList();
+        list.setItemList(dto.getItems());
+
+
+        if (dto.isAllSelected()) {
+            for(ShoppingItem item: shoppingListItems) {
+                item.setChecked(true);
+            }
+            return list;
+        }
+        shoppingListRepository.save(list);
+        return list;
+
+    }
 
 }

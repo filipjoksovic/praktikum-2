@@ -1,0 +1,14 @@
+<ng-container *ngIf="user.name === null">
+  <app-page-descriptor-pill title="Settings" description="Setup your account and add data"></app-page-descriptor-pill>
+  <div class="d-flex w-100 flex-grow-1 align-center justify-center gap-8 flex-wrap mt-10">
+    <a class="action-square" [routerLink]="['/settings/data']">
+      <fa-icon [icon]="faPeopleGroup" size="3x"></fa-icon>
+      <h3>Setup your account</h3>
+    </a>
+  </div>
+
+</ng-container>
+<ng-container *ngIf="user.name !== null">
+  <app-settings-data>
+  </app-settings-data>
+</ng-container>

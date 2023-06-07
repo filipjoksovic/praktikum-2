@@ -1,6 +1,5 @@
 package com.wishlist.services;
 
-import com.wishlist.exceptions.FamilyDoesNotExistException;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.Family;
 import com.wishlist.models.User;
@@ -9,11 +8,11 @@ import com.wishlist.repositories.UserRepository;
 import com.wishlist.services.interfaces.IFamilyService;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 @Service
 public class FamilyService implements IFamilyService {
@@ -42,6 +41,10 @@ public class FamilyService implements IFamilyService {
 
     public Family delete(String id) throws FamilyDoesNotExistException {
         Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+        List<User> usersInFamily = family.getUsers();
+        for (User user : usersInFamily) {
+            user.setFamilyId(null);
+        }
         familyRepository.deleteById(id);
         return family;
     }
@@ -50,17 +53,36 @@ public class FamilyService implements IFamilyService {
         return familyRepository.save(family);
     }
 
-    public String generateInviteCode() {
-        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        final int LENGTH = 8;
-        SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            int randomIndex = random.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            sb.append(randomChar);
+    public Family saveWithOwner(Family family, User owner) {
+        family.setOwner(owner);
+        List<User> familyMembers = family.getUsers();
+        if (familyMembers == null) {
+            familyMembers = new ArrayList<>();
         }
-        return sb.toString();
+        familyMembers.add(owner);
+        family.setUsers(familyMembers);
+        return familyRepository.save(family);
+    }
+
+    /*    public Family update(Family family, String id) throws FamilyDoesNotExistException {
+            Family foundFamily = findById(id);
+            family.setUsers(foundFamily.getUsers());
+            Family updatedFamilyResult = save(family);
+
+        }*/
+
+    public boolean isOwner(String userId, String familyId) {
+        // assuming you have a way to get the family by user id
+        Optional<Family> familyOptional = familyRepository.findById(familyId);
+
+        if (familyOptional.isPresent()) {
+            Family family = familyOptional.get();
+            User owner = family.getOwner();
+            // comparing the user id with the owner's user id
+            return owner.getId().equals(userId);
+        }
+        // returning false if the family does not exist
+        return false;
     }
 
     public boolean isValidInviteCode(String inviteCode) throws InvalidInviteCodeFormatException, InvalidInviteCodeException {
@@ -68,7 +90,7 @@ public class FamilyService implements IFamilyService {
         if (inviteCode.length() != 8) {
             throw new InvalidInviteCodeFormatException();
         }
-        Family family = familyRepository.findByInviteCode(inviteCode);
+        Family family = familyRepository.findByInviteCode(inviteCode).orElseThrow(FamilyDoesNotExistException::new);
         if (family == null) {
             throw new InvalidInviteCodeException();
         }
@@ -82,32 +104,47 @@ public class FamilyService implements IFamilyService {
     }
 
     @Override
-    public Family findByInviteCode(String inviteCode) {
-        return familyRepository.findByInviteCode(inviteCode);
+    public Family updateCode(String id, String code) throws FamilyDoesNotExistException, InvalidInviteCodeException {
+        if (isCodeInFormat(code)) {
+            Family family = this.familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+            family.setInviteCode(code);
+            return familyRepository.save(family);
+        }
+        throw new InvalidInviteCodeException();
     }
 
-    public Family removeUserFromFamily(String familyId, String userId) throws Exception {
-        Optional<Family> familyOptional = familyRepository.findById(familyId);
-        User user = userService.getUserById(userId);
-        if (!familyOptional.isPresent()) {
-            throw new FamilyNotFoundException();
-        }
-        if (user == null) {
-            throw new UserDoesNotExistException();
-        }
-        Family family = familyOptional.get();
-        List<User> familyUsers = family.getUsers();
-        for (User currentUser : familyUsers) {
-            if (Objects.equals(currentUser.getId(), userId)) {
-                familyUsers.remove(currentUser);
-                user.setFamilyId(null);
-                familyRepository.save(family);
-                userService.updateUser(user);
-                return family;
-            }
-        }
-        throw new Exception("Failed to delete user from family");
 
+    @Override
+    public Family update(String id, String name) throws FamilyDoesNotExistException, FamilyNotChangedException {
+        Family family = familyRepository.findById(id).orElseThrow(FamilyDoesNotExistException::new);
+        if (!family.getName().equals(name)) {
+            family.setName(name);
+            return familyRepository.save(family);
+        }
+        throw new FamilyNotChangedException();
+    }
+
+    @Override
+    public List<User> getFamilyMembers(String familyId) throws FamilyDoesNotExistException {
+        return userRepository.findByFamilyId(familyId);
+    }
+
+    @Override
+    public Family findByInviteCode(String inviteCode) {
+        return familyRepository.findByInviteCode(inviteCode).orElseThrow(FamilyDoesNotExistException::new);
+    }
+
+    public Family removeUserFromFamily(String familyId, String userId) throws FamilyDoesNotExistException, UserDoesNotExistException, FailedToRemoveUserException {
+        Family family = familyRepository.findById(familyId).orElseThrow(FamilyDoesNotExistException::new);
+        User user = userService.getUserById(userId);
+        user.setFamilyId(null);
+        userService.updateUser(user);
+        return family;
+    }
+
+    public boolean isCodeInFormat(String input) {
+        String pattern = "\\w{4}-\\w{4}";
+        return Pattern.matches(pattern, input);
     }
 
 

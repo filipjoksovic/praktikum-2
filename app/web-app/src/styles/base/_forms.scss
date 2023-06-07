@@ -1,0 +1,60 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: $spacer * 2;
+  & label {
+    margin-bottom: $spacer;
+  }
+}
+
+.form-control {
+  background-color: $form-control-bg;
+  border: 1px solid $form-control-stroke;
+  padding: $spacer * 2 $spacer;
+  border-radius: $border-radius-input;
+  color: $font-light;
+
+  &__border-dark {
+    border: 1px solid #e2e2e2;
+  }
+
+  &__block {
+    width: 100%;
+    display: block;
+  }
+
+  &:focus {
+    // border: 2px solid $form-control-stroke;
+    outline: 2px solid $form-control-stroke;
+  }
+
+  &:disabled {
+    opacity: .65;
+  }
+
+  &__checkbox {
+    background: $primary-5;
+    width: 24px;
+    height: 24px;
+    accent-color: $primary-5;
+  }
+
+  &__transparent {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-weight: bold;
+    border-bottom: 1px solid $gray-700;
+    padding: $spacer * 2 $spacer * 4;
+  }
+}
+
+textarea.form-control {
+  padding: $spacer * 2 $spacer * 2;
+  box-shadow: $container-box-shadow;
+
+  &:disabled {
+    opacity: .65;
+  }
+}

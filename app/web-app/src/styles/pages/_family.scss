@@ -1,0 +1,22 @@
+app-family {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+app-family-data {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.family-member {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: $spacer * 4;
+  border-radius: 20px;
+  border: 1px solid $gray-300;
+  padding: $spacer * 4;
+}

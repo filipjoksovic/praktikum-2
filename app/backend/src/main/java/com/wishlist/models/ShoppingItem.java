@@ -7,12 +7,18 @@ public class ShoppingItem {
     private String id;
     private String name;
     private boolean checked;
+    private String userId;
 
     public ShoppingItem() {
     }
 
     public ShoppingItem(String name) {
         this.name = name;
+    }
+
+    public ShoppingItem(String name, String userId) {
+        this.name = name;
+        this.userId = userId;
     }
 
     public String getId() {
@@ -37,6 +43,14 @@ public class ShoppingItem {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

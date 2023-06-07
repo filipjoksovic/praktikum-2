@@ -1,0 +1,50 @@
+<div class="d-flex flex-column gap-4 flex-1 h-100">
+  <ng-container *ngIf="items$ | async as items">
+    <ng-container *ngIf="showList">
+
+      <div class="items-section flex-1" [ngClass]="{ 'transcribed-list': (items$ | async).length >= 0 }">
+        <div class="segmented-buttons">
+          <button class="segmented-buttons__button segmented-buttons__button__first"
+                  (click)="setActiveSegment('family')"
+                  [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'family'}">
+            <fa-icon [icon]="faHome"></fa-icon>
+            Family
+          </button>
+          <button class="segmented-buttons__button segmented-buttons__button__last"
+                  (click)="setActiveSegment('personal')"
+                  [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'personal'}">
+            <fa-icon [icon]="faUser"></fa-icon>
+            Personal
+          </button>
+        </div>
+        <div class = "d-flex align-center justify-center mt-2" *ngIf="activeSegment === 'family'">
+        <small >
+          Every family can have only one list. If the list already exists, these items will get added to that list
+        </small>
+        </div>
+        <div class="form-group" *ngIf="activeSegment !== 'family'">
+          <label>List Name: </label>
+          <input class="form-control" [(ngModel)]="listName"/>
+        </div>
+
+        <div class="transcribed-list-container">
+          <ng-container *ngFor="let item of items; let i = index">
+            <app-transcribed-list-item [item]="item" (itemRemoved)="onItemRemove(item)"></app-transcribed-list-item>
+          </ng-container>
+        </div>
+
+
+      </div>
+
+      <div class="">
+        <app-add-list-item></app-add-list-item>
+      </div>
+      <button (click)="saveShoppingList()" class="btn btn__primary w-fit ml-auto d-block">Create List</button>
+    </ng-container>
+    <ng-container *ngIf="!showList">
+      <div class="d-flex flex-column align-center justify-center flex-1 h-100">
+        <p>When processed, your list items will appear here</p>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
