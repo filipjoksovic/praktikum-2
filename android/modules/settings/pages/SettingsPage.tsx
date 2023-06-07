@@ -5,6 +5,7 @@ import {
   Card,
   Surface,
   Text,
+  TextInput,
   useTheme,
 } from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
@@ -13,26 +14,27 @@ import {AuthService} from '../../../services/AuthService';
 import {AccountSetup} from '../../account/account/pages/AccountSetup';
 import {FamilyPage} from '../../family/pages/FamilyPage';
 import {createNativeStackNavigator} from 'react-native-screens/native-stack';
-
-const AccountIcon = props => <Avatar.Icon {...props} icon="account" />;
-const AccountsIcon = props => <Avatar.Icon {...props} icon="family-tree" />;
-
-const SettingsStackNavigation = () => {
-  const Stack = createNativeStackNavigator();
-
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="SetupElse" component={AccountSetup} />
-      <Stack.Screen name="Family" component={FamilyPage} />
-    </Stack.Navigator>
-  );
-};
+import {useFocusEffect} from '@react-navigation/native';
 
 export const SettingsPage = ({navigation}) => {
   const theme = useTheme();
+  const [user, setUser] = React.useState(null);
+
+  const getUser = async () => {
+    try {
+      const user = await AuthService.getUser();
+      console.log('[SettingsPage]: User', user);
+      setUser(user);
+    } catch (e) {
+      console.log('[SettingsPage]: Error occurred when getting user', e);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser();
+    }, []),
+  );
 
   const logout = async () => {
     try {
@@ -43,37 +45,58 @@ export const SettingsPage = ({navigation}) => {
     }
   };
   return (
-    <View
-      style={{
-        ...LAYOUT.container,
-        backgroundColor: theme.colors.background,
-      }}>
-      <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
-        Settings
-      </Text>
-      <Card onPress={() => {}}>
-        <Card.Title
-          title="Account"
-          subtitle="Customize your account"
-          left={AccountIcon}
-        />
-      </Card>
-      <Card style={{marginTop: 10}} onPress={() => {}}>
-        <Card.Title
-          title="Family"
-          subtitle="See details about your family, add or remove members."
-          left={AccountsIcon}
-        />
-      </Card>
-      <Surface>
-        <Button
-          onPress={() => {
-            navigation.navigate('Settings', {screen: 'Family'});
+    user && (
+      <View
+        style={{
+          ...LAYOUT.container,
+          backgroundColor: theme.colors.background,
+        }}>
+        <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
+          Settings
+        </Text>
+
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 20,
           }}>
-          Family
-        </Button>
-      </Surface>
-      <Button onPress={logout}>Logout</Button>
-    </View>
+          <Avatar.Text
+            label={
+              user.name && user.surname ? user.name[0] + user.surname[0] : 'U'
+            }
+            style={{height: 150, width: 150, borderRadius: 10000}}
+          />
+        </View>
+
+        <View style={{gap: 10}}>
+          <View style={{flexDirection: 'row', gap: 20}}>
+            <TextInput
+              style={{flex: 1}}
+              placeholder={'First name'}
+              label={'First name'}
+              mode={'outlined'}
+              value={user.name}
+            />
+            <TextInput
+              style={{flex: 1}}
+              placeholder={'Last name'}
+              label={'Last name'}
+              mode={'outlined'}
+              value={user.surname}
+            />
+          </View>
+
+          <TextInput
+            placeholder={'Email'}
+            label={'Email'}
+            mode={'outlined'}
+            value={user.email}
+          />
+        </View>
+        <Button onPress={logout}>Logout</Button>
+      </View>
+    )
   );
 };

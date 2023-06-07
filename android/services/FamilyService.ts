@@ -4,6 +4,7 @@ import {Environment} from '../environment';
 import {IFamily} from '../models/IFamily';
 import {makeRequest} from '../modules/shared/helpers';
 import {name} from 'axios';
+import {IFamilyMember} from '../models/IFamilyMember';
 
 export class FamilyService {
   static async getFamilyMembers() {
@@ -58,6 +59,21 @@ export class FamilyService {
       });
     } catch (err) {
       console.error('updateFamily error', err);
+    }
+  }
+
+  static async removeFamilyMember(member: IFamilyMember) {
+    const user = await LocalStorageService.getUserFromLocalStorage();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+    try {
+      await makeRequest(
+        `families/${user.familyId}/${member.id}/remove`,
+        'delete',
+      );
+    } catch (err) {
+      console.error('removeFamilyMember error', err);
     }
   }
 }

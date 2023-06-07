@@ -79,4 +79,16 @@ export class AuthService {
   static async logout() {
     await LocalStorageService.removeUserFromLocalStorage();
   }
+
+  static async getUser() {
+    try {
+      const user = await LocalStorageService.getUserFromLocalStorage();
+      if (!user) {
+        throw new Error('User not logged in');
+      }
+      return makeRequest(`users/${user.id}`, 'get');
+    } catch (err) {
+      console.log('Error at getUser, ', err);
+    }
+  }
 }

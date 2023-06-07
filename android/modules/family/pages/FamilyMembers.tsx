@@ -31,7 +31,10 @@ export const FamilyMembers = (props: IFamilyMembersProps) => {
       getFamilyMembers();
     }, []),
   );
-  const handleRemove = (member: IFamilyMember) => {};
+  const handleRemove = async (member: IFamilyMember) => {
+    await FamilyService.removeFamilyMember(member);
+    getFamilyMembers();
+  };
   const handleViewDetails = (member: IFamilyMember) => {};
 
   return (
@@ -53,8 +56,10 @@ export const FamilyMembers = (props: IFamilyMembersProps) => {
             <FamilyMember
               member={item}
               onRemove={handleRemove}
-              onViewDetails={handleViewDetails}></FamilyMember>
-          )}></FlatList>
+              onViewDetails={handleViewDetails}
+            />
+          )}
+        />
       </View>
     </View>
   );
