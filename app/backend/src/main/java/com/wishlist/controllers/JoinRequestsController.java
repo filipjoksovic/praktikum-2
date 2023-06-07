@@ -1,14 +1,22 @@
 package com.wishlist.controllers;
 
 
+import com.wishlist.dto.ApiError;
+import com.wishlist.dto.FamilyMemberDTO;
 import com.wishlist.dto.UserEmailsDTO;
+import com.wishlist.exceptions.UserNotAuthorizedException;
 import com.wishlist.security.JwtValidator;
 import com.wishlist.services.UserAlreadyInThisFamilyException;
+import com.wishlist.services.dto.JoinRequestsDTO;
+import com.wishlist.services.interfaces.IFamilyService;
 import com.wishlist.services.interfaces.JoinRequestsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/joinRequests")
@@ -17,25 +25,36 @@ public class JoinRequestsController {
     private final Logger log = LoggerFactory.getLogger(JoinRequestsController.class);
     private final JoinRequestsService joinRequestsService;
     private final JwtValidator jwtValidator;
+    private final IFamilyService familyService;
 
-    public JoinRequestsController(JoinRequestsService requestJoinService, JwtValidator jwtValidator) {
+    public JoinRequestsController(JoinRequestsService requestJoinService, JwtValidator jwtValidator, IFamilyService familyService) {
         this.joinRequestsService = requestJoinService;
         this.jwtValidator = jwtValidator;
+        this.familyService = familyService;
     }
 
     //TODO remove userId variable after JWT validaton
     @PostMapping("/{userId}/{inviteCode}")
-    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode, @RequestHeader("Authorization") String jwt) {
-        try{
-            String senderId = jwtValidator.getUserFromJwt(jwt).getId();
-            log.info("send join req to {} for fam {}", userId, inviteCode);
-            log.info("send join req to {} for fam {} success", userId, inviteCode);
-            return ResponseEntity.ok(this.joinRequestsService.createJoinRequest(userId, inviteCode, senderId));
+    public ResponseEntity<?> sendJoinRequest(@PathVariable String userId, @PathVariable String inviteCode, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException, Exception {
+        if (jwtValidator.validateUser(jwt,userId)) {
+            JoinRequestsDTO requestJoin = joinRequestsService.createJoinRequest(userId,inviteCode,userId);
+            return new ResponseEntity<>(requestJoin, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new ApiError("You do not have access to this user"), HttpStatus.UNAUTHORIZED);
         }
-        catch (Exception e) {
-            return (ResponseEntity<?>) ResponseEntity.internalServerError();
-        } catch (UserAlreadyInThisFamilyException e) {
-            return (ResponseEntity<?>) ResponseEntity.internalServerError();
+
+
+
+
+
+    }
+
+    @GetMapping("/{id}/members")
+    public ResponseEntity<?> getFamilyMembers(@PathVariable String id, @RequestHeader("Authorization") String jwt) {
+        if (jwtValidator.validateFamily(jwt, id)) {
+            return new ResponseEntity<>(familyService.getFamilyMembers(id).stream().map(FamilyMemberDTO::to).collect(Collectors.toList()), HttpStatus.OK);
+        } else {
+            throw new UserNotAuthorizedException();
         }
     }
 
@@ -72,7 +91,7 @@ public class JoinRequestsController {
     }
 
     @PostMapping("/invite/{userId}/{familyId}")
-    public ResponseEntity<?> inviteToFamily(@PathVariable String userId, @PathVariable String familyId, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException {
+    public ResponseEntity<?> inviteToFamily(@PathVariable String userId, @PathVariable String familyId, @RequestHeader("Authorization") String jwt) throws UserAlreadyInThisFamilyException, Exception {
         log.info("inv usr {} to fml {} 200", userId, familyId);
         //todo send invite email
         String senderId = jwtValidator.getUserFromJwt(jwt).getId();
