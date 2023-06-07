@@ -86,7 +86,8 @@
 .ml-auto {
   margin-left: auto;
 }
-.mx-auto{
+
+.mx-auto {
   margin: 0 auto;
 }
 
@@ -133,16 +134,17 @@
 
 }
 
-.w-48{
+.w-48 {
   width: 48px !important;
   padding: 0 !important;
 }
-.h-48{
+
+.h-48 {
   height: 48px !important;
   padding: 0 !important;
 }
 
-.text-xl{
+.text-xl {
   font-size: x-large;
 }
 
@@ -160,11 +162,41 @@
 .success {
   background: $green-500 !important;
   color: $green-900 !important;
+  transition: background .2s ease-in-out;
+
+  &:hover {
+    background: $green-600 !important;
+  }
 }
 
 .danger {
   background: $red-500 !important;
   color: $red-900 !important;
+  transition: background .2s ease-in-out;
+
+  &:hover {
+    background: $red-600 !important;
+  }
+}
+
+.warning {
+  background: $yellow-500 !important;
+  color: $yellow-900 !important;
+  transition: background .2s ease-in-out;
+
+  &:hover {
+    background: $yellow-600 !important;
+  }
+}
+
+.primary {
+  background: $blue-500 !important;
+  color: $blue-900 !important;
+  transition: background .2s ease-in-out;
+
+  &:hover {
+    background: $blue-600 !important;
+  }
 }
 
 .text-through {

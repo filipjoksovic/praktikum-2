@@ -18,6 +18,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<Object> handleExceptions(Exception exception, WebRequest webRequest) {
         ApiError apiError = new ApiError(exception.getMessage());
         ResponseEntity<Object> entity = new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        exception.printStackTrace();
         return entity;
     }
 }

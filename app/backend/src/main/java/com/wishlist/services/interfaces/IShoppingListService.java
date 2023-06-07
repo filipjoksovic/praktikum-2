@@ -3,6 +3,7 @@ package com.wishlist.services.interfaces;
 import com.wishlist.dto.AddListItemsDTO;
 import com.wishlist.dto.BulkEditDTO;
 import com.wishlist.dto.ShoppingListDTO;
+import com.wishlist.dto.ShoppingListDTOV2;
 import com.wishlist.exceptions.*;
 import com.wishlist.models.ShoppingItem;
 import com.wishlist.models.ShoppingList;
@@ -14,7 +15,7 @@ public interface IShoppingListService {
     List<ShoppingList> getAll();
 
     //TODO change name to getAllForFamily or something like taht
-    List<ShoppingList> getShoppingListForFamily(String familyId) throws ShoppingListIsEmptyException;
+    ShoppingListDTOV2 getShoppingListForFamily(String familyId) throws ShoppingListIsEmptyException;
 
     ShoppingList updateShoppingList(ShoppingList shoppingList);
 
@@ -34,7 +35,7 @@ public interface IShoppingListService {
 
     ShoppingList addItemsToShoppingList(AddListItemsDTO item, String shoppingListId, String creatorId) throws ShoppingListDoesNotExistException;
 
-    ShoppingList deleteItemFromShoppingList(String userId, String listId, String itemId) throws UserNotAuthorizedException, ShoppingListDoesNotExistException, ShoppingItemDoesNotExistException;
+    ShoppingListDTOV2 deleteItemFromShoppingList(String userId, String listId, String itemId) throws UserNotAuthorizedException, ShoppingListDoesNotExistException, ShoppingItemDoesNotExistException;
 
     ShoppingItem updateShoppingItem(String listId, String itemId, ShoppingItem item) throws ShoppingItemDoesNotExistException, ShoppingListDoesNotExistException;
 

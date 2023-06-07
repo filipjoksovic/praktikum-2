@@ -2,37 +2,38 @@ import {View} from 'react-native';
 import {
   Avatar,
   Button,
-  Card,
   Surface,
   Text,
+  TextInput,
   useTheme,
 } from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React from 'react';
+import React, {useState} from 'react';
 import {AuthService} from '../../../services/AuthService';
-import {AccountSetup} from '../../account/account/pages/AccountSetup';
-import {FamilyPage} from '../../family/pages/FamilyPage';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
-
-const AccountIcon = props => <Avatar.Icon {...props} icon="account" />;
-const AccountsIcon = props => <Avatar.Icon {...props} icon="family-tree" />;
-
-const SettingsStackNavigation = () => {
-  const Stack = createNativeStackNavigator();
-
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="SetupElse" component={AccountSetup} />
-      <Stack.Screen name="Family" component={FamilyPage} />
-    </Stack.Navigator>
-  );
-};
+import {FamilyService} from '../../../services/FamilyService';
+import {useFocusEffect} from '@react-navigation/native';
+import {User} from '../../../models/User';
 
 export const SettingsPage = ({navigation}) => {
   const theme = useTheme();
+  const [user, setUser] = React.useState<User | null>(null);
+
+  const getUser = async () => {
+    try {
+      const user = await AuthService.getUser();
+      console.log('[SettingsPage]: User', user);
+      setUser(user);
+    } catch (e) {
+      console.log('[SettingsPage]: Error occurred when getting user', e);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser();
+    }, []),
+  );
+  const [inviteCode, setInviteCode] = useState('');
 
   const logout = async () => {
     try {
@@ -42,38 +43,117 @@ export const SettingsPage = ({navigation}) => {
       console.log('[SettingsPage]: Error occurred when logging out', e);
     }
   };
+
+  const sendJoinRequest = async () => {
+    try {
+      await FamilyService.sendJoinRequest(inviteCode);
+    } catch (e) {
+      console.log(
+        '[SettingsPage]: Error occurred when sending join request',
+        e,
+      );
+    }
+  };
+
+  const updateUser = async () => {
+    try {
+      await AuthService.updateUser(user);
+    } catch (e) {
+      console.log('[SettingsPage]: Error occurred when updating user', e);
+    }
+  };
+
   return (
-    <View
-      style={{
-        ...LAYOUT.container,
-        backgroundColor: theme.colors.background,
-      }}>
-      <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
-        Settings
-      </Text>
-      <Card onPress={() => {}}>
-        <Card.Title
-          title="Account"
-          subtitle="Customize your account"
-          left={AccountIcon}
-        />
-      </Card>
-      <Card style={{marginTop: 10}} onPress={() => {}}>
-        <Card.Title
-          title="Family"
-          subtitle="See details about your family, add or remove members."
-          left={AccountsIcon}
-        />
-      </Card>
-      <Surface>
-        <Button
-          onPress={() => {
-            navigation.navigate('Settings', {screen: 'Family'});
+    user && (
+      <View
+        style={{
+          ...LAYOUT.container,
+          backgroundColor: theme.colors.background,
+          height: '100%',
+          justifyContent: 'space-between',
+        }}>
+        <View>
+          <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
+            Settings
+          </Text>
+
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 20,
+            }}>
+            <Avatar.Text
+              label={
+                user.name && user.surname ? user.name[0] + user.surname[0] : 'U'
+              }
+              style={{height: 150, width: 150, borderRadius: 10000}}
+            />
+          </View>
+
+          <View style={{gap: 10}}>
+            <View style={{flexDirection: 'row', gap: 20}}>
+              <TextInput
+                style={{flex: 1}}
+                placeholder={'First name'}
+                label={'First name'}
+                mode={'outlined'}
+                onChangeText={text => {
+                  setUser({...user, name: text});
+                }}
+                value={user.name}
+              />
+              <TextInput
+                style={{flex: 1}}
+                placeholder={'Last name'}
+                onChangeText={text => {
+                  setUser({...user, surname: text});
+                }}
+                label={'Last name'}
+                mode={'outlined'}
+                value={user.surname}
+              />
+            </View>
+
+            <TextInput
+              placeholder={'Email'}
+              label={'Email'}
+              mode={'outlined'}
+              value={user.email}
+            />
+
+            {!user.familyId && (
+              <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
+                <TextInput
+                  value={inviteCode}
+                  label={'Family invite code'}
+                  mode={'outlined'}
+                  onChangeText={text => setInviteCode(text)}
+                />
+                <Button onPress={sendJoinRequest}>
+                  Send Family Join Request
+                </Button>
+              </Surface>
+            )}
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 20,
           }}>
-          Family
-        </Button>
-      </Surface>
-      <Button onPress={logout}>Logout</Button>
-    </View>
+          <Button onPress={updateUser} mode={'contained'}>
+            Save
+          </Button>
+          <Button onPress={logout} mode={'outlined'}>
+            Logout
+          </Button>
+        </View>
+      </View>
+    )
   );
 };

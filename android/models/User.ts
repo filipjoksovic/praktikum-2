@@ -7,4 +7,5 @@ export interface User {
   familyId?: string;
   accessToken: string;
   refreshToken: string;
+  isOwner?: boolean;
 }

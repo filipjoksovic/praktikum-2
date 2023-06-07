@@ -28,7 +28,7 @@ import {
   scheme_turq_dark,
   scheme_turq_light,
 } from './resources/styles/colorSchemes';
-
+import {enGB, registerTranslation} from 'react-native-paper-dates';
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
   const theme = useTheme();
@@ -139,6 +139,8 @@ function App(): JSX.Element {
     ...DefaultTheme,
     colors: isDarkMode ? scheme_green_dark : scheme_green_light,
   };
+  registerTranslation('en', enGB);
+
   return (
     <PaperProvider theme={theme}>
       <View

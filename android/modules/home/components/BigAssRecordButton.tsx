@@ -76,7 +76,7 @@ export const BigAssRecordButton = (props: IRecordButtonProps) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <View></View>
+                  <View />
                 </TouchableRipple>
               </View>
             </TouchableRipple>

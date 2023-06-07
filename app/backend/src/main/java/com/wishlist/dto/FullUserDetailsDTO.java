@@ -18,7 +18,7 @@ public class FullUserDetailsDTO {
     }
 
     public static FullUserDetailsDTO to(User user) {
-        return new FullUserDetailsDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getDob().toString());
+        return new FullUserDetailsDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getDob());
     }
 
     public String getId() {

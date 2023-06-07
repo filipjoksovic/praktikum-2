@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IListItem, IShoppingList } from '../../models/IShoppingListsResponseDTO';
+import { IListItem, IShoppingList, ShoppingListDTOV2 } from '../../models/IShoppingListsResponseDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,8 @@ export class ShoppingListStoreService {
   private readonly _selectedItem$: BehaviorSubject<IListItem | null> = new BehaviorSubject(null);
   public readonly selectedItem$ = this._selectedItem$.asObservable();
 
-  private readonly _familyList$:BehaviorSubject<IShoppingList | null> = new BehaviorSubject<IShoppingList | null>(null);
+  private readonly _familyList$: BehaviorSubject<ShoppingListDTOV2 | null> =
+    new BehaviorSubject<ShoppingListDTOV2 | null>(null);
   public readonly familyList$ = this._familyList$.asObservable();
 
   constructor() {}
@@ -57,7 +58,7 @@ export class ShoppingListStoreService {
     this._shoppingLists$.next(this._shoppingLists$.value.filter((l) => l.id !== id));
   }
 
-  setFamilyList(shoppingList: IShoppingList) {
-      this._familyList$.next(shoppingList);
+  setFamilyList(shoppingList: ShoppingListDTOV2) {
+    this._familyList$.next(shoppingList);
   }
 }

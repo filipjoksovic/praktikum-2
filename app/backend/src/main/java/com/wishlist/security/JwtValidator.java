@@ -1,16 +1,15 @@
 package com.wishlist.security;
 
 import com.wishlist.exceptions.FamilyDoesNotExistException;
-import com.wishlist.models.Family;
+import com.wishlist.exceptions.ShoppingItemDoesNotExistException;
 import com.wishlist.models.Invitation;
-import com.wishlist.models.ShoppingList;
 import com.wishlist.models.ShoppingItem;
+import com.wishlist.models.ShoppingList;
 import com.wishlist.models.User;
 import com.wishlist.services.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,18 +65,20 @@ public class JwtValidator implements IJwtValidator {
         String userEmail = jwtUtils.extractEmail(jwt.substring(7));
         User user = userService.getUserByEmail(userEmail);
         ShoppingList shoppingList = shoppingListService.getShoppingList(shoppingListId);
-        return shoppingList.getUserId().equals(user.getId());
+        return shoppingList.getUserId().equals(user.getId()) || shoppingList.getFamilyId().equals(user.getFamilyId());
     }
 
     @Override
     public boolean validateListItem(String jwt, String listItemId) {
         String userEmail = jwtUtils.extractEmail(jwt.substring(7));
         User user = userService.getUserByEmail(userEmail);
-        Optional<ShoppingItem> listItem = itemService.findById(listItemId);
-        if (listItem.isPresent()) {
-            ShoppingList result = shoppingListService.findShoppingListIdByItemId(listItem.get().getId());
-            if (result != null) {
+        ShoppingItem listItem = itemService.findById(listItemId).orElseThrow(ShoppingItemDoesNotExistException::new);
+        ShoppingList result = shoppingListService.findShoppingListIdByItemId(listItem.getId());
+        if (result != null) {
+            if (result.getUserId() != null) {
                 return result.getUserId().equals(user.getId());
+            } else if (result.getFamilyId() != null) {
+                return result.getFamilyId().equals(user.getFamilyId());
             } else {
                 return false;
             }

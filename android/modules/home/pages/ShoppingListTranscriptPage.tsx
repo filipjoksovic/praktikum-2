@@ -26,15 +26,24 @@ export const ShoppingListTranscriptPage = (
         text: shoppingListPrompt,
       });
       console.log(result);
-
+      if (!result.summary) {
+        throw new Error('No summary found');
+      }
       setIsCreating(false);
-      // setShoppingItems(result.summary);
       SnackBarStore.update(s => {
         return {isOpen: true, text: 'Data successfully parsed'};
       });
       props.onReceiveTranscript(result.summary);
     } catch (err) {
       console.log('Error:', err);
+      SnackBarStore.update(s => {
+        return {isOpen: true, text: 'Error parsing data'};
+      });
+      setTimeout(() => {
+        SnackBarStore.update(s => {
+          return {isOpen: false, text: ''};
+        });
+      }, 3000);
     }
   };
 
@@ -46,7 +55,7 @@ export const ShoppingListTranscriptPage = (
   };
 
   return (
-    <ScrollView>
+    <View style={{height: '100%'}}>
       {shoppingListPrompt ? (
         <>
           <Text variant={'headlineMedium'}>Transcription complete</Text>
@@ -84,9 +93,8 @@ export const ShoppingListTranscriptPage = (
           </View>
         </>
       ) : (
-        <RecorderPage
-          onTranscriptReceived={setShoppingListPrompt}></RecorderPage>
+        <RecorderPage onTranscriptReceived={setShoppingListPrompt} />
       )}
-    </ScrollView>
+    </View>
   );
 };

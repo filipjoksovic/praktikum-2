@@ -2,6 +2,8 @@ import {List} from 'react-native-paper';
 import {
   IListItem,
   IShoppingListResponse,
+  ListItemDTOV2,
+  ShoppingListDTOV2,
 } from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListItemComponent} from '../../shopping-lists/components/ShoppingListItemComponent';
 import {RefreshControl, ScrollView, View} from 'react-native';
@@ -9,7 +11,7 @@ import {FamilyListItemComponent} from './FamilyListItemComponent';
 import React from 'react';
 
 export interface IFamilyListComponentProps {
-  list: IShoppingListResponse;
+  list: ShoppingListDTOV2;
   onListLongPressed: any;
   onItemLongPressed: any;
   onListPressed: any;
@@ -17,10 +19,11 @@ export interface IFamilyListComponentProps {
 
 export const FamilyListComponent = (props: IFamilyListComponentProps) => {
   const {list} = props;
-  // console.log('list');
 
-  const itemLongPressed = (item: IListItem) => {
-    props.onItemLongPressed({listId: list.shoppingList.id, item: item});
+  console.log('List:', list);
+
+  const itemLongPressed = (item: ListItemDTOV2) => {
+    props.onItemLongPressed({listId: list.id, item: item});
   };
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
@@ -37,11 +40,13 @@ export const FamilyListComponent = (props: IFamilyListComponentProps) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      {list.shoppingList.itemList.map(item => (
+      {list.items.map(item => (
         <FamilyListItemComponent
+          listId={list.id}
           item={item}
           key={item.id}
-          onLongPress={itemLongPressed}></FamilyListItemComponent>
+          onLongPress={itemLongPressed}
+        />
       ))}
     </ScrollView>
   );
