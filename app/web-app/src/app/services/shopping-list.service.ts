@@ -6,7 +6,7 @@ import {EMPTY, of, tap} from 'rxjs';
 import {TranscriptStoreService} from './stores/transcript-store.service';
 import {ToasterService} from './toaster.service';
 import {ShoppingListStoreService} from './stores/shopping-list-store.service';
-import {IListItem, IShoppingList} from '../models/IShoppingListsResponseDTO';
+import {IListItem, IShoppingList, ListItemDTOV2, ShoppingListDTOV2} from '../models/IShoppingListsResponseDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +54,7 @@ export class ShoppingListService {
 
   getUserShoppingLists() {
     const user = this.authService.getLocalUser();
-    return this.http.get<IShoppingList[]>(`shoppingLists/${user.id}`);
+    return this.http.get<IShoppingList[]>(`shoppingLists/user/${user.id}`);
   }
 
 
@@ -91,6 +91,29 @@ export class ShoppingListService {
   }
 
   getFamilyShoppingList(familyId: string) {
-    return this.http.get<IShoppingList>(`shoppingLists/family/${familyId}`);
+    return this.http.get<ShoppingListDTOV2>(`shoppingLists/family/${familyId}`);
   }
+
+  deleteFamilyItem(listId: string, id: string) {
+    const user = this.authService.getLocalUser();
+    return this.http
+      .delete<ShoppingListDTOV2>(`shoppingLists/${user.id}/${listId}/${id}`)
+      .pipe(tap(() => this.toaster.success('Success!', 'Item successfully deleted from family list')));
+  }
+
+  checkOffFamilyItem(listId: string, itemId: string) {
+    return this.http
+      .put<ShoppingListDTOV2>(`shoppingLists/${listId}/${itemId}/completeItem`, {})
+      .pipe(tap(() => this.toaster.success('Success!', 'Item successfully checked off family list')));
+  }
+
+  updateItem(listId: string, itemId: string, shoppingItem: { id: string; name: string; checked: boolean }) {
+    console.log(shoppingItem);
+    return this.http.put<ListItemDTOV2>(`shoppingLists/${listId}/${itemId}`, { ...shoppingItem }).pipe(
+      tap((response) => {
+        this.toaster.success('Success!', 'Item successfully updated');
+      }),
+    );
+}
+
 }

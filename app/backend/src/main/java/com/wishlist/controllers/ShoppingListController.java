@@ -37,15 +37,6 @@ public class ShoppingListController {
         return shoppingListService.getAll();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserList(@PathVariable String userId, @RequestHeader("Authorization") String jwt) {
-
-        if (jwtValidator.validateUser(jwt, userId)) {
-            return ResponseEntity.ok(shoppingListService.getShoppingListForUser(userId));
-        } else {
-            throw new UserNotAuthorizedException();
-        }
-    }
 
     @PutMapping("/{shoppingListId}")
     public ResponseEntity<?> update(@PathVariable String shoppingListId, @RequestBody ShoppingList updatedShoppingList, @RequestHeader("Authorization") String jwt) {
@@ -84,7 +75,7 @@ public class ShoppingListController {
     public ResponseEntity getForUser(@PathVariable String userId, @RequestHeader("Authorization") String jwt) {
         if (jwtValidator.validateUser(jwt, userId)) {
             log.info("GET slis for uid {}", userId);
-            return new ResponseEntity(new ShoppingListsResponseDTO(shoppingListService.getShoppingListForUser(userId).stream().map(shoppingList -> new ShoppingListResponseDTO(shoppingList)).toList()), HttpStatus.OK);
+            return new ResponseEntity(new ShoppingListsResponseDTO(shoppingListService.getShoppingListForUser(userId).stream().map(ShoppingListResponseDTO::new).toList()), HttpStatus.OK);
         } else {
             return new ResponseEntity(new ApiError("you do not have access to this user"), HttpStatus.UNAUTHORIZED);
         }
@@ -100,7 +91,6 @@ public class ShoppingListController {
             return new ResponseEntity(new ApiError("you do not have access to this family"), HttpStatus.UNAUTHORIZED);
         }
     }
-
 
     @PostMapping("user/{userId}")
     public ResponseEntity createShoppingListForUser(@PathVariable String userId, @RequestBody com.wishlist.dto.ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String jwt) {
