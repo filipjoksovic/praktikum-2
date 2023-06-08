@@ -1,9 +1,10 @@
-import {useState} from 'react';
-import {ScrollView, View} from 'react-native';
-import {Button, Surface, Text, TextInput, useTheme} from 'react-native-paper';
-import {ShoppingListService} from '../../../services/ShoppingListService';
-import {RecorderPage} from './RecorderPage';
-import {SnackBarStore} from '../../shared/state/SnackBarStore';
+import { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { Button, Surface, Text, TextInput, useTheme } from 'react-native-paper';
+import { ShoppingListService } from '../../../services/ShoppingListService';
+import { RecorderPage } from './RecorderPage';
+import { SnackBarStore } from '../../shared/state/SnackBarStore';
+import { Dimensions } from 'react-native';
 
 export interface IShoppingListTranscriptPage {
   onReceiveTranscript: any;
@@ -13,6 +14,7 @@ export const ShoppingListTranscriptPage = (
 ) => {
   const theme = useTheme();
   const [shoppingListPrompt, setShoppingListPrompt] = useState('');
+  const windowHeight = Dimensions.get('window').height;
 
   // Additional state for recording
   const [isRecording, setIsRecording] = useState(false);
@@ -29,17 +31,17 @@ export const ShoppingListTranscriptPage = (
       }
       setIsCreating(false);
       SnackBarStore.update(s => {
-        return {isOpen: true, text: 'Data successfully parsed'};
+        return { isOpen: true, text: 'Data successfully parsed' };
       });
       props.onReceiveTranscript(result.summary);
     } catch (err) {
       console.log('Error:', err);
       SnackBarStore.update(s => {
-        return {isOpen: true, text: 'Error parsing data'};
+        return { isOpen: true, text: 'Error parsing data' };
       });
       setTimeout(() => {
         SnackBarStore.update(s => {
-          return {isOpen: false, text: ''};
+          return { isOpen: false, text: '' };
         });
       }, 3000);
     }
@@ -53,7 +55,7 @@ export const ShoppingListTranscriptPage = (
   };
 
   return (
-    <View style={{height: '100%'}}>
+    <View style={{ height: '100%' }}>
       {shoppingListPrompt ? (
         <>
           <Text variant={'headlineMedium'}>Transcription complete</Text>
@@ -62,7 +64,7 @@ export const ShoppingListTranscriptPage = (
             something is off, you can always edit it to your liking.
           </Text>
           <TextInput
-            style={{marginTop: 20}}
+            style={{ marginTop: 20, maxHeight: windowHeight / 3 }} // Limit the height of TextInput to a third of the window height
             value={shoppingListPrompt}
             onChangeText={setShoppingListPrompt}
             multiline={true}
@@ -78,13 +80,13 @@ export const ShoppingListTranscriptPage = (
             }}>
             <Button
               mode={'contained'}
-              style={{marginTop: 20}}
+              style={{ marginTop: 20 }}
               onPress={processShoppingList}>
               Process
             </Button>
             <Button
               mode={'contained'}
-              style={{marginTop: 20}}
+              style={{ marginTop: 20 }}
               onPress={cancelListProcessing}>
               Abort
             </Button>
