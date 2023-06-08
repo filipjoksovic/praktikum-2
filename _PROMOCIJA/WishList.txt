@@ -9,6 +9,7 @@ Milan Djuric
 Benjamin Stimec
 
 Domača stran: https://www.wishlisttest.xyz
+Android: https://appdistribution.firebase.dev/i/ed16fc21e1d4809e?_gl=1*6pr53n*_ga*MTI3MDAwNjYyNC4xNjg1NzkwNDQx*_ga_CW55HF8NVT*MTY4NjE5MDYzMC4yLjEuMTY4NjE5MDc4Ni4wLjAuMA..
 ...
 Koda: https://github.com/filipjoksovic/praktikum-2
 
