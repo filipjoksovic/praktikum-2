@@ -31,18 +31,31 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody AuthRequestDTO requestDTO) throws Exception {
-        log.info("Rcv lgn {} {}", requestDTO.getEmail(), requestDTO.getPassword());
-        AuthResponseDTO loggedIn = authService.login(requestDTO);
-        log.info("usr {} found. send 200 ok", loggedIn.getId());
-        return new ResponseEntity<>(loggedIn, HttpStatus.OK);
+        try{
+            log.info("Rcv lgn {} {}", requestDTO.getEmail(), requestDTO.getPassword());
+            AuthResponseDTO loggedIn = authService.login(requestDTO);
+            log.info("usr {} found. send 200 ok", loggedIn.getId());
+            return new ResponseEntity<>(loggedIn, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody AuthRequestDTO requestDTO) {
-        log.info("rcv reg {} {}", requestDTO.getEmail(), requestDTO.getPassword());
-        User registered = authService.register(requestDTO);
-        log.info("new usr id {}", registered.getUsername());
-        return new ResponseEntity<>(registered, HttpStatus.OK);
+        try{
+            log.info("rcv reg {} {}", requestDTO.getEmail(), requestDTO.getPassword());
+            User registered = authService.register(requestDTO);
+            log.info("new usr id {}", registered.getUsername());
+            log.info("Rcv lgn {} {}", requestDTO.getEmail(), requestDTO.getPassword());
+            AuthResponseDTO loggedIn = authService.login(requestDTO);
+            log.info("usr {} found. send 200 ok", loggedIn.getId());
+            return new ResponseEntity<>(loggedIn, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
