@@ -10,21 +10,22 @@ import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React from 'react';
 import {FamilyService} from '../../../services/FamilyService';
 import {useFocusEffect} from '@react-navigation/native';
+import {IFamily} from '../../../models/IFamily';
 
 export interface IEditFamilyProps {}
 
-export const EditFamily = (props: IEditFamilyProps) => {
+export const EditFamily = () => {
   const theme = useTheme();
-  const [family, setFamily] = React.useState(null);
+  const [family, setFamily] = React.useState<IFamily | null>(null);
   const [name, setName] = React.useState('');
   const [inviteCode, setInviteCode] = React.useState('');
   const getFamily = async () => {
     try {
       const userFamily = await FamilyService.getFamilyForUser();
       console.log('userFamily', userFamily);
-      setFamily(prevState => userFamily);
-      setName(prevState => userFamily.name);
-      setInviteCode(prevState => userFamily.inviteCode);
+      setFamily(userFamily);
+      setName(userFamily.name);
+      setInviteCode(userFamily.inviteCode);
     } catch (error) {
       console.log('error occurred when getting user family', error);
     }
@@ -41,6 +42,9 @@ export const EditFamily = (props: IEditFamilyProps) => {
 
   const saveFamily = async () => {
     try {
+      if (!family) {
+        return;
+      }
       await FamilyService.updateFamily(family.id, {
         name: name,
         inviteCode: inviteCode,
@@ -55,7 +59,7 @@ export const EditFamily = (props: IEditFamilyProps) => {
       Math.random().toString(36).substr(2, 4) +
       '-' +
       Math.random().toString(36).substr(2, 4);
-    setInviteCode(prevState => newCode.toUpperCase());
+    setInviteCode(newCode.toUpperCase());
   };
   return (
     <View

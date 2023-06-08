@@ -1,24 +1,23 @@
 import {Store} from 'pullstate';
 import {
   IListItem,
-  IShoppingListResponse,
-  IShoppingListsResponse,
+  IShoppingList,
 } from '../../../models/IShoppingListsResponseDTO';
 
 export interface IShoppingListStore {
-  shoppingLists: IShoppingListsResponse;
-  activeShoppingList: IShoppingListResponse | null;
+  shoppingLists: IShoppingList[];
+  activeShoppingList: IShoppingList | null;
   selectedListItem:
     | {
         item: IListItem;
         listId: string;
       }
     | undefined;
-  selectedList: IShoppingListResponse | undefined;
+  selectedList: IShoppingList | undefined;
 }
 
 export const ShoppingListStore = new Store<IShoppingListStore>({
-  shoppingLists: {shoppingLists: [], allChecked: false},
+  shoppingLists: [],
   activeShoppingList: null,
   selectedListItem: {
     item: undefined,

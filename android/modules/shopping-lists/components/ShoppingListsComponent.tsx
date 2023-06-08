@@ -1,31 +1,21 @@
-import {
-  ActivityIndicator,
-  Button,
-  Dialog,
-  MD2Colors,
-  Portal,
-  Text,
-} from 'react-native-paper';
+import {Button, Dialog, Portal, Text} from 'react-native-paper';
 import {RefreshControl, ScrollView} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
-  IShoppingListsResponse,
+  IShoppingList,
   IShoppingListResponse,
-  IListItem,
 } from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 import {ShoppingListComponent} from './ShoppingListComponent';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {NoShoppingListsComponent} from './NoShoppingListsComponent';
-import {ISnackBarStore, SnackBarStore} from '../../shared/state/SnackBarStore';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 
-export interface IShoppingListsComponentProps {}
+export interface IShoppingListsComponentProps {
+  listChanged: any;
+}
 
 export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
-  const shoppingLists = ShoppingListStore.useState(
-    s => s.shoppingLists.shoppingLists,
-  );
+  const shoppingLists = ShoppingListStore.useState(s => s.shoppingLists);
   const selectedList = ShoppingListStore.useState(s => s.selectedList);
   const selectedListItem = ShoppingListStore.useState(s => s.selectedListItem);
 
@@ -65,7 +55,7 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
           selectedListItem: undefined,
           selectedList: undefined,
         };
-      });      
+      });
       setIsDialogVisible(false);
     } catch {
       console.log('shopping list selection failed');
@@ -76,33 +66,31 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
     setIsDialogVisible(false);
     if (selectedList) {
       console.log('SelectedList:', selectedList);
-      console.log(selectedList.shoppingList.itemList.length > 0);
-      if (
-        !selectedList.allChecked &&
-        selectedList.shoppingList.itemList.length > 0
-      ) {
+      console.log(selectedList.itemList.length > 0);
+      if (!isListChecked(selectedList) && selectedList.itemList.length > 0) {
         console.log('ShoppingListComponent: Should check off whole list');
         try {
           const editedList = await ShoppingListService.completeList(
-            selectedList.shoppingList.id,
+            selectedList.id,
           );
           console.log('CHECK OFF WHOLE LIST RESPONSE:', editedList);
           const newShoppingLists: IShoppingListResponse[] = shoppingLists.map(
             shoppingList =>
-              shoppingList.shoppingList.id === editedList.shoppingList.id
+              shoppingList.id === editedList.shoppingList.id
                 ? editedList
                 : shoppingList,
           );
           console.log('new shopping lists', newShoppingLists);
-          ShoppingListStore.update(s => {
-            return {
-              ...s,
-              shoppingLists: {
-                ...s.shoppingLists,
-                shoppingLists: newShoppingLists,
-              },
-            };
-          });
+          // ShoppingListStore.update(s => {
+          //   return {
+          //     ...s,
+          //     shoppingLists: {
+          //       ...s.shoppingLists,
+          //       shoppingLists: newShoppingLists,
+          //     },
+          //   };
+          // });
+          props.listChanged();
         } catch (e) {
           console.log(
             'ShoppingListComponent: Error occured when checking off whole lsit',
@@ -112,16 +100,17 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
       } else {
         console.log('ShoppingListComponent: Should delete whole list');
         try {
-          await ShoppingListService.deleteList(selectedList.shoppingList.id);
+          await ShoppingListService.deleteList(selectedList.id);
           const newList = shoppingLists.filter(
-            list => list.shoppingList.id !== selectedList.shoppingList.id,
+            list => list.id !== selectedList.id,
           );
-          ShoppingListStore.update(s => {
-            return {
-              ...s,
-              shoppingLists: {...s.shoppingLists, shoppingLists: newList},
-            };
-          });
+          // ShoppingListStore.update(s => {
+          //   return {
+          //     ...s,
+          //     shoppingLists: {...s.shoppingLists, shoppingLists: newList},
+          //   };
+          // });
+          props.listChanged();
         } catch (e) {
           console.log(
             'ShoppingListComponent: Error occured when checking off whole lsit',
@@ -138,22 +127,31 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedListItem.item.id,
           );
           console.log('CHECK OFF LIST ITEM RESPONSE:', editedList);
-          const newShoppingLists = shoppingLists.map(shoppingList =>
-            shoppingList.shoppingList.id === editedList.shoppingList.id
-              ? editedList
-              : shoppingList,
-          );
-          ShoppingListStore.update(s => {
-            {
-              return {
-                ...s,
-                shoppingLists: {
-                  ...s.shoppingLists,
-                  shoppingLists: newShoppingLists,
-                },
-              };
-            }
-          });
+          // const newShoppingLists = shoppingLists.map(shoppingList =>
+          //   shoppingList.id === editedList.shoppingList.id
+          //     ? editedList
+          //     : shoppingList,
+          // );
+          for (const list of shoppingLists) {
+            const newList = list.itemList.map(item =>
+              item.id === selectedListItem.item.id
+                ? selectedListItem.item
+                : item,
+            );
+            list.itemList = newList;
+          }
+
+          // ShoppingListStore.update(s => {
+          //   {
+          //     return {
+          //       ...s,
+          //       shoppingLists: {
+          //         ...shoppingLists,
+          //       },
+          //     };
+          //   }
+          // });
+          props.listChanged();
         } catch (e) {
           console.log(
             'ShoppingListsComponent: Error occured when checking off list item',
@@ -170,38 +168,23 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
           );
 
           const lists = shoppingLists;
-          let foundList = shoppingLists.find(
-            list => list.shoppingList.id === selectedListItem.listId,
-          );
-          if (foundList) {
-            const foundItems = foundList?.shoppingList.itemList.filter(
-              item => item.id !== selectedListItem.item.id,
-            );
-            foundList = {
-              ...foundList,
-              shoppingList: {...foundList?.shoppingList, itemList: foundItems},
-            };
-            const updated = shoppingLists.map(list =>
-              list.shoppingList.id === foundList?.shoppingList.id
-                ? foundList
-                : list,
-            );
-            ShoppingListStore.update(s => {
-              return {
-                ...s,
-                shoppingLists: {
-                  ...s.shoppingLists,
-                  shoppingLists: updated,
-                },
-              };
-            });
-          }
+          const list = lists.find(list => list.id === selectedListItem.listId);
+          // ShoppingListStore.update(s => {
+          //   return {
+          //     ...s,
+          //     shoppingLists: {
+          //       ...updated,
+          //     },
+          //   };
+          // });
+          // }
+
+          props.listChanged();
         } catch (e) {
           console.log(
             'ShoppingListsComponent: Error occured when deleting list item',
             e,
           );
-          e.stack;
         }
       }
     }
@@ -224,7 +207,7 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
         shoppingLists.map(list => (
           <ShoppingListComponent
             list={list}
-            key={list.shoppingList.id}
+            key={list.id}
             onListPressed={handleWholeListPress}
             onListLongPressed={handleWholeListLongPress}
             onItemLongPressed={handleSingleListItemLongPress}
@@ -239,20 +222,20 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
           <Dialog.Title>Alert</Dialog.Title>
           <Dialog.Content>
             {selectedList &&
-            !selectedList.allChecked &&
-            selectedList.shoppingList.itemList.length > 0 ? (
+            !isListChecked(selectedList) &&
+            selectedList.itemList.length > 0 ? (
               <Text variant="bodyMedium">
-                Check off whole list? All of the items on{' '}
-                {selectedList.shoppingList.name} will be checked off.
+                Check off whole list? All of the items on {selectedList.name}{' '}
+                will be checked off.
               </Text>
             ) : (
               <></>
             )}
-            {(selectedList && selectedList.allChecked) ||
-            selectedList?.shoppingList.itemList.length === 0 ? (
+            {(selectedList && isListChecked(selectedList)) ||
+            selectedList?.itemList.length === 0 ? (
               <Text variant="bodyMedium">
-                Delete whole list? All of the items on{' '}
-                {selectedList.shoppingList.name} will be deleted.
+                Delete whole list? All of the items on {selectedList.name} will
+                be deleted.
               </Text>
             ) : (
               <></>
@@ -284,4 +267,8 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
       </Portal>
     </ScrollView>
   );
+};
+
+export const isListChecked = (list: IShoppingList) => {
+  return list.itemList.every(item => item.checked);
 };

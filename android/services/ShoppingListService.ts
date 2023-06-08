@@ -1,12 +1,6 @@
 import {Environment} from '../environment';
 import {LocalStorageService} from './LocalStorageService';
-import {
-  IShoppingListResponse,
-  IShoppingListsResponse,
-  IShoppingListsResponseshoppingList,
-} from '../models/IShoppingListsResponseDTO';
-import {Platform} from 'react-native';
-import RNFS from 'react-native-fs';
+import {IShoppingList} from '../models/IShoppingListsResponseDTO';
 import {makeRequest} from '../modules/shared/helpers';
 
 export interface IPromptRequest {
@@ -150,13 +144,16 @@ export class ShoppingListService {
     }
   }
 
-  public static async getShoppingLists(): Promise<IShoppingListsResponse> {
+  public static async getShoppingLists(): Promise<IShoppingList[]> {
     try {
       const user = await LocalStorageService.getUserFromLocalStorage();
       if (!user) {
         throw new Error('User not defined');
       }
-      return await makeRequest(`shoppingLists/user/${user.id}`, 'get');
+      return (await makeRequest(
+        `shoppingLists/user/${user.id}`,
+        'get',
+      )) as any as IShoppingList[];
     } catch (err) {
       console.log('Error at getShoppingLists', err);
     }

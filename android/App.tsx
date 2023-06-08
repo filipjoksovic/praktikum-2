@@ -3,13 +3,10 @@ import {StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
 import {STYLESHEET} from './resources/styles/STYLESHEET';
 import {RegisterPage} from './modules/auth/pages/RegisterPage';
 import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {LoginPage} from './modules/auth/pages/LoginPage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {HomePage} from './modules/home/pages/HomePage';
-import {AccountSetup} from './modules/account/account/pages/AccountSetup';
 import {
-  BottomNavigation,
   DefaultTheme,
   PaperProvider,
   Snackbar,
@@ -25,17 +22,16 @@ import {SnackBarStore} from './modules/shared/state/SnackBarStore';
 import {
   scheme_green_dark,
   scheme_green_light,
-  scheme_turq_dark,
-  scheme_turq_light,
 } from './resources/styles/colorSchemes';
 import {enGB, registerTranslation} from 'react-native-paper-dates';
+
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
   const theme = useTheme();
   return (
     <Tab.Navigator
       barStyle={{backgroundColor: theme.colors.background}}
-      screenOptions={({route, navigation}) => {
+      screenOptions={() => {
         return {
           headerShown: false,
         };
@@ -44,7 +40,7 @@ export const TabNavigation = () => {
         name={'Shopping list'}
         component={PrepareShoppingListPage}
         options={{
-          tabBarIcon: ({color, size}) => {
+          tabBarIcon: () => {
             return (
               <Icon name={'plus'} color={theme.colors.tertiary} size={20} />
             );
@@ -56,7 +52,7 @@ export const TabNavigation = () => {
         name={'ShoppingLists'}
         component={ShoppingListsPage}
         options={{
-          tabBarIcon: ({color, size}) => {
+          tabBarIcon: () => {
             return (
               <Icon name={'list-ul'} color={theme.colors.tertiary} size={20} />
             );
@@ -64,23 +60,12 @@ export const TabNavigation = () => {
           tabBarLabel: 'Shopping lists',
         }}
       />
-      {/* <Tab.Screen
-        name={'AccountSetup'}
-        component={AccountSetup}
-        options={{
-          tabBarIcon: ({color, size}) => {
-            return (
-              <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
-            );
-          },
-          tabBarLabel: 'Account setup',
-        }}
-      /> */}
+
       <Tab.Screen
         name={'Family'}
         component={FamilyPage}
         options={{
-          tabBarIcon: ({color, size}) => {
+          tabBarIcon: () => {
             return (
               <Icon
                 name={'user-friends'}
@@ -96,7 +81,7 @@ export const TabNavigation = () => {
         name={'Settings'}
         component={SettingsPage}
         options={{
-          tabBarIcon: ({color, size}) => {
+          tabBarIcon: () => {
             return (
               <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
             );
@@ -123,8 +108,7 @@ const StackNavigation = () => {
   );
 };
 
-function App(): JSX.Element {
-  // const theme = useTheme();
+function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const SnackbarState = SnackBarStore.useState();
 
@@ -134,7 +118,6 @@ function App(): JSX.Element {
       backgroundColor: STYLESHEET.colors.bg_light,
     },
   });
-  const defTheme = useTheme();
   const theme = {
     ...DefaultTheme,
     colors: isDarkMode ? scheme_green_dark : scheme_green_light,

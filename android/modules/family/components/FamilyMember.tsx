@@ -11,7 +11,6 @@ import {IFamilyMember} from '../../../models/IFamilyMember';
 export interface IFamilyMemberProps {
   member: IFamilyMember;
   onRemove: (member: IFamilyMember) => void;
-  onViewDetails: (member: IFamilyMember) => void;
 }
 
 export const FamilyMember = (props: IFamilyMemberProps) => {

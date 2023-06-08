@@ -1,42 +1,28 @@
-import {ActivityIndicator, Modal, StyleSheet, View} from 'react-native';
-import {
-  Button,
-  FAB,
-  MD2Colors,
-  Portal,
-  Text,
-  useTheme,
-} from 'react-native-paper';
+import {ActivityIndicator, View} from 'react-native';
+import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ListContextSelectorComponent} from '../components/ListContextSelectorComponent';
+import React, {useState} from 'react';
 import {ShoppingListsComponent} from '../components/ShoppingListsComponent';
 import {MiniRecorderComponent} from '../components/MiniRecorderComponent';
 import {ShoppingListService} from '../../../services/ShoppingListService';
-import {
-  IShoppingList,
-  IShoppingListResponse,
-} from '../../../models/IShoppingListsResponseDTO';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
 import {useFocusEffect} from '@react-navigation/native';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 import DatePicker from 'react-native-date-picker';
-import {DatePickerModal} from 'react-native-paper-dates';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 
 export const ShoppingListsPage = () => {
   const theme = useTheme();
   const shoppingLists = ShoppingListStore.useState(s => s.shoppingLists);
-
+  async function getShoppingLists() {
+    console.log('Updated shopping lists');
+    const lists = await ShoppingListService.getShoppingLists();
+    ShoppingListStore.update(s => {
+      return {...s, shoppingLists: lists};
+    });
+  }
   useFocusEffect(
     React.useCallback(() => {
-      async function getShoppingLists() {
-        console.log('Updated shopping lists');
-        const lists = await ShoppingListService.getShoppingLists();
-        ShoppingListStore.update(s => {
-          return {...s, shoppingLists: lists};
-        });
-      }
       getShoppingLists();
     }, []),
   );
@@ -61,22 +47,18 @@ export const ShoppingListsPage = () => {
       if (!listForFab) {
         return;
       }
-      const deleted = await ShoppingListService.deleteList(
-        listForFab?.shoppingList.id,
-      );
+      const deleted = await ShoppingListService.deleteList(listForFab.id);
       ShoppingListStore.update(s => {
         return {
           ...s,
           shoppingLists: {
             ...shoppingLists,
-            shoppingLists: shoppingLists.shoppingLists.filter(
-              list => list.shoppingList.id !== deleted.id,
-            ),
+            shoppingLists: shoppingLists.filter(list => list.id !== deleted.id),
           },
           activeShoppingList: null,
         };
       });
-      SnackBarStore.update(s => {
+      SnackBarStore.update(() => {
         return {isOpen: true, text: 'List successfully deleted'};
       });
     } catch (err) {
@@ -101,7 +83,7 @@ export const ShoppingListsPage = () => {
         throw new Error('No summary found');
       }
       const updatedList = await ShoppingListService.addListItems(
-        listForFab.shoppingList.id,
+        listForFab.id,
         result.summary,
       );
       console.log(updatedList);
@@ -110,10 +92,8 @@ export const ShoppingListsPage = () => {
           ...s,
           shoppingLists: {
             ...s.shoppingLists,
-            shoppingLists: shoppingLists.shoppingLists.map(list =>
-              list.shoppingList.id === updatedList.shoppingList.id
-                ? updatedList
-                : list,
+            shoppingLists: shoppingLists.map(list =>
+              list.id === updatedList.shoppingList.id ? updatedList : list,
             ),
           },
         };
@@ -122,11 +102,11 @@ export const ShoppingListsPage = () => {
     } catch (err) {
       console.log('Error:', err);
       setIsLoading(false);
-      SnackBarStore.update(s => {
+      SnackBarStore.update(() => {
         return {isOpen: true, text: 'Error adding items'};
       });
       setTimeout(() => {
-        SnackBarStore.update(s => {
+        SnackBarStore.update(() => {
           return {isOpen: false, text: ''};
         });
       }, 3000);
@@ -169,7 +149,7 @@ export const ShoppingListsPage = () => {
     await notifee.createTriggerNotification(
       {
         title: 'List reminder',
-        body: `This is a reminder to look at your ${listForFab?.shoppingList.name} list`,
+        body: `This is a reminder to look at your ${listForFab?.name} list`,
         android: {
           channelId: 'default',
           smallIcon: 'ic_stat_name',
@@ -177,12 +157,12 @@ export const ShoppingListsPage = () => {
       },
       trigger,
     );
-    SnackBarStore.update(s => {
+    SnackBarStore.update(() => {
       return {isOpen: true, text: 'Reminder created'};
     });
 
     setTimeout(() => {
-      SnackBarStore.update(s => {
+      SnackBarStore.update(() => {
         return {isOpen: false, text: ''};
       });
     }, 1000);
@@ -207,12 +187,16 @@ export const ShoppingListsPage = () => {
         />
       )}
 
-      <ShoppingListsComponent />
+      <ShoppingListsComponent
+        listChanged={() => {
+          getShoppingLists();
+        }}
+      />
       {listForFab ? (
         <FAB.Group
           open={open}
           visible
-          label={open ? listForFab && listForFab.shoppingList.name : ''}
+          label={open ? listForFab && listForFab.name : ''}
           icon={open ? 'close' : 'pencil'}
           actions={[
             {

@@ -1,33 +1,19 @@
-import {ActivityIndicator, GestureResponderEvent, View} from 'react-native';
-import {
-  FAB,
-  List,
-  MD2Colors,
-  Portal,
-  Surface,
-  Text,
-  useTheme,
-} from 'react-native-paper';
+import {ActivityIndicator, View} from 'react-native';
+import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
-import {
-  IShoppingListResponse,
-  ShoppingListDTOV2,
-} from '../../../models/IShoppingListsResponseDTO';
+import {ShoppingListDTOV2} from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListService} from '../../../services/ShoppingListService';
-import {error} from 'console';
 import {useFocusEffect} from '@react-navigation/native';
-import {ShoppingListComponent} from '../../shopping-lists/components/ShoppingListComponent';
 import {FamilyListComponent} from '../components/FamilyListComponent';
 import {MiniRecorderComponent} from '../../shopping-lists/components/MiniRecorderComponent';
-import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 import DatePicker from 'react-native-date-picker';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
 
 export interface IFamilyListProps {}
 
-export const FamilyList = (props: IFamilyListProps) => {
+export const FamilyList = () => {
   const theme = useTheme();
   const [familyList, setFamilyList] =
     React.useState<ShoppingListDTOV2 | null>();
@@ -44,7 +30,7 @@ export const FamilyList = (props: IFamilyListProps) => {
     try {
       const list: ShoppingListDTOV2 = await ShoppingListService.getFamilyList();
       console.log('Family list', list);
-      setFamilyList(prevState => list);
+      setFamilyList(list);
     } catch (e) {
       console.error('FamilyList getFamilyList', e);
     }
@@ -72,10 +58,6 @@ export const FamilyList = (props: IFamilyListProps) => {
     setRecorderVisible(true);
   };
 
-  function handleDelete(e: GestureResponderEvent): void {
-    throw new Error('Function not implemented.');
-  }
-
   const transcriptReceived = async (transcript: string) => {
     setIsLoading(true);
 
@@ -95,28 +77,16 @@ export const FamilyList = (props: IFamilyListProps) => {
         result.summary,
       );
       console.log(updatedList);
-      // ShoppingListStore.update(s => {
-      //   return {
-      //     ...s,
-      //     shoppingLists: {
-      //       ...s.shoppingLists,
-      //       shoppingLists: shoppingLists.shoppingLists.map(list =>
-      //         list.shoppingList.id === updatedList.shoppingList.id
-      //           ? updatedList
-      //           : list,
-      //       ),
-      //     },
-      //   };
-      // });
+
       setIsLoading(false);
     } catch (err) {
       console.log('Error:', err);
       setIsLoading(false);
-      SnackBarStore.update(s => {
+      SnackBarStore.update(() => {
         return {isOpen: true, text: "Couldn't add items"};
       });
       setTimeout(() => {
-        SnackBarStore.update(s => {
+        SnackBarStore.update(() => {
           return {isOpen: false, text: ''};
         });
       }, 3000);
@@ -129,17 +99,6 @@ export const FamilyList = (props: IFamilyListProps) => {
   const [date, setDate] = React.useState(new Date());
   const [openPicker, setOpenPicker] = React.useState(false);
 
-  const onDismissSingle = React.useCallback(() => {
-    setOpenPicker(false);
-  }, [setOpenPicker]);
-
-  const onConfirmSingle = React.useCallback(
-    params => {
-      setOpenPicker(false);
-      setDate(params.date);
-    },
-    [setOpenPicker, setDate],
-  );
   const createReminder = async (date: Date) => {
     await notifee.requestPermission();
 
@@ -170,12 +129,12 @@ export const FamilyList = (props: IFamilyListProps) => {
       },
       trigger,
     );
-    SnackBarStore.update(s => {
+    SnackBarStore.update(() => {
       return {isOpen: true, text: 'Reminder created'};
     });
 
     setTimeout(() => {
-      SnackBarStore.update(s => {
+      SnackBarStore.update(() => {
         return {isOpen: false, text: ''};
       });
     }, 1000);
@@ -267,7 +226,3 @@ export const FamilyList = (props: IFamilyListProps) => {
     </View>
   );
 };
-
-function setState(arg0: {open: any}) {
-  throw new Error('Function not implemented.');
-}

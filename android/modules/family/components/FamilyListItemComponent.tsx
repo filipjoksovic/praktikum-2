@@ -1,17 +1,7 @@
-import {
-  Checkbox,
-  Divider,
-  IconButton,
-  List,
-  Surface,
-  Text,
-} from 'react-native-paper';
-import {Pressable, View} from 'react-native';
+import {IconButton, List, Surface, Text} from 'react-native-paper';
+import {View} from 'react-native';
 import React, {useState} from 'react';
-import {
-  IListItem,
-  ListItemDTOV2,
-} from '../../../models/IShoppingListsResponseDTO';
+import {ListItemDTOV2} from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 
 export interface IFamilyListItemComponentProps {
@@ -32,10 +22,10 @@ export const FamilyListItemComponent = (
 
   const deleteItem = async () => {
     await ShoppingListService.deleteListItem(props.listId, item.id);
-    setItem(prevState => null);
+    setItem(null);
   };
   return (
-    item !== null && (
+    (item !== null && (
       <View>
         <Surface style={{borderRadius: 20, marginTop: 10}}>
           <List.Item
@@ -97,6 +87,6 @@ export const FamilyListItemComponent = (
           </View>
         </Surface>
       </View>
-    )
+    )) || <View />
   );
 };

@@ -1,12 +1,8 @@
-import {List} from 'react-native-paper';
 import {
-  IListItem,
-  IShoppingListResponse,
   ListItemDTOV2,
   ShoppingListDTOV2,
 } from '../../../models/IShoppingListsResponseDTO';
-import {ShoppingListItemComponent} from '../../shopping-lists/components/ShoppingListItemComponent';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {RefreshControl, ScrollView} from 'react-native';
 import {FamilyListItemComponent} from './FamilyListItemComponent';
 import React from 'react';
 
