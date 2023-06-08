@@ -76,7 +76,12 @@ export const FamilyPage = () => {
         headerStyle: {
           backgroundColor: theme.colors.tertiary,
         },
+        animation: 'fade_from_bottom',
+        headerShown: false,
         headerShadowVisible: false,
+        contentStyle: {
+          backgroundColor: theme.colors.background,
+        },
       }}>
       <Stack.Screen
         name="Details"

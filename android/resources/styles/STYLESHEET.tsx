@@ -103,7 +103,8 @@ export const PADDINGS = StyleSheet.create({
 export const LAYOUT = StyleSheet.create({
   container: {
     height: 100,
-    padding: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
     backgroundColor: STYLESHEET.colors.bg_light,
     color: STYLESHEET.colors.text_light,
     flex: 1,

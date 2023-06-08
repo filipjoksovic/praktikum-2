@@ -10,12 +10,14 @@ import AudioService from '../../../services/AudioService';
 import {formatDuration} from '../../shared/helpers';
 import RNFS from 'react-native-fs';
 import {ShoppingListService} from '../../../services/ShoppingListService';
+import {LoaderStore} from '../../shared/state/LoaderStore';
 
 export interface IRecorderPageProps {
   onTranscriptReceived: any;
 }
 
 export const RecorderPage = (props: IRecorderPageProps) => {
+  const loaderState = LoaderStore.useState();
   const theme = useTheme();
   const audioRecorderPlayer = AudioService.getInstance().audioRecorderPlayer;
 
@@ -31,6 +33,7 @@ export const RecorderPage = (props: IRecorderPageProps) => {
   };
   const stopRecording = () => {
     console.log('called');
+
     setTimeout(() => {
       Animated.spring(springButtonAnim, {
         toValue: 1,
@@ -50,6 +53,13 @@ export const RecorderPage = (props: IRecorderPageProps) => {
           useNativeDriver: true,
         }).start();
       }, 300);
+      LoaderStore.update(s => {
+        return {
+          ...s,
+          isLoading: true,
+          text: 'Robots are processing your voice',
+        };
+      });
     }, 300);
     setTimeout(() => {
       setIsRecording(false);
@@ -129,6 +139,12 @@ export const RecorderPage = (props: IRecorderPageProps) => {
       if (transcript) {
         props.onTranscriptReceived(transcript);
       }
+      LoaderStore.update(s => {
+        return {
+          ...s,
+          isLoading: false,
+        };
+      });
     } catch (error) {
       console.log('Error in stopping the recorder: ', error);
     }
@@ -178,7 +194,7 @@ export const RecorderPage = (props: IRecorderPageProps) => {
         flexGrow: 1,
       }}>
       <View>
-        <Text variant="displayLarge">Record</Text>
+        <Text variant="headlineLarge">Record</Text>
         <Text variant="bodyMedium">
           Once you start recording, we will automatically create a shopping list
           for you.

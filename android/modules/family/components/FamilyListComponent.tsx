@@ -30,12 +30,7 @@ export const FamilyListComponent = (props: IFamilyListComponentProps) => {
   }, []);
 
   return (
-    <ScrollView
-      style={{margin: -12}}
-      contentContainerStyle={{padding: 12}}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+    <ScrollView style={{margin: -12}} contentContainerStyle={{padding: 12}}>
       {list.items.map(item => (
         <FamilyListItemComponent
           listId={list.id}

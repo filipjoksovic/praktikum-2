@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {FamilyService} from '../../../services/FamilyService';
-import {Text, useTheme} from 'react-native-paper';
+import {IconButton, Surface, Text, useTheme} from 'react-native-paper';
 import {
   FamilyJoinRequest,
   IFamilyJoinRequestProps,
@@ -11,7 +11,10 @@ import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 
 export interface IFamilyJoinRequests {}
 
-export const FamilyJoinRequests = (props: IFamilyJoinRequests) => {
+export const FamilyJoinRequests = (
+  {navigation},
+  props: IFamilyJoinRequests,
+) => {
   const theme = useTheme();
   const [requests, setRequests] = useState<JoinRequestDTO[]>([]);
 
@@ -40,6 +43,22 @@ export const FamilyJoinRequests = (props: IFamilyJoinRequests) => {
         ...LAYOUT.container,
         backgroundColor: theme.colors.background,
       }}>
+      <Surface
+        style={{
+          paddingVertical: 10,
+          borderRadius: 20,
+          marginBottom: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 20,
+        }}>
+        <IconButton
+          size={32}
+          icon={'arrow-left'}
+          onPress={() => navigation.goBack()}
+        />
+        <Text variant={'headlineSmall'}>Join requests</Text>
+      </Surface>
       <View>
         {requests && requests.length > 0 ? (
           requests.map(request => (

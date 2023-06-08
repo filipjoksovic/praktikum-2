@@ -1,5 +1,5 @@
-import {ActivityIndicator, View} from 'react-native';
-import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
+import {View} from 'react-native';
+import {FAB, Portal, Searchbar, Text, useTheme} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
 import {ShoppingListsComponent} from '../components/ShoppingListsComponent';
@@ -10,10 +10,12 @@ import {useFocusEffect} from '@react-navigation/native';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 import DatePicker from 'react-native-date-picker';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
+import {LoaderStore} from '../../shared/state/LoaderStore';
 
 export const ShoppingListsPage = () => {
   const theme = useTheme();
   const shoppingLists = ShoppingListStore.useState(s => s.shoppingLists);
+  const loaderState = LoaderStore.useState();
   async function getShoppingLists() {
     console.log('Updated shopping lists');
     const lists = await ShoppingListService.getShoppingLists();
@@ -28,8 +30,6 @@ export const ShoppingListsPage = () => {
   );
 
   const listForFab = ShoppingListStore.useState(s => s.activeShoppingList);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const [state, setState] = React.useState({open: false});
   const [recorderVisible, setRecorderVisible] = React.useState(false);
@@ -67,7 +67,13 @@ export const ShoppingListsPage = () => {
   };
 
   const transcriptReceived = async (transcript: string) => {
-    setIsLoading(true);
+    LoaderStore.update(s => {
+      return {
+        ...s,
+        isLoading: true,
+        text: 'Transcript received. Sent to robots for processing.',
+      };
+    });
     console.log('List for fab', listForFab);
     if (!listForFab) {
       return;
@@ -79,7 +85,13 @@ export const ShoppingListsPage = () => {
       });
       console.log(result.summary);
       if (!result.summary) {
-        setIsLoading(false);
+        LoaderStore.update(s => {
+          return {
+            ...s,
+            isLoading: false,
+            text: '',
+          };
+        });
         throw new Error('No summary found');
       }
       const updatedList = await ShoppingListService.addListItems(
@@ -87,21 +99,23 @@ export const ShoppingListsPage = () => {
         result.summary,
       );
       console.log(updatedList);
-      ShoppingListStore.update(s => {
+      getShoppingLists();
+      LoaderStore.update(s => {
         return {
           ...s,
-          shoppingLists: {
-            ...s.shoppingLists,
-            shoppingLists: shoppingLists.map(list =>
-              list.id === updatedList.shoppingList.id ? updatedList : list,
-            ),
-          },
+          isLoading: false,
+          text: '',
         };
       });
-      setIsLoading(false);
     } catch (err) {
       console.log('Error:', err);
-      setIsLoading(false);
+      LoaderStore.update(s => {
+        return {
+          ...s,
+          isLoading: false,
+          text: '',
+        };
+      });
       SnackBarStore.update(() => {
         return {isOpen: true, text: 'Error adding items'};
       });
@@ -167,6 +181,13 @@ export const ShoppingListsPage = () => {
       });
     }, 1000);
   }
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const onChangeSearch = (text: string) => {
+    setSearchQuery(text);
+    console.log('Search query', searchQuery);
+  };
+
   return (
     <View
       style={{
@@ -178,16 +199,14 @@ export const ShoppingListsPage = () => {
       <Text variant={'headlineLarge'} style={{marginBottom: 10}}>
         Shopping lists
       </Text>
-      {isLoading && (
-        <ActivityIndicator
-          style={{marginTop: 20}}
-          size={'large'}
-          animating={true}
-          color={MD2Colors.amber900}
-        />
-      )}
-
+      <Searchbar
+        placeholder="Search"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        mode={'bar'}
+      />
       <ShoppingListsComponent
+        searchQuery={searchQuery}
         listChanged={() => {
           getShoppingLists();
         }}

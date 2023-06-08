@@ -12,6 +12,7 @@ import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 
 export interface IShoppingListsComponentProps {
   listChanged: any;
+  searchQuery: string;
 }
 
 export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
@@ -81,15 +82,6 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
                 : shoppingList,
           );
           console.log('new shopping lists', newShoppingLists);
-          // ShoppingListStore.update(s => {
-          //   return {
-          //     ...s,
-          //     shoppingLists: {
-          //       ...s.shoppingLists,
-          //       shoppingLists: newShoppingLists,
-          //     },
-          //   };
-          // });
           props.listChanged();
         } catch (e) {
           console.log(
@@ -101,15 +93,6 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
         console.log('ShoppingListComponent: Should delete whole list');
         try {
           await ShoppingListService.deleteList(selectedList.id);
-          const newList = shoppingLists.filter(
-            list => list.id !== selectedList.id,
-          );
-          // ShoppingListStore.update(s => {
-          //   return {
-          //     ...s,
-          //     shoppingLists: {...s.shoppingLists, shoppingLists: newList},
-          //   };
-          // });
           props.listChanged();
         } catch (e) {
           console.log(
@@ -127,30 +110,6 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedListItem.item.id,
           );
           console.log('CHECK OFF LIST ITEM RESPONSE:', editedList);
-          // const newShoppingLists = shoppingLists.map(shoppingList =>
-          //   shoppingList.id === editedList.shoppingList.id
-          //     ? editedList
-          //     : shoppingList,
-          // );
-          for (const list of shoppingLists) {
-            const newList = list.itemList.map(item =>
-              item.id === selectedListItem.item.id
-                ? selectedListItem.item
-                : item,
-            );
-            list.itemList = newList;
-          }
-
-          // ShoppingListStore.update(s => {
-          //   {
-          //     return {
-          //       ...s,
-          //       shoppingLists: {
-          //         ...shoppingLists,
-          //       },
-          //     };
-          //   }
-          // });
           props.listChanged();
         } catch (e) {
           console.log(
@@ -169,16 +128,6 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
 
           const lists = shoppingLists;
           const list = lists.find(list => list.id === selectedListItem.listId);
-          // ShoppingListStore.update(s => {
-          //   return {
-          //     ...s,
-          //     shoppingLists: {
-          //       ...updated,
-          //     },
-          //   };
-          // });
-          // }
-
           props.listChanged();
         } catch (e) {
           console.log(
@@ -198,21 +147,22 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
   };
 
   return (
-    <ScrollView
-      style={{height: '100%', marginTop: 20}}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+    <ScrollView style={{height: '100%', marginTop: 20}}>
       {shoppingLists ? (
-        shoppingLists.map(list => (
-          <ShoppingListComponent
-            list={list}
-            key={list.id}
-            onListPressed={handleWholeListPress}
-            onListLongPressed={handleWholeListLongPress}
-            onItemLongPressed={handleSingleListItemLongPress}
-          />
-        ))
+        shoppingLists.map(
+          list =>
+            list.name
+              .toLowerCase()
+              .includes(props.searchQuery.toLowerCase()) && (
+              <ShoppingListComponent
+                list={list}
+                key={list.id}
+                onListPressed={handleWholeListPress}
+                onListLongPressed={handleWholeListLongPress}
+                onItemLongPressed={handleSingleListItemLongPress}
+              />
+            ),
+        )
       ) : (
         <NoShoppingListsComponent />
       )}

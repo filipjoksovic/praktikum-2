@@ -1,5 +1,13 @@
 import {ActivityIndicator, View} from 'react-native';
-import {FAB, MD2Colors, Portal, Text, useTheme} from 'react-native-paper';
+import {
+  FAB,
+  IconButton,
+  MD2Colors,
+  Portal,
+  Surface,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import React, {useState} from 'react';
 import {ShoppingListDTOV2} from '../../../models/IShoppingListsResponseDTO';
@@ -10,17 +18,18 @@ import {MiniRecorderComponent} from '../../shopping-lists/components/MiniRecorde
 import DatePicker from 'react-native-date-picker';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
+import {LoaderStore} from '../../shared/state/LoaderStore';
 
 export interface IFamilyListProps {}
 
-export const FamilyList = () => {
+export const FamilyList = ({navigation}) => {
   const theme = useTheme();
   const [familyList, setFamilyList] =
     React.useState<ShoppingListDTOV2 | null>();
   const [state, setState] = React.useState({open: false});
   const [listForFab, setListForFab] = useState<ShoppingListDTOV2 | null>(null);
   const [recorderVisible, setRecorderVisible] = React.useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const loaderState = LoaderStore.useState();
 
   const onStateChange = ({open}) => setState({open});
 
@@ -59,7 +68,13 @@ export const FamilyList = () => {
   };
 
   const transcriptReceived = async (transcript: string) => {
-    setIsLoading(true);
+    LoaderStore.update(s => {
+      return {
+        ...s,
+        isLoading: true,
+        text: 'Transcript received. Processing data...',
+      };
+    });
 
     console.log('text:', transcript);
     try {
@@ -69,19 +84,24 @@ export const FamilyList = () => {
       console.log('Result', result);
       console.log(result.summary);
       if (!result.summary) {
-        setIsLoading(false);
+        LoaderStore.update(s => {
+          return {...s, isLoading: false, text: ''};
+        });
         throw new Error('No items detected');
       }
       const updatedList = await ShoppingListService.addFamilyListItems(
-        // listForFab.shoppingList.id,
         result.summary,
       );
       console.log(updatedList);
 
-      setIsLoading(false);
+      LoaderStore.update(s => {
+        return {...s, isLoading: false, text: ''};
+      });
     } catch (err) {
       console.log('Error:', err);
-      setIsLoading(false);
+      LoaderStore.update(s => {
+        return {...s, isLoading: false, text: ''};
+      });
       SnackBarStore.update(() => {
         return {isOpen: true, text: "Couldn't add items"};
       });
@@ -143,14 +163,22 @@ export const FamilyList = () => {
   return (
     <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
-      {isLoading && (
-        <ActivityIndicator
-          style={{marginTop: 20}}
-          size={'large'}
-          animating={true}
-          color={MD2Colors.amber900}
+      <Surface
+        style={{
+          paddingVertical: 10,
+          borderRadius: 20,
+          marginBottom: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 20,
+        }}>
+        <IconButton
+          size={32}
+          icon={'arrow-left'}
+          onPress={() => navigation.goBack()}
         />
-      )}
+        <Text variant={'headlineSmall'}>Join requests</Text>
+      </Surface>
       {familyList && familyList.items && familyList.items.length > 0 ? (
         <FamilyListComponent
           list={familyList}

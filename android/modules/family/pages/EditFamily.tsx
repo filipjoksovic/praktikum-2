@@ -2,6 +2,7 @@ import {View} from 'react-native';
 import {
   Button,
   IconButton,
+  Surface,
   Text,
   TextInput,
   useTheme,
@@ -14,7 +15,7 @@ import {IFamily} from '../../../models/IFamily';
 
 export interface IEditFamilyProps {}
 
-export const EditFamily = () => {
+export const EditFamily = ({navigation}) => {
   const theme = useTheme();
   const [family, setFamily] = React.useState<IFamily | null>(null);
   const [name, setName] = React.useState('');
@@ -64,6 +65,22 @@ export const EditFamily = () => {
   return (
     <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
+      <Surface
+        style={{
+          paddingVertical: 10,
+          borderRadius: 20,
+          marginBottom: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 20,
+        }}>
+        <IconButton
+          size={32}
+          icon={'arrow-left'}
+          onPress={() => navigation.goBack()}
+        />
+        <Text variant={'headlineSmall'}>Edit family</Text>
+      </Surface>
       <View>
         <Text>Family name</Text>
         <TextInput

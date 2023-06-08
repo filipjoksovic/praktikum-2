@@ -42,9 +42,10 @@ export const FamilyListItemComponent = (
                     {item.name}
                   </Text>
                   <Text variant="bodySmall">
-                    Added by:{' '}
-                    {(item.addedBy.name && ' ' && item.addedBy.surname) ||
-                      item.addedBy.email}
+                    Added by:
+                    {item.addedBy.name && item.addedBy.surname
+                      ? ' ' + item.addedBy.name + ' ' + item.addedBy.surname
+                      : ' ' + item.addedBy.email}
                   </Text>
                 </View>
               );

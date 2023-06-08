@@ -1,5 +1,11 @@
 import React from 'react';
-import {StatusBar, StyleSheet, useColorScheme, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {STYLESHEET} from './resources/styles/STYLESHEET';
 import {RegisterPage} from './modules/auth/pages/RegisterPage';
 import {NavigationContainer} from '@react-navigation/native';
@@ -8,8 +14,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {HomePage} from './modules/home/pages/HomePage';
 import {
   DefaultTheme,
+  MD2Colors,
   PaperProvider,
+  Portal,
   Snackbar,
+  Text,
   useTheme,
 } from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -22,8 +31,11 @@ import {SnackBarStore} from './modules/shared/state/SnackBarStore';
 import {
   scheme_green_dark,
   scheme_green_light,
+  scheme_purple_dark,
+  scheme_purple_light,
 } from './resources/styles/colorSchemes';
 import {enGB, registerTranslation} from 'react-native-paper-dates';
+import {LoaderStore} from './modules/shared/state/LoaderStore';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -111,6 +123,7 @@ const StackNavigation = () => {
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const SnackbarState = SnackBarStore.useState();
+  const loaderState = LoaderStore.useState();
 
   const stylesheet = StyleSheet.create({
     container: {
@@ -120,7 +133,7 @@ function App() {
   });
   const theme = {
     ...DefaultTheme,
-    colors: isDarkMode ? scheme_green_dark : scheme_green_light,
+    colors: isDarkMode ? scheme_purple_dark : scheme_purple_light,
   };
   registerTranslation('en', enGB);
 
@@ -136,6 +149,18 @@ function App() {
           backgroundColor={theme.colors.tertiary}
         />
         <NavigationContainer>
+          {loaderState.isLoading && (
+            <View style={{paddingTop: 20}}>
+              <ActivityIndicator
+                animating={true}
+                color={theme.colors.primary}
+                size={'large'}
+              />
+              <Text style={{textAlign: 'center', marginTop: 10}}>
+                {loaderState.text}
+              </Text>
+            </View>
+          )}
           <StackNavigation />
         </NavigationContainer>
       </View>

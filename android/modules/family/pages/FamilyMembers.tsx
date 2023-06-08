@@ -1,7 +1,7 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {FlatList, View} from 'react-native';
-import {Text, useTheme} from 'react-native-paper';
+import {IconButton, Surface, Text, useTheme} from 'react-native-paper';
 import {FamilyService} from '../../../services/FamilyService';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import {IFamilyMember} from '../../../models/IFamilyMember';
@@ -10,7 +10,7 @@ import {AuthService} from '../../../services/AuthService';
 import {User} from '../../../models/User';
 
 export interface IFamilyMembersProps {}
-export const FamilyMembers = () => {
+export const FamilyMembers = ({navigation}) => {
   const theme = useTheme();
   const [familyMembers, setFamilyMembers] = React.useState<IFamilyMember[]>([]);
   const [user, setUser] = useState<User | null>(null);
@@ -44,23 +44,60 @@ export const FamilyMembers = () => {
         ...LAYOUT.container,
         backgroundColor: theme.colors.background,
       }}>
-      <Text>
-        Here you can see family members who can create, update and edit the
-        shopping list and its items.
-      </Text>
-      <View>
-        <FlatList
-          style={{margin: -12}}
-          contentContainerStyle={{padding: 12}}
-          data={familyMembers}
-          renderItem={({item}) =>
-            user &&
-            item.id !== user.id && (
-              <FamilyMember member={item} onRemove={handleRemove} />
-            )
-          }
+      <Surface
+        style={{
+          paddingVertical: 10,
+          borderRadius: 20,
+          marginBottom: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 20,
+        }}>
+        <IconButton
+          size={32}
+          icon={'arrow-left'}
+          onPress={() => navigation.goBack()}
         />
-      </View>
+        <Text variant={'headlineSmall'}>Family members</Text>
+      </Surface>
+      {familyMembers && familyMembers.length > 1 && (
+        <Text style={{textAlign: 'center'}}>
+          Here you can see family members who can create, update and edit the
+          shopping list and its items.
+        </Text>
+      )}
+      {familyMembers && familyMembers.length > 1 ? (
+        <View>
+          <FlatList
+            style={{margin: -12}}
+            contentContainerStyle={{padding: 12}}
+            data={familyMembers}
+            renderItem={({item}) =>
+              user &&
+              item.id !== user.id && (
+                <FamilyMember member={item} onRemove={handleRemove} />
+              )
+            }
+          />
+        </View>
+      ) : (
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text variant={'displayLarge'}>¯\_(ツ)_/¯</Text>
+          <Text style={{textAlign: 'center'}}>
+            Currently there are no family members other than you.
+          </Text>
+          <Text style={{textAlign: 'center'}}>
+            You can share your family code with them or invite them via email
+            directly
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
