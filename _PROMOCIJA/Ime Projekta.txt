@@ -1,0 +1,27 @@
+WishList
+
+Informacijska resitev za ustvarjanje nakupovalnih listkov z uporabo govora
+
+Leto izdelave: 2023
+
+Filip Joksovic
+Milan Djuric
+Benjamin Stimec
+
+Domača stran: https://www.wishlisttest.xyz
+...
+Koda: https://github.com/filipjoksovic/praktikum-2
+
+Kategorizacija: mobilna in spletna aplikacija
+
+Oznake:  ReactNative, MongoDB, Nest.js, AgilenRazvoj, KanBan, GitHub, OpenAI, Docker, Nginx, REST, SpringBoot, Angular
+
+WishList je mobilna, tudi spletna aplikacija katera govor lahko pretvori v nakupovalni listek.
+Z uporabo Whisper modela ki ga ponuja OpenAI, posnetek govora posiljamo na OpenAI streznike, ki
+ta govor vracajo nazaj kot besedo, katera se potem posilja na daVinci3 OpenAI model za klasifikacijo
+in selekcijo nakupovalnih izdelkov. Pri uporabi aplikacije, uporabnik ima moznost izbire med osebni, ali pa druzinskim listkom,
+kjer je druzinski dostopen vsim uporabnikom v druzini (katero drugi uporabnik lahko ustvari, ali se pridruzi obstojeci) in
+ga lahko vsak uporabnik spremeni kako zeli.
+Po ustvarjanju listka, uporabnik lahko obkljuka izdelke ki je ze kupil ter ih koncno zbrisati, ali lahko doda nove izdelke...
+Dodatno, Android aplikacija ponuja moznost opomnika, kateri uporabnik lahko nastavi v dolocenemu casu, in se po tem casu uporabnik obvesti
+o nakupovalnem listku.
