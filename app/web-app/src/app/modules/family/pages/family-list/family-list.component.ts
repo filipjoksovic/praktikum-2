@@ -6,6 +6,7 @@ import {ShoppingListStoreService} from "../../../../services/stores/shopping-lis
 import {mergeMap, shareReplay, tap} from "rxjs";
 import {User} from "../../../../models/User";
 import {AuthService} from "../../../../services/auth.service";
+import {ListItemDTOV2} from "../../../../models/IShoppingListsResponseDTO";
 
 @Component({
   selector: 'app-family-list',
@@ -16,8 +17,7 @@ export class FamilyListComponent {
 
   public familyList$ = this.authService.currentUser$.pipe(
     mergeMap((user: User) => this.shoppingListService.getFamilyShoppingList(user.familyId)),
-    tap(shoppingList=>this.shoppingListStore.setFamilyList(shoppingList)),
-    shareReplay()
+    tap(shoppingList => this.shoppingListStore.setFamilyList(shoppingList)),
   );
 
   constructor(
@@ -33,4 +33,12 @@ export class FamilyListComponent {
   }
 
 
+  handleDelete(item: ListItemDTOV2) {
+    console.log("Setting items");
+    this.shoppingListStore.familyList$.pipe(tap(list => this.shoppingListStore.setFamilyList({
+      ...list,
+      items: list.items.filter(i => item.id !== i.id)
+    }))).subscribe();
+
+  }
 }

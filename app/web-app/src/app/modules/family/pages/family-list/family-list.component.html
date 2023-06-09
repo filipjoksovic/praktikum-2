@@ -5,7 +5,7 @@
   <div class="family-shopping-list">
     <ng-container *ngFor="let item of familyList.items">
       <app-family-list-item [item]="item" [familyId]="familyList.familyId"
-                            [listId]="familyList.id"></app-family-list-item>
+                            [listId]="familyList.id" (itemDeleted)="handleDelete(item)"></app-family-list-item>
     </ng-container>
 
   </div>

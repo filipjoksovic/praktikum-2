@@ -20,3 +20,60 @@ app-family-data {
   border: 1px solid $gray-300;
   padding: $spacer * 4;
 }
+
+@media only screen and (max-width: 768px) {
+  * {
+    font-size: 8pt !important;
+    overflow-y: scroll;
+  }
+  .w-64 {
+    width: 32px !important;
+  }
+  .h-64 {
+    height: 32px !important;
+  }
+  .descriptor__description {
+    max-width: unset !important;
+  }
+  .navbar-link {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .navbar {
+    position: absolute !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    max-width: unset !important;
+    height: unset !important;
+    z-index: 1000 !important;
+    flex-direction: row !important;
+    padding: $spacer * 2;
+  }
+  .navbar-section {
+    flex-direction: row !important;
+  }
+  .layout-wrapper {
+    gap: 0 !important;
+  }
+  .layout-wrapper__content {
+    padding-bottom: 7vh;
+  }
+  .home-container {
+    flex-direction: column !important;
+    flex-grow: 1;
+  }
+  .family-forms {
+    flex-direction: column;
+  }
+  .list-container{
+    flex-direction: column;
+    align-items: unset;
+    justify-content: unset;
+  }
+
+  .auth-page{
+    flex-direction: column !important;
+    padding: $spacer * 4 !important;
+  }
+
+}

@@ -15,7 +15,7 @@ export class TranscribedListComponent {
   public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
   public listName = '';
   public activeSegment:'personal' | 'family';
-  public showList: boolean = false;
+  public showList = false;
 
   protected readonly faHome = faHome;
   protected readonly faUser = faUser;

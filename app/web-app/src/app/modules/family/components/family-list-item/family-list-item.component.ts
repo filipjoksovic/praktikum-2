@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { faCheck, faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ListItemDTOV2 } from '../../../../models/IShoppingListsResponseDTO';
-import { ShoppingListStoreService } from '../../../../services/stores/shopping-list-store.service';
-import { ShoppingListService } from '../../../../services/shopping-list.service';
-import { tap } from 'rxjs';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash';
+import {faCheck, faPen, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {ListItemDTOV2} from '../../../../models/IShoppingListsResponseDTO';
+import {ShoppingListStoreService} from '../../../../services/stores/shopping-list-store.service';
+import {ShoppingListService} from '../../../../services/shopping-list.service';
+import {mergeMap, tap} from 'rxjs';
 
 @Component({
   selector: 'app-family-list-item',
@@ -18,6 +18,8 @@ export class FamilyListItemComponent implements OnInit {
   public familyId: string;
   @Input()
   public listId: string;
+  @Output()
+  public itemDeleted = new EventEmitter<ListItemDTOV2>();
   public isEdit = false;
 
   protected readonly faTrash = faTrash;
@@ -26,7 +28,8 @@ export class FamilyListItemComponent implements OnInit {
   protected readonly faPen = faPen;
   private backupName: string;
 
-  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService) {}
+  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService) {
+  }
 
   ngOnInit() {
     this.backupName = this.item.name;
@@ -39,7 +42,9 @@ export class FamilyListItemComponent implements OnInit {
   deleteItem() {
     this.shoppingListService
       .deleteFamilyItem(this.listId, this.item.id)
-      .pipe(tap((shoppingList) => this.shoppingListStore.setFamilyList(shoppingList)))
+      .pipe(
+        tap(shoppingList => this.itemDeleted.emit(this.item))
+      )
       .subscribe();
   }
 
@@ -60,7 +65,7 @@ export class FamilyListItemComponent implements OnInit {
       return;
     }
     this.shoppingListService
-      .updateItem(this.listId, this.item.id, { id: this.item.id, name: this.item.name, checked: this.item.checked })
+      .updateItem(this.listId, this.item.id, {id: this.item.id, name: this.item.name, checked: this.item.checked})
       .subscribe((shoppingList) => {
         this.backupName = this.item.name;
       });
