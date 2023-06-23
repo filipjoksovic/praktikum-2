@@ -12,6 +12,7 @@ import {faUser} from "@fortawesome/free-regular-svg-icons/faUser";
   styleUrls: ['./transcribed-list.component.scss'],
 })
 export class TranscribedListComponent {
+  
   public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
   public listName = '';
   public activeSegment:'personal' | 'family';

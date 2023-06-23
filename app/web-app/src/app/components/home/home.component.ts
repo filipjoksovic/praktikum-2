@@ -20,8 +20,9 @@ import {faKeyboard, faTimes} from "@fortawesome/free-solid-svg-icons";
 export class HomeComponent implements OnDestroy {
   ngUnsubscribe$ = new AsyncSubject<void>();
 
-  public activeSegment: "voice" | "manual" = "voice";
+  public activeSegment: "loading" | "voice" | "manual"  = "voice";
   public transcript$ = this.transcriptStore.transcript$.pipe(takeUntil(this.ngUnsubscribe$)); // pogledaj ovo
+  public isLoading: boolean = false;
   public items: string[] = [];
   public recording = false;
   public listName = 'New List';
@@ -60,6 +61,7 @@ export class HomeComponent implements OnDestroy {
       this.voiceService.startRecording();
       this.transcriptStore.startRecording(true);
     } else {
+      this.setActiveSegment("loading")
       this.transcriptStore.stopRecording();
       this.voiceService
         .stopRecording()
@@ -101,7 +103,7 @@ export class HomeComponent implements OnDestroy {
 
   }
 
-  setActiveSegment(mode: "voice" | "manual") {
+  setActiveSegment(mode: "voice" | "manual" | "loading") {
     this.activeSegment = mode;
 
   }

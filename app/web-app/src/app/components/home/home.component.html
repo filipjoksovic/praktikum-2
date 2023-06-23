@@ -1,6 +1,11 @@
 <app-page-descriptor-pill [title]="descriptorTitle" [description]="descriptorDescription"></app-page-descriptor-pill>
 
-<div class="d-flex flex-column recorder ">
+<div class="d-flex flex-column recorder">
+  <ng-container *ngIf="activeSegment === 'loading'">
+    <div class="spinner"></div>
+    <h3>Processing ... </h3>
+  </ng-container>
+
   <ng-container *ngIf="activeSegment === 'voice'">
     <button class="record-button record-button__large record-button__center" (click)="startStopRecording()">
       <button class="record-button record-button__medium">
@@ -9,39 +14,34 @@
       </button>
     </button>
 
+    <ng-container *ngIf="recorderStopwatch$  | async as recorderStopwatch ">
 
-    <ng-container *ngIf="recorderStopwatch$ | async as recorderStopwatch">
-
-      <div class="recorder-data" *ngIf="recording">
+      <div class="recorder-data mt-4" *ngIf="recording">
         <div class="recorder-indicator">
           <p class="recorder-indicator__value">
             {{recorderStopwatch}}
           </p>
         </div>
-        <button class="btn btn__danger round w-64 h-64"
-                (click)="startStopRecording()">
-          <fa-icon [icon]="faStop"></fa-icon>
+          <button class="btn btn__danger round w-64 h-64" (click)="startStopRecording()">
+            <fa-icon [icon]="faStop"></fa-icon>
 
-        </button>
-        <button class="btn btn__danger round w-64 h-64"
-                (click)="cancelRecording()">
-          <fa-icon [icon]="faTimes"></fa-icon>
-        </button>
+          </button>
+          <button class="btn btn__danger round w-64 h-64" (click)="cancelRecording()">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </button>
       </div>
     </ng-container>
   </ng-container>
 
-  <div class="container mt-4" *ngIf="!recording && activeSegment !== 'manual'">
+  <div class="container mt-4" *ngIf="!recording && (activeSegment !== 'manual' && activeSegment !=='loading') ">
     <div class="segmented-buttons">
-      <button class="segmented-buttons__button segmented-buttons__button__first"
-              (click)="setActiveSegment('voice')"
-              [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'voice'}">
+      <button class="segmented-buttons__button segmented-buttons__button__first" (click)="setActiveSegment('voice')"
+        [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'voice'}">
         <fa-icon [icon]="faRecordVinyl"></fa-icon>
         Voice
       </button>
-      <button class="segmented-buttons__button segmented-buttons__button__last"
-              (click)="setActiveSegment('manual')"
-              [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'manual'}">
+      <button class="segmented-buttons__button segmented-buttons__button__last" (click)="setActiveSegment('manual')"
+        [ngClass]="{'segmented-buttons__button__active' : activeSegment === 'manual'}">
         <fa-icon [icon]="faKeyboard"></fa-icon>
         Typing
       </button>
@@ -51,8 +51,11 @@
   <div class="home-container d-flex flex-row gap-4 w-100">
     <ng-container *ngIf="activeSegment==='manual'">
       <div class="transcript-section flex-1 flex-grow-1">
+        <div>
+          <h2 class="ml-2"> Your text: </h2>
+        </div>
         <textarea class="form-control form-control__border-dark flex-grow-1" rows="15" cols="60"
-                  [value]="transcript$ | async" (change)="setTranscript($event)"></textarea>
+          [value]="transcript$ | async" (change)="setTranscript($event)"></textarea>
 
         <div class="transcript-section__actions">
           <button (click)="cancelTranscript()" class="btn btn__primary btn__primary__outline ">Cancel</button>
@@ -65,4 +68,3 @@
 
   </div>
 </div>
-

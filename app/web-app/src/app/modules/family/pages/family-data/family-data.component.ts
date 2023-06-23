@@ -27,6 +27,9 @@ export class FamilyDataComponent {
     tap((family) => {
       this.familyStore.setFamily(family);
       this.familyForm.setValue({ familyName: family.name, inviteCode: family.inviteCode });
+      this.familyOwner = family.owner.id;
+      this.familyId = family.id;
+      this.isOwner = this.familyOwner === this.user.id;
     }),
     mergeMap((family) => {
       this.familyStore.setFamily(family);
@@ -67,13 +70,7 @@ export class FamilyDataComponent {
   ) {}
 
   ngOnInit(): void {
-    this.familyService.getFamily().subscribe(data =>{
-      this.familyOwner = data.owner.id 
-      this.familyId = data.id
-      if (this.familyOwner == this.user.id) {
-        this.isOwner = true;
-      }
-    })
+
   }
 
   public addEmail() {
