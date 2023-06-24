@@ -38,22 +38,21 @@ export class FamilyListItemComponent implements OnInit {
 
 
   searchPhotos() {
-    // this.shoppingListService.getImageForItem(this.item.name).subscribe(
-    //   (data) => {
-    //     console.log(data[0].src.tiny);
-    //     this.item.photoSrc = data[0].src.tiny
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   }
-    // );
-
-    this.item.photoSrc = 'https://picsum.photos/200/300'
-
+    // TODO implement some kind of a check for items are already loaded
+    // or maybe store the images because api is being called multiple times
+    // needs to be refactored in the future
+    // this is just a prototype
+    this.shoppingListService.getImageForItem(this.item.name).subscribe(
+      (data) => {
+        this.item.photoSrc = data[0].src.tiny
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    // this.item.photoSrc = 'https://picsum.photos/200/300'
   }
   
-
-
   enableEdit() {
     this.isEdit = true;
   }
