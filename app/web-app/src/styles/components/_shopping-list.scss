@@ -52,6 +52,7 @@
     &:hover {
       filter: brightness(90%);
     }
+
   }
 
   & :not(:last-child) {
@@ -124,11 +125,17 @@ app-shopping-lists {
       font-size: x-large;
 
     }
+ 
+    &__image {
+      border-radius: 50%;
+      height: 6vw;
+      width: 6vw;
+    }
 
     &__actions {
       display: flex;
       align-items: center;
-      jujsify-content: center;
+      justify-content: center;
       gap: $spacer * 2;
       padding-top: $spacer*3;
       border-top: 1px solid $light-gray;

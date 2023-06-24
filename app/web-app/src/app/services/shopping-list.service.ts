@@ -30,11 +30,15 @@ export class ShoppingListService {
   }
 
   processText(data: string) {
-    console.log('Process Text Called');
+    if (data) {
+      console.log('Process Text Called');
     return this.http.post(`uploads/text`, {text: data}).pipe(
       map((response: { summary: string[] }) => response.summary),
-      tap((items) => this.transcriptStore.setTranscribedList(items)),
-    );
+      tap((items) => this.transcriptStore.setTranscribedList(items)),);
+    }
+    else {
+      return [];
+    }
   }
 
   saveShoppingList(list: { name: string, items: string[] }, activeSegment: 'personal' | 'family') {
@@ -92,6 +96,10 @@ export class ShoppingListService {
 
   getFamilyShoppingList(familyId: string) {
     return this.http.get<ShoppingListDTOV2>(`shoppingLists/family/${familyId}`);
+  }
+
+  getImageForItem(itemName: string) {
+    return this.http.get<any>(`pexels/search/${itemName}`);
   }
 
   deleteFamilyItem(listId: string, id: string) {

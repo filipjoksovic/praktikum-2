@@ -12,6 +12,9 @@
   <p>{{item.addedBy.name || "No name"}} {{item.addedBy.surname || "No name"}}</p>
   <p>{{item.addedBy.email || "No email"}}</p>
 
+  <img [src]="item.photoSrc" class="family-shopping-list__item__image">
+
+
   <div class="family-shopping-list__item__actions">
     <button class="family-shopping-list__item__actions__action primary" title="Edit" (click)="enableEdit()">
       <fa-icon [icon]="faPen"></fa-icon>
@@ -28,6 +31,6 @@
             (click)="uncheckItem()">
       <fa-icon [icon]="faTimes"></fa-icon>
     </button>
-
+    
   </div>
 </div>

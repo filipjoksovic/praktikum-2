@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environment';
+import { environment } from 'environment';
 
 @Injectable()
 export class ApiUrlInterceptor implements HttpInterceptor {
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(request.clone({ url: `${environment.apiBaseUrl}/${request.url}` }));
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (req.url.includes('api.pexels.com')) {
+      return next.handle(req);
+    }
+    const modifiedReq = req.clone({ url: `${environment.apiBaseUrl}/${req.url}` });
+    return next.handle(modifiedReq);
   }
 }

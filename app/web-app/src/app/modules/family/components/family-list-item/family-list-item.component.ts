@@ -33,7 +33,26 @@ export class FamilyListItemComponent implements OnInit {
 
   ngOnInit() {
     this.backupName = this.item.name;
+    this.searchPhotos();
   }
+
+
+  searchPhotos() {
+    // this.shoppingListService.getImageForItem(this.item.name).subscribe(
+    //   (data) => {
+    //     console.log(data[0].src.tiny);
+    //     this.item.photoSrc = data[0].src.tiny
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
+
+    this.item.photoSrc = 'https://picsum.photos/200/300'
+
+  }
+  
+
 
   enableEdit() {
     this.isEdit = true;
