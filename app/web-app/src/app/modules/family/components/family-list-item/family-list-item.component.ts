@@ -5,6 +5,7 @@ import {ListItemDTOV2} from '../../../../models/IShoppingListsResponseDTO';
 import {ShoppingListStoreService} from '../../../../services/stores/shopping-list-store.service';
 import {ShoppingListService} from '../../../../services/shopping-list.service';
 import {mergeMap, tap} from 'rxjs';
+import { ImageCacheService } from 'src/app/services/image-cache-service.service';
 
 @Component({
   selector: 'app-family-list-item',
@@ -27,8 +28,10 @@ export class FamilyListItemComponent implements OnInit {
   protected readonly faCheck = faCheck;
   protected readonly faPen = faPen;
   private backupName: string;
+  private imageCache = {};
 
-  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService) {
+
+  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService, private imageCacheService: ImageCacheService) {
   }
 
   ngOnInit() {
@@ -36,23 +39,23 @@ export class FamilyListItemComponent implements OnInit {
     this.searchPhotos();
   }
 
-
   searchPhotos() {
-    // TODO implement some kind of a check for items are already loaded
-    // or maybe store the images because api is being called multiple times
-    // needs to be refactored in the future
-    // this is just a prototype
-    this.shoppingListService.getImageForItem(this.item.name).subscribe(
-      (data) => {
-        this.item.photoSrc = data[0].src.tiny
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    // this.item.photoSrc = 'https://picsum.photos/200/300'
+    if (this.item.name in this.imageCacheService.imageCache) {
+      this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
+    } else {
+      console.log("Calling first time ..")
+      this.imageCacheService.getImageForItem(this.item.name).subscribe(
+        (imageSrc) => {
+          this.item.photoSrc = imageSrc;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
   }
   
+
   enableEdit() {
     this.isEdit = true;
   }
