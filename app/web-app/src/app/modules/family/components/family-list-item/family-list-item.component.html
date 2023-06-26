@@ -1,16 +1,25 @@
 <div class="family-shopping-list__item">
-  <p class="family-shopping-list__item__name" [ngClass]="{'text-through':item.checked}">
 
-    <ng-container *ngIf="!isEdit">
-      {{item.name}}
-    </ng-container>
-    <ng-container *ngIf="isEdit">
-      <input class="form-control" [(ngModel)]="item.name" autofocus (blur)="editName()">
-    </ng-container>
+  <div class="family-shopping-list__item__left">
+    <img [src]="item.photoSrc" class="family-shopping-list__item__left__image">
+    <div class="family-shopping-list__item__left__content">
+      <p class="family-shopping-list__item__left__content__name" [ngClass]="{'text-through':item.checked}">
 
-  </p>
-  <p>{{item.addedBy.name || "No name"}} {{item.addedBy.surname || "No name"}}</p>
-  <p>{{item.addedBy.email || "No email"}}</p>
+        <ng-container *ngIf="!isEdit">
+          {{ item.name.toUpperCase() }}
+        </ng-container>
+
+        
+        <ng-container *ngIf="isEdit">
+          <input class="form-control" [(ngModel)]="item.name" autofocus (blur)="editName()">
+        </ng-container>
+
+      </p>
+      <!-- <p>{{item.addedBy.name || "No name"}} {{item.addedBy.surname || "No name"}}</p> -->
+      <p class="mt-2"> Added by:</p>
+      <p>{{item.addedBy.email || "No email"}}</p>
+    </div>
+  </div>
 
   <div class="family-shopping-list__item__actions">
     <button class="family-shopping-list__item__actions__action primary" title="Edit" (click)="enableEdit()">
@@ -21,11 +30,11 @@
 
     </button>
     <button class="family-shopping-list__item__actions__action success" *ngIf="!item.checked" title="Check off"
-            (click)="checkOffItem()">
+      (click)="checkOffItem()">
       <fa-icon [icon]="faCheck"></fa-icon>
     </button>
     <button class="family-shopping-list__item__actions__action danger" *ngIf="item.checked" title="Uncheck"
-            (click)="uncheckItem()">
+      (click)="uncheckItem()">
       <fa-icon [icon]="faTimes"></fa-icon>
     </button>
 

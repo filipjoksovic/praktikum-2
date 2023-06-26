@@ -94,6 +94,7 @@ export class HomeComponent implements OnDestroy {
       )
       .subscribe();
     this.transcriptStore.setShowItems(true);
+    
   }
 
   cancelTranscript() {
@@ -118,5 +119,8 @@ export class HomeComponent implements OnDestroy {
 
   setTranscript(event: any) {
     this.transcriptStore.setTranscript(event.target.value);
+
   }
+
+
 }

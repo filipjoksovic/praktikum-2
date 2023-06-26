@@ -5,6 +5,7 @@ import {ListItemDTOV2} from '../../../../models/IShoppingListsResponseDTO';
 import {ShoppingListStoreService} from '../../../../services/stores/shopping-list-store.service';
 import {ShoppingListService} from '../../../../services/shopping-list.service';
 import {mergeMap, tap} from 'rxjs';
+import { ImageCacheService } from 'src/app/services/image-cache-service.service';
 
 @Component({
   selector: 'app-family-list-item',
@@ -27,13 +28,33 @@ export class FamilyListItemComponent implements OnInit {
   protected readonly faCheck = faCheck;
   protected readonly faPen = faPen;
   private backupName: string;
+  private imageCache = {};
 
-  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService) {
+
+  constructor(private shoppingListStore: ShoppingListStoreService, private shoppingListService: ShoppingListService, private imageCacheService: ImageCacheService) {
   }
 
   ngOnInit() {
     this.backupName = this.item.name;
+    this.searchPhotos();
   }
+
+  searchPhotos() {
+    if (this.item.name in this.imageCacheService.imageCache) {
+      this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
+    } else {
+      console.log("Calling first time ..")
+      this.imageCacheService.getImageForItem(this.item.name).subscribe(
+        (imageSrc) => {
+          this.item.photoSrc = imageSrc;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }
+  
 
   enableEdit() {
     this.isEdit = true;

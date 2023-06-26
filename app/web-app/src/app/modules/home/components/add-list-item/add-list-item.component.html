@@ -4,8 +4,7 @@
     <input type="text" class="form-control form-control__block bg-white border__dark transcribed-item__input"
            [(ngModel)]="item">
   </div>
-  <button class="btn btn__success round w-64 h-64" (click)="addItem()">
+  <button class="btn btn__success round w-64 h-64" (click)="addItem()" [disabled]="item === ''">
     <fa-icon [icon]="faPlus"></fa-icon>
   </button>
-
 </div>

@@ -15,6 +15,9 @@ export class ShoppingListStoreService {
   private readonly _selectedItem$: BehaviorSubject<IListItem | null> = new BehaviorSubject(null);
   public readonly selectedItem$ = this._selectedItem$.asObservable();
 
+  private readonly _isFirstTime$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public readonly isFirstTime$ = this._isFirstTime$.asObservable();
+
   private readonly _familyList$: BehaviorSubject<ShoppingListDTOV2 | null> =
     new BehaviorSubject<ShoppingListDTOV2 | null>(null);
   public readonly familyList$ = this._familyList$.asObservable();

@@ -39,6 +39,7 @@ export interface ListItemDTOV2 {
   name: string;
   checked: boolean;
   addedBy: BasicUserDataDTO;
+  photoSrc?: string;
 }
 
 export interface BasicUserDataDTO {
