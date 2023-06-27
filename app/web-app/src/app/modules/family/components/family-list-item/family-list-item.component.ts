@@ -52,21 +52,21 @@ export class FamilyListItemComponent implements OnInit {
   }
 
   searchPhotos() {
-    // if (this.item.name in this.imageCacheService.imageCache) {
-    //   this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
-    // } else {
-    //   console.log("Calling for the first time..");
-    //   this.imageCacheService.getImageForItem(this.item.name).subscribe({
-    //     next: (imageSrc) => {
-    //       this.item.photoSrc = imageSrc;
-    //     },
-    //     error: (error) => {
-    //       console.log(error);
-    //     }
-    //   });
-    // }
-    this.item.photoSrc = 'https://picsum.photos/200';
-  }
+    if (this.item.name in this.imageCacheService.imageCache) {
+      this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
+    } else {
+      console.log("Calling for the first time..");
+      this.imageCacheService.getImageForItem(this.item.name).subscribe({
+        next: (imageSrc) => {
+          this.item.photoSrc = imageSrc;
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
+    }
+    // this.item.photoSrc = 'https://picsum.photos/200'; use this for testing so you dont make pexels api mad :)
+  } 
   
   enableEdit() {
     this.isEdit = true;
