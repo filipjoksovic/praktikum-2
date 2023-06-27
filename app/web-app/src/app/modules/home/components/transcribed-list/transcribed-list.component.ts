@@ -3,8 +3,8 @@ import { TranscriptStoreService } from '../../../../services/stores/transcript-s
 import { mergeMap, pipe, tap } from 'rxjs';
 import { ShoppingListService } from '../../../../services/shopping-list.service';
 import { Router } from '@angular/router';
-import {faHome} from "@fortawesome/free-solid-svg-icons/faHome";
-import {faUser} from "@fortawesome/free-regular-svg-icons/faUser";
+import { faHome } from "@fortawesome/free-solid-svg-icons/faHome";
+import { faUser } from "@fortawesome/free-regular-svg-icons/faUser";
 
 @Component({
   selector: 'app-transcribed-list',
@@ -12,10 +12,10 @@ import {faUser} from "@fortawesome/free-regular-svg-icons/faUser";
   styleUrls: ['./transcribed-list.component.scss'],
 })
 export class TranscribedListComponent {
-  
+
   public items$ = this.transcriptStore.transcribedList$.pipe(tap((items) => console.log(items)));
   public listName = '';
-  public activeSegment:'personal' | 'family';
+  public activeSegment: 'personal' | 'family' = 'family';
   public showList = false;
 
   protected readonly faHome = faHome;
@@ -26,10 +26,10 @@ export class TranscribedListComponent {
     private transcriptStore: TranscriptStoreService,
     private shoppingListService: ShoppingListService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.transcriptStore.showItems$.subscribe(data =>{
+    this.transcriptStore.showItems$.subscribe(data => {
       this.showList = data;
     })
   }
@@ -38,21 +38,26 @@ export class TranscribedListComponent {
     this.transcriptStore.transcribedList$
       .pipe(
         mergeMap((list) =>
-
           this.shoppingListService.saveShoppingList({
             name: this.listName,
             items: list,
-          },this.activeSegment),
+          }, this.activeSegment),
         ),
       )
-      .subscribe(() => this.router.navigate(['/lists']));
+      .subscribe(() => {
+        if (this.activeSegment === 'family') {
+          this.router.navigate(['/family/list']);
+        } else if (this.activeSegment === 'personal') {
+          this.router.navigate(['/lists']);
+        }
+      });
   }
-
+  
   onItemRemove(item: string) {
     this.transcriptStore.removeItem(item);
   }
 
-  setActiveSegment(segment:'family' | 'personal') {
+  setActiveSegment(segment: 'family' | 'personal') {
     this.activeSegment = segment;
   }
 
