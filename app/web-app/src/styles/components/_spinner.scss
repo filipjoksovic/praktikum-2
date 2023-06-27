@@ -6,10 +6,15 @@
   position: relative;
   height: 16rem;
   width: 16rem;
+
+  &__small {
+    height: 7.5rem;
+    width: 7.5rem;
+  }
 }
 
 @keyframes spin {
   to {
-      transform: rotate(360deg);
-    }
+    transform: rotate(360deg);
+  }
 }

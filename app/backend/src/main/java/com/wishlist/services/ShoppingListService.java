@@ -241,6 +241,23 @@ public class ShoppingListService implements IShoppingListService {
     }
 
     @Override
+    public ShoppingList uncheckItem(String listId, String itemId) throws ShoppingListDoesNotExistException {
+        Optional<ShoppingList> maybeList = shoppingListRepository.findById(listId);
+        if (maybeList.isEmpty()) {
+            throw new ShoppingListDoesNotExistException();
+        }
+        ShoppingList fullList = maybeList.get();
+        //TODO refactor with mongo logic;
+        for (ShoppingItem item : fullList.getItemList()) {
+            if (item.getId().equals(itemId)) {
+                item.setChecked(false);
+            }
+        }
+        shoppingListRepository.save(fullList);
+        return fullList;
+    }
+
+    @Override
     public boolean hasList(String familyId) {
         List<ShoppingList> lists = shoppingListRepository.findByFamilyId(familyId);
         if (lists.size() == 0) {

@@ -42,6 +42,8 @@ public interface IShoppingListService {
     ShoppingList completeWholeList(String id) throws ShoppingListDoesNotExistException;
 
     ShoppingList completeListItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
+    ShoppingList uncheckItem(String listId, String itemId) throws ShoppingListDoesNotExistException;
+
 
     boolean hasList(String familyId);
 

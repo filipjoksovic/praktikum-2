@@ -115,6 +115,12 @@ export class ShoppingListService {
       .pipe(tap(() => this.toaster.success('Success!', 'Item successfully checked off family list')));
   }
 
+  uncheckFamilyItem(listId: string, itemId: string) {
+    return this.http
+      .put<ShoppingListDTOV2>(`shoppingLists/${listId}/${itemId}/uncheck`, {})
+      .pipe(tap(() => this.toaster.success('Success!', 'Item successfully unchecked')));
+  }
+
   updateItem(listId: string, itemId: string, shoppingItem: { id: string; name: string; checked: boolean }) {
     console.log(shoppingItem);
     return this.http.put<ListItemDTOV2>(`shoppingLists/${listId}/${itemId}`, { ...shoppingItem }).pipe(

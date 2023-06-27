@@ -71,6 +71,16 @@ public class ShoppingListController {
         }
     }
 
+    @PutMapping("/{listId}/{itemId}/uncheck")
+    public ResponseEntity uncheckItem(@PathVariable String listId, @PathVariable String itemId, @RequestHeader("Authorization") String jwt) {
+        if (jwtValidator.validateListItem(jwt, itemId)) {
+            log.info("PUT completeListItem for lid {} iid {}", listId, itemId);
+            return new ResponseEntity(new ShoppingListResponseDTO(shoppingListService.completeListItem(listId, itemId)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new ApiError("you do not have access to this item"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity getForUser(@PathVariable String userId, @RequestHeader("Authorization") String jwt) {
         if (jwtValidator.validateUser(jwt, userId)) {

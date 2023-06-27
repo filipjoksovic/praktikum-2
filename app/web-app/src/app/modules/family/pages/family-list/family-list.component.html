@@ -2,15 +2,20 @@
                           description="Here you can see the shopping list of your family, as well add, edit and remove certain items"></app-page-descriptor-pill>
 
 <ng-container *ngIf="familyList$ | async as familyList; else noListTemplate">
-  <div class="family-shopping-list">
+  <div class="family-shopping-list" *ngIf="familyList.items?.length > 0; else noItemsTemplate">
     <ng-container *ngFor="let item of familyList.items">
       <app-family-list-item [item]="item" [familyId]="familyList.familyId"
                             [listId]="familyList.id" (itemDeleted)="handleDelete(item)"></app-family-list-item>
     </ng-container>
-
   </div>
-
 </ng-container>
+
+<ng-template #noItemsTemplate>
+  <div class="d-flex flex-column recorder" style="height: 100%;">
+    <h1>There are no items in the list</h1>
+  </div>
+</ng-template>
+
 
 <ng-template #noListTemplate>
   <h1>Currently there is no list for this family, you can go to the recorder and add it from there</h1>

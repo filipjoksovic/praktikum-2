@@ -61,7 +61,9 @@ export class ShoppingListStoreService {
     this._shoppingLists$.next(this._shoppingLists$.value.filter((l) => l.id !== id));
   }
 
-  setFamilyList(shoppingList: ShoppingListDTOV2) {
-    this._familyList$.next(shoppingList);
+  setFamilyList(list: ShoppingListDTOV2) {
+    console.log('Setting family list', list);
+    this._familyList$.next(list);
   }
+  
 }
