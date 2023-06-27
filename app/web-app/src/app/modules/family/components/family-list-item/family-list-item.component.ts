@@ -94,8 +94,10 @@ export class FamilyListItemComponent implements OnInit {
   }
 
   uncheckItem() {
-    this.shoppingListService.checkOffFamilyItem(this.listId, this.item.id);
-  }
+    this.shoppingListService
+    .uncheckFamilyItem(this.listId, this.item.id)
+    .pipe(tap(() => (this.item.checked = false)))
+    .subscribe();  }
 
   editName() {
     this.isEdit = false;
