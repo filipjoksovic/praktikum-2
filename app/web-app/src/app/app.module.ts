@@ -16,6 +16,8 @@ import { httpInterceptorProviders } from './interceptors';
 import { ToasterComponent } from './shared/components/toaster/toaster.component';
 import { ToastMessageComponent } from './shared/components/toast-message/toast-message.component';
 import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, ToasterComponent, ToastMessageComponent, ContextMenuComponent],
@@ -28,7 +30,8 @@ import { ContextMenuComponent } from './shared/components/context-menu/context-m
     PageDescriptorPillComponent,
     NavbarComponent,
     HomeModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    BrowserAnimationsModule
   ],
   providers: [ShoppingListService, VoiceService, httpInterceptorProviders],
   bootstrap: [AppComponent],

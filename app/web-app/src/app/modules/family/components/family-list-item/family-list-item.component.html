@@ -1,5 +1,5 @@
-<div class="family-shopping-list__item">
-
+<div class="family-shopping-list__item" *ngIf="!isDeleting" [@fade]>
+  
   <div class="family-shopping-list__item__left">
     <img [src]="item.photoSrc" class="family-shopping-list__item__left__image">
     <div class="family-shopping-list__item__left__content">

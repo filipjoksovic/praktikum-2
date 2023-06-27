@@ -6,12 +6,23 @@ import {ShoppingListStoreService} from '../../../../services/stores/shopping-lis
 import {ShoppingListService} from '../../../../services/shopping-list.service';
 import {mergeMap, tap} from 'rxjs';
 import { ImageCacheService } from 'src/app/services/image-cache-service.service';
+import { trigger, transition, animate, style } from '@angular/animations';
+
 
 @Component({
   selector: 'app-family-list-item',
   templateUrl: './family-list-item.component.html',
   styleUrls: ['./family-list-item.component.scss'],
+  animations: [
+    trigger('fade', [
+      transition(':leave', [
+        animate('0.5s ease-in-out', style({ opacity: 0, transform: 'scale(0.5)' }))
+      ])
+    ])
+  ]
+  
 })
+
 export class FamilyListItemComponent implements OnInit {
   @Input()
   public item: ListItemDTOV2;
@@ -28,6 +39,7 @@ export class FamilyListItemComponent implements OnInit {
   protected readonly faCheck = faCheck;
   protected readonly faPen = faPen;
   private backupName: string;
+  public isDeleting: boolean;
   private imageCache = {};
 
 
@@ -40,22 +52,22 @@ export class FamilyListItemComponent implements OnInit {
   }
 
   searchPhotos() {
-    if (this.item.name in this.imageCacheService.imageCache) {
-      this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
-    } else {
-      console.log("Calling first time ..")
-      this.imageCacheService.getImageForItem(this.item.name).subscribe(
-        (imageSrc) => {
-          this.item.photoSrc = imageSrc;
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }
+    // if (this.item.name in this.imageCacheService.imageCache) {
+    //   this.item.photoSrc = this.imageCacheService.imageCache[this.item.name];
+    // } else {
+    //   console.log("Calling for the first time..");
+    //   this.imageCacheService.getImageForItem(this.item.name).subscribe({
+    //     next: (imageSrc) => {
+    //       this.item.photoSrc = imageSrc;
+    //     },
+    //     error: (error) => {
+    //       console.log(error);
+    //     }
+    //   });
+    // }
+    this.item.photoSrc = 'https://picsum.photos/200';
   }
   
-
   enableEdit() {
     this.isEdit = true;
   }
@@ -63,11 +75,16 @@ export class FamilyListItemComponent implements OnInit {
   deleteItem() {
     this.shoppingListService
       .deleteFamilyItem(this.listId, this.item.id)
-      .pipe(
-        tap(shoppingList => this.itemDeleted.emit(this.item))
-      )
-      .subscribe();
+      .subscribe(() => {
+        // start animation
+        this.isDeleting = true;
+  
+        // delay emitting delete event until after animation has time to complete
+        setTimeout(() => this.itemDeleted.emit(this.item), 500);
+      });
   }
+  
+  
 
   checkOffItem() {
     this.shoppingListService
