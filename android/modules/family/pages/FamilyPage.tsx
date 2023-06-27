@@ -15,6 +15,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {FamilyDetails} from './FamilyDetails';
 import {FamilyList} from './FamilyList';
+import {localization} from '../../../resources/localization';
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -86,27 +87,30 @@ export const FamilyPage = () => {
       <Stack.Screen
         name="Details"
         component={FamilyDetails}
-        options={{headerShown: false, title: 'Family details'}}
+        options={{
+          headerShown: false,
+          title: localization.GLOBAL.FAMILY_DETAILS_LABEL,
+        }}
       />
       <Stack.Screen
         name="Edit"
         component={EditFamily}
-        options={{title: 'Edit family'}}
+        options={{title: localization.GLOBAL.EDIT_FAMILY_LABEL}}
       />
       <Stack.Screen
         name="JoinRequests"
         component={FamilyJoinRequests}
-        options={{title: 'Join requests'}}
+        options={{title: localization.FAMILY.JOIN_REQUESTS_LABEL}}
       />
       <Stack.Screen
         name="Members"
         component={FamilyMembers}
-        options={{title: 'Family Members'}}
+        options={{title: localization.FAMILY.MEMBERS_LABEL}}
       />
       <Stack.Screen
         name="FamilyList"
         component={FamilyList}
-        options={{title: 'Shopping list'}}
+        options={{title: localization.FAMILY.SHOPPING_LIST_LABEL}}
       />
     </Stack.Navigator>
   );

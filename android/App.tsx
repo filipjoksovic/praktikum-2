@@ -36,6 +36,7 @@ import {
 } from './resources/styles/colorSchemes';
 import {enGB, registerTranslation} from 'react-native-paper-dates';
 import {LoaderStore} from './modules/shared/state/LoaderStore';
+import {localization} from './resources/localization';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
@@ -57,7 +58,7 @@ export const TabNavigation = () => {
               <Icon name={'plus'} color={theme.colors.tertiary} size={20} />
             );
           },
-          tabBarLabel: 'New list',
+          tabBarLabel: localization.GLOBAL.NEW_LIST_LABEL,
         }}
       />
       <Tab.Screen
@@ -69,7 +70,7 @@ export const TabNavigation = () => {
               <Icon name={'list-ul'} color={theme.colors.tertiary} size={20} />
             );
           },
-          tabBarLabel: 'Shopping lists',
+          tabBarLabel: localization.GLOBAL.SHOPPING_LISTS,
         }}
       />
 
@@ -86,7 +87,7 @@ export const TabNavigation = () => {
               />
             );
           },
-          tabBarLabel: 'Family',
+          tabBarLabel: localization.GLOBAL.FAMILY_LABEL,
         }}
       />
       <Tab.Screen
@@ -98,7 +99,7 @@ export const TabNavigation = () => {
               <Icon name={'cog'} color={theme.colors.tertiary} size={20} />
             );
           },
-          tabBarLabel: 'Settings',
+          tabBarLabel: localization.GLOBAL.SETTINGS_LABEL,
         }}
       />
     </Tab.Navigator>
@@ -124,6 +125,7 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
   const SnackbarState = SnackBarStore.useState();
   const loaderState = LoaderStore.useState();
+  localization.setLanguage('si');
 
   const stylesheet = StyleSheet.create({
     container: {

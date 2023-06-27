@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button, Card, Text} from 'react-native-paper';
+import {localization} from '../../../resources/localization';
 
 export interface JoinRequestDTO {
   id: string;
@@ -26,13 +27,19 @@ export const FamilyJoinRequest = (props: IFamilyJoinRequestProps) => {
     <Card style={{paddingHorizontal: 15, paddingVertical: 10, marginTop: 10}}>
       <Text>
         {request.name ||
-          'No first name' + ' ' + (request.surname || 'No last name')}
+          localization.USER.NO_FIRST_NAME_LABEL +
+            ' ' +
+            (request.surname || localization.USER.NO_LAST_NAME_LABEL)}
       </Text>
       <Text>{request.email}</Text>
       <Text>{new Date(request.createdAt.split('[')[0]).toDateString()}</Text>
       <Card.Actions>
-        <Button onPress={() => onApprove(request.id)}>Approve</Button>
-        <Button onPress={() => onDeny(request.id)}>Deny</Button>
+        <Button onPress={() => onApprove(request.id)}>
+          {localization.GLOBAL.APPROVE_LABEL}
+        </Button>
+        <Button onPress={() => onDeny(request.id)}>
+          {localization.GLOBAL.DENY_LABEL}
+        </Button>
       </Card.Actions>
     </Card>
   );

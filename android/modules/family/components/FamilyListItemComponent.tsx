@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import React, {useState} from 'react';
 import {ListItemDTOV2} from '../../../models/IShoppingListsResponseDTO';
 import {ShoppingListService} from '../../../services/ShoppingListService';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyListItemComponentProps {
   item: ListItemDTOV2;
@@ -42,7 +43,7 @@ export const FamilyListItemComponent = (
                     {item.name}
                   </Text>
                   <Text variant="bodySmall">
-                    Added by:
+                    {localization.SHOPPING_LIST.ADDED_BY_LABEL}
                     {item.addedBy.name && item.addedBy.surname
                       ? ' ' + item.addedBy.name + ' ' + item.addedBy.surname
                       : ' ' + item.addedBy.email}

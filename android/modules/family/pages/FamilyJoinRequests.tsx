@@ -8,6 +8,7 @@ import {
   JoinRequestDTO,
 } from '../components/FamilyJoinRequest';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyJoinRequests {}
 
@@ -57,7 +58,9 @@ export const FamilyJoinRequests = (
           icon={'arrow-left'}
           onPress={() => navigation.goBack()}
         />
-        <Text variant={'headlineSmall'}>Join requests</Text>
+        <Text variant={'headlineSmall'}>
+          {localization.FAMILY.JOIN_REQUESTS_LABEL}
+        </Text>
       </Surface>
       <View>
         {requests && requests.length > 0 ? (
@@ -78,7 +81,7 @@ export const FamilyJoinRequests = (
               justifyContent: 'center',
             }}>
             <Text variant={'displayLarge'}>¯\_(ツ)_/¯</Text>
-            <Text>No join requests for family</Text>
+            <Text>{localization.FAMILY.NO_JOIN_REQUESTS_LABEL}</Text>
           </View>
         )}
       </View>

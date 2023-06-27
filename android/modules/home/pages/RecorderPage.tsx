@@ -1,16 +1,15 @@
+import React from "react";
 import {Animated, View} from 'react-native';
 import {Button, IconButton, Surface, Text, useTheme} from 'react-native-paper';
 import {BigAssRecordButton} from '../components/BigAssRecordButton';
-import {useEffect, useRef, useState} from 'react';
-import {
-  AudioEncoderAndroidType,
-  AudioSourceAndroidType,
-} from 'react-native-audio-recorder-player';
+import {useRef, useState} from 'react';
+import {AudioEncoderAndroidType, AudioSourceAndroidType,} from 'react-native-audio-recorder-player';
 import AudioService from '../../../services/AudioService';
 import {formatDuration} from '../../shared/helpers';
 import RNFS from 'react-native-fs';
 import {ShoppingListService} from '../../../services/ShoppingListService';
 import {LoaderStore} from '../../shared/state/LoaderStore';
+import {localization} from '../../../resources/localization';
 
 export interface IRecorderPageProps {
   onTranscriptReceived: any;
@@ -26,7 +25,6 @@ export const RecorderPage = (props: IRecorderPageProps) => {
 
   const startRecording = () => {
     pressed();
-    // return;
     console.log('Button pressed');
     setIsRecording(true);
     onStartRecord();
@@ -57,7 +55,7 @@ export const RecorderPage = (props: IRecorderPageProps) => {
         return {
           ...s,
           isLoading: true,
-          text: 'Robots are processing your voice',
+          text: localization.LOADER.ROBOTS_PROCESSING_MESSAGE,
         };
       });
     }, 300);
@@ -130,7 +128,6 @@ export const RecorderPage = (props: IRecorderPageProps) => {
       const path = await audioRecorderPlayer.stopRecorder();
       audioRecorderPlayer.removeRecordBackListener();
       setRecordingTime('00:00');
-      //   return;
 
       console.log('path: ' + path);
       const transcript = await ShoppingListService.createTranscriptRequest(
@@ -194,11 +191,8 @@ export const RecorderPage = (props: IRecorderPageProps) => {
         flexGrow: 1,
       }}>
       <View>
-        <Text variant="headlineLarge">Record</Text>
-        <Text variant="bodyMedium">
-          Once you start recording, we will automatically create a shopping list
-          for you.
-        </Text>
+        <Text variant="headlineLarge">{localization.RECORDER.TITLE}</Text>
+        <Text variant="bodyMedium">{localization.RECORDER.DESCRIPTION}</Text>
       </View>
 
       <View style={{alignItems: 'center', marginTop: 50}}>
@@ -236,7 +230,7 @@ export const RecorderPage = (props: IRecorderPageProps) => {
               />
             </View>
             <Button onPress={cancelRecording} style={{marginTop: 20}}>
-              Cancel
+              {localization.GLOBAL.CANCEL_LABEL}
             </Button>
           </Animated.View>
         ) : (

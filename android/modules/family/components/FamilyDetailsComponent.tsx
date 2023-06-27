@@ -1,6 +1,7 @@
 import {View} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import {IFamily} from '../../../models/IFamily';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyDetailsComponentProps {
   family: IFamily;
@@ -18,7 +19,9 @@ export const FamilyDetailsComponent = (props: IFamilyDetailsComponentProps) => {
           borderRadius: 20,
         }}>
         <Text variant="headlineMedium">{family.name}</Text>
-        <Text variant="bodyLarge">Join code: {family.inviteCode}</Text>
+        <Text variant="bodyLarge">
+          {localization.FAMILY.JOIN_CODE_LABEL} {family.inviteCode}
+        </Text>
       </Surface>
       <Surface
         style={{

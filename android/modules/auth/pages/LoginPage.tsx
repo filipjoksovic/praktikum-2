@@ -13,6 +13,7 @@ import {Text, useTheme} from 'react-native-paper';
 import {TextInput, Button} from 'react-native-paper';
 import {Link, useNavigation} from '@react-navigation/native';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
+import {localization} from '../../../resources/localization';
 export const LoginPage = ({navigation}: any) => {
   const [userAuth, setUserAuth] = React.useState<{
     email: string;
@@ -81,23 +82,23 @@ export const LoginPage = ({navigation}: any) => {
       <View style={{width: '100%', padding: 10, gap: 40}}>
         <TextInput
           mode={'outlined'}
-          label={'Email'}
+          label={localization.GLOBAL.EMAIL_LABEL}
           value={userAuth.email}
           onChangeText={setEmail}
         />
         <TextInput
           mode={'outlined'}
-          label={'Password'}
+          label={localization.GLOBAL.PASSWORD_LABEL}
           onChangeText={setPassword}
         />
       </View>
 
       <Button mode={'contained'} compact={false} onPress={submitForm}>
-        Log in
+        {localization.LOGIN.LOGIN_LABEL}
       </Button>
 
       <Text style={{marginTop: 20}}>
-        <Link to={'/Register'}>No account? Register here</Link>
+        <Link to={'/Register'}>{localization.LOGIN.NO_ACCOUNT_LABEL}</Link>
       </Text>
     </ScrollView>
   );

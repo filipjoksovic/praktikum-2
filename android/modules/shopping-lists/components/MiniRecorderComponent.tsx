@@ -10,6 +10,7 @@ import {
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
 } from 'react-native-audio-recorder-player';
+import {localization} from '../../../resources/localization';
 
 export interface IMiniRecorderComponent {
   recorderVisible: boolean;
@@ -229,8 +230,7 @@ export const MiniRecorderComponent = (props: IMiniRecorderComponent) => {
           </TouchableRipple>
         </Animated.View>
         <Text style={{textAlign: 'center', marginTop: 10}}>
-          When done speaking, press the button and the items will be added to
-          the list.
+          {localization.RECORDER.WHEN_DONE_SPEAKING_MESSAGE}
         </Text>
         <IconButton
           style={{position: 'absolute', top: 0, right: 0}}

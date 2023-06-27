@@ -13,6 +13,7 @@ import {AuthService} from '../../../services/AuthService';
 import {FamilyService} from '../../../services/FamilyService';
 import {useFocusEffect} from '@react-navigation/native';
 import {User} from '../../../models/User';
+import {localization} from '../../../resources/localization';
 
 export const SettingsPage = ({navigation}) => {
   const theme = useTheme();
@@ -74,7 +75,7 @@ export const SettingsPage = ({navigation}) => {
         }}>
         <View>
           <Text variant={'headlineLarge'} style={{marginBottom: 20}}>
-            Settings
+            {localization.GLOBAL.SETTINGS_LABEL}
           </Text>
 
           <View
@@ -96,8 +97,8 @@ export const SettingsPage = ({navigation}) => {
             <View style={{flexDirection: 'row', gap: 20}}>
               <TextInput
                 style={{flex: 1}}
-                placeholder={'First name'}
-                label={'First name'}
+                placeholder={localization.GLOBAL.FIRST_NAME_LABEL}
+                label={localization.GLOBAL.FIRST_NAME_LABEL}
                 mode={'outlined'}
                 onChangeText={text => {
                   setUser({...user, name: text});
@@ -106,19 +107,19 @@ export const SettingsPage = ({navigation}) => {
               />
               <TextInput
                 style={{flex: 1}}
-                placeholder={'Last name'}
+                placeholder={localization.GLOBAL.LAST_NAME_LABEL}
                 onChangeText={text => {
                   setUser({...user, surname: text});
                 }}
-                label={'Last name'}
+                label={localization.GLOBAL.LAST_NAME_LABEL}
                 mode={'outlined'}
                 value={user.surname}
               />
             </View>
 
             <TextInput
-              placeholder={'Email'}
-              label={'Email'}
+              placeholder={localization.GLOBAL.EMAIL_LABEL}
+              label={localization.GLOBAL.EMAIL_LABEL}
               mode={'outlined'}
               value={user.email}
             />
@@ -127,12 +128,12 @@ export const SettingsPage = ({navigation}) => {
               <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
                 <TextInput
                   value={inviteCode}
-                  label={'Family invite code'}
+                  label={localization.FAMILY.JOIN_CODE_LABEL}
                   mode={'outlined'}
                   onChangeText={text => setInviteCode(text)}
                 />
                 <Button onPress={sendJoinRequest}>
-                  Send Family Join Request
+                  {localization.FAMILY.SEND_REQUEST_LABEL}
                 </Button>
               </Surface>
             )}
@@ -147,10 +148,10 @@ export const SettingsPage = ({navigation}) => {
             gap: 20,
           }}>
           <Button onPress={updateUser} mode={'contained'}>
-            Save
+            {localization.GLOBAL.SAVE_LABEL}
           </Button>
           <Button onPress={logout} mode={'outlined'}>
-            Logout
+            {localization.GLOBAL.LOGOUT_LABEL}
           </Button>
         </View>
       </View>

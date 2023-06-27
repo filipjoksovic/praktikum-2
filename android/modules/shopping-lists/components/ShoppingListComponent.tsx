@@ -6,6 +6,7 @@ import {
   IShoppingList,
   ListItemDTOV2,
 } from '../../../models/IShoppingListsResponseDTO';
+import {localization} from '../../../resources/localization';
 
 export interface IShoppingListComponentProps {
   list: IShoppingList;
@@ -31,7 +32,7 @@ export const ShoppingListComponent = (props: IShoppingListComponentProps) => {
         props.onListLongPressed(list);
       }}
       left={props => <List.Icon {...props} icon="cart" />}
-      title={list.name ? list.name : 'No name'}
+      title={list.name ? list.name : localization.GLOBAL.NO_NAME_LABEL}
       titleStyle={{
         textDecorationStyle: 'solid',
       }}>

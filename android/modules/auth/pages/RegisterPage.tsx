@@ -6,6 +6,7 @@ import {UserAuthDTO} from '../../../models/UserAuthDTO';
 import {AuthService} from '../../../services/AuthService';
 import {Button, Text, TextInput, useTheme} from 'react-native-paper';
 import {Link} from '@react-navigation/native';
+import {localization} from '../../../resources/localization';
 
 export const RegisterPage = ({navigation}: any) => {
   const theme = useTheme();
@@ -63,13 +64,13 @@ export const RegisterPage = ({navigation}: any) => {
       <View style={{width: '100%', padding: 10, gap: 40}}>
         <TextInput
           mode={'outlined'}
-          label={'Email'}
+          label={localization.GLOBAL.EMAIL_LABEL}
           value={userAuth.email}
           onChangeText={setEmail}
         />
         <TextInput
           mode={'outlined'}
-          label={'Password'}
+          label={localization.GLOBAL.PASSWORD_LABEL}
           onChangeText={setPassword}
         />
       </View>
@@ -79,11 +80,13 @@ export const RegisterPage = ({navigation}: any) => {
         compact={false}
         rippleColor={'red'}
         onPress={submitForm}>
-        Register
+        {localization.REGISTER.REGISTER_LABEL}
       </Button>
 
       <Text style={{marginTop: 20}}>
-        <Link to={'/Login'}>Already have an account? Login here</Link>
+        <Link to={'/Login'}>
+          {localization.REGISTER.EXISTING_ACCOUNT_LABEL}
+        </Link>
       </Text>
     </ScrollView>
   );

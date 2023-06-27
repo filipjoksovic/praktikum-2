@@ -15,6 +15,7 @@ import RNFS from 'react-native-fs';
 import AudioService from '../../../services/AudioService';
 import {ShoppingListTranscriptPage} from './ShoppingListTranscriptPage';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
+import {localization} from '../../../resources/localization';
 
 export const PrepareShoppingListPage = () => {
   const audioRecorderPlayer = AudioService.getInstance().audioRecorderPlayer;
@@ -42,12 +43,18 @@ export const PrepareShoppingListPage = () => {
       setIsCreating(true);
       setShoppingItems([]);
       SnackBarStore.update(s => {
-        return {isOpen: true, text: 'Successfully created shopping list'};
+        return {
+          isOpen: true,
+          text: localization.SHOPPING_LIST.CREATE.CREATE_SUCCESS_MESSAGE,
+        };
       });
     } catch (err) {
-      console.error(`createList error`, err);
+      console.error('createList error', err);
       SnackBarStore.update(s => {
-        return {isOpen: true, text: 'Successfully created shopping list'};
+        return {
+          isOpen: true,
+          text: localization.SHOPPING_LIST.CREATE.CREATE_FAIL_MESSAGE,
+        };
       });
     }
   };
@@ -68,15 +75,17 @@ export const PrepareShoppingListPage = () => {
       SnackBarStore.update(s => {
         return {
           isOpen: true,
-          text: 'Successfully created family shopping list',
+          text: localization.SHOPPING_LIST.CREATE
+            .CREATE_FAMILY_LIST_SUCCESS_MESSAGE,
         };
       });
     } catch (err) {
-      console.error(`createList error`, err);
+      console.error('createList error', err);
       SnackBarStore.update(s => {
         return {
           isOpen: true,
-          text: 'Error when creating family shopping list: ',
+          text: localization.SHOPPING_LIST.CREATE
+            .CREATE_FAMILY_LIST_FAIL_MESSAGE,
           err,
         };
       });

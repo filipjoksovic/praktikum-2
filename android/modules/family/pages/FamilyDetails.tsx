@@ -12,6 +12,7 @@ import {
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {FamilyLink} from '../components/FamilyLink';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyDetails {}
 export const FamilyDetails = ({navigation}) => {
@@ -23,26 +24,26 @@ export const FamilyDetails = ({navigation}) => {
         Family Details
       </Text>
       <FamilyLink
-        text="Edit family"
+        text={localization.FAMILY.EDIT_FAMILY_LABEL}
         navigationLink="Edit"
         iconName="pen"
         onPress={() => navigation.navigate('Edit')}
       />
       <FamilyLink
-        text="Join requests"
+        text={localization.FAMILY.JOIN_REQUESTS_LABEL}
         navigationLink="JoinRequests"
         iconName="clock"
         onPress={() => navigation.navigate('JoinRequests')}
       />
       <FamilyLink
-        text="Family members"
+        text={localization.FAMILY.MEMBERS_LABEL}
         navigationLink="Members"
         iconName="users"
         onPress={() => navigation.navigate('Members')}
       />
 
       <FamilyLink
-        text="Shopping list"
+        text={localization.FAMILY.SHOPPING_LIST_LABEL}
         navigationLink="FamilyList"
         iconName="shopping-cart"
         onPress={() => navigation.navigate('FamilyList')}

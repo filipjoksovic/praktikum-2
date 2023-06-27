@@ -9,6 +9,7 @@ import {ShoppingListService} from '../../../services/ShoppingListService';
 import {ShoppingListComponent} from './ShoppingListComponent';
 import {NoShoppingListsComponent} from './NoShoppingListsComponent';
 import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
+import {localization} from '../../../resources/localization';
 
 export interface IShoppingListsComponentProps {
   listChanged: any;
@@ -175,8 +176,9 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             !isListChecked(selectedList) &&
             selectedList.itemList.length > 0 ? (
               <Text variant="bodyMedium">
-                Check off whole list? All of the items on {selectedList.name}{' '}
-                will be checked off.
+                {localization.SHOPPING_LIST.CHECK_OFF_WHOLE_LIST_MESSAGE_PART_1}
+                {selectedList.name}
+                {localization.SHOPPING_LIST.CHECK_OFF_WHOLE_LIST_MESSAGE_PART_2}
               </Text>
             ) : (
               <></>
@@ -184,8 +186,9 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             {(selectedList && isListChecked(selectedList)) ||
             selectedList?.itemList.length === 0 ? (
               <Text variant="bodyMedium">
-                Delete whole list? All of the items on {selectedList.name} will
-                be deleted.
+                {localization.SHOPPING_LIST.DELETE_WHOLE_LIST_MESSAGE_PART_1}
+                {selectedList.name}
+                {localization.SHOPPING_LIST.DELETE_WHOLE_LIST_MESSAGE_PART_2}
               </Text>
             ) : (
               <></>
@@ -194,7 +197,8 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedListItem.item &&
             !selectedListItem.item.checked ? (
               <Text variant="bodyMedium">
-                Check off {selectedListItem.item.name}?
+                {localization.SHOPPING_LIST.CHECK_OFF_LIST_ITEM}
+                {selectedListItem.item.name}?
               </Text>
             ) : (
               <></>
@@ -203,15 +207,20 @@ export const ShoppingListsComponent = (props: IShoppingListsComponentProps) => {
             selectedListItem.item &&
             selectedListItem.item.checked ? (
               <Text variant="bodyMedium">
-                Delete {selectedListItem.item.name}?
+                {localization.SHOPPING_LIST.DELETE_LIST_ITEM}
+                {selectedListItem.item.name}?
               </Text>
             ) : (
               <></>
             )}
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={dialogDismissed}>No</Button>
-            <Button onPress={dialogConfirmed}>Yes</Button>
+            <Button onPress={dialogDismissed}>
+              {localization.GLOBAL.NO_LABEL}
+            </Button>
+            <Button onPress={dialogConfirmed}>
+              {localization.GLOBAL.YES_LABEL}
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

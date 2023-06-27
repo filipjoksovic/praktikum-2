@@ -15,6 +15,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {AuthService} from '../../../../services/AuthService';
+import {localization} from '../../../../resources/localization';
 
 export const AccountSetup = () => {
   const [visible, setVisible] = React.useState(false);
@@ -57,33 +58,34 @@ export const AccountSetup = () => {
     <View
       style={{...LAYOUT.container, backgroundColor: theme.colors.background}}>
       <View>
-        <Text variant={'displaySmall'}>Welcome to WishList!</Text>
-        <Text style={{marginBottom: 10}}>It's a pleasure to meet you.</Text>
-        <Text>
-          Though, before you begin using the application, we'll need you to tell
-          us a bit about yourself
+        <Text variant={'displaySmall'}>
+          {localization.ACCOUNT_SETUP.WELCOME_MESSAGE}
         </Text>
+        <Text style={{marginBottom: 10}}>
+          {localization.ACCOUNT_SETUP.PLEASURE_TO_MEET_YOU_MESSAGE}
+        </Text>
+        <Text>{localization.ACCOUNT_SETUP.ABOUT_YOURSELF_MESSAGE}</Text>
       </View>
       <View>
         <TextInput
           value={setupState.fname}
           onChangeText={handleFnameUpdate}
           mode={'outlined'}
-          placeholder={'First name'}
+          placeholder={localization.GLOBAL.FIRST_NAME_LABEL}
           style={{marginVertical: 10}}
         />
         <TextInput
           value={setupState.lname}
           onChangeText={handleLnameUpdate}
           mode={'outlined'}
-          placeholder={'Last name'}
+          placeholder={localization.GLOBAL.LAST_NAME_LABEL}
           style={{marginVertical: 10}}
         />
 
         <Surface
           theme={{...theme, roundness: 20}}
           style={{borderRadius: 20, padding: 20, marginTop: 20}}>
-          <Text>Date of birth</Text>
+          <Text>{localization.ACCOUNT.DATE_OF_BIRTH_LABEL}</Text>
           <DatePicker
             date={new Date()}
             androidVariant={'nativeAndroid'}
@@ -93,7 +95,7 @@ export const AccountSetup = () => {
       </View>
       <View style={{alignItems: 'center'}}>
         <Button mode={'contained'} style={{marginTop: 20}} onPress={submitData}>
-          Proceed
+          {localization.GLOBAL.PROCEED_LABEL}
         </Button>
       </View>
 

@@ -19,6 +19,7 @@ import DatePicker from 'react-native-date-picker';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
 import {LoaderStore} from '../../shared/state/LoaderStore';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyListProps {}
 
@@ -72,7 +73,7 @@ export const FamilyList = ({navigation}) => {
       return {
         ...s,
         isLoading: true,
-        text: 'Transcript received. Processing data...',
+        text: localization.LOADER.TRANSCRIPT_RECEIVED_MESSAGE,
       };
     });
 
@@ -103,7 +104,10 @@ export const FamilyList = ({navigation}) => {
         return {...s, isLoading: false, text: ''};
       });
       SnackBarStore.update(() => {
-        return {isOpen: true, text: "Couldn't add items"};
+        return {
+          isOpen: true,
+          text: localization.SNACKBAR.ADD_ITEMS_ERROR_MESSAGE,
+        };
       });
       setTimeout(() => {
         SnackBarStore.update(() => {
@@ -140,8 +144,8 @@ export const FamilyList = ({navigation}) => {
     // Create a trigger notification
     await notifee.createTriggerNotification(
       {
-        title: 'List reminder',
-        body: 'This is a reminder to look at your family list',
+        title: localization.NOTIFICATIONS.LOOK_AT_FAMILY_LIST_TITLE,
+        body: localization.NOTIFICATIONS.LOOK_AT_FAMILY_LIST_NOTIFICATION,
         android: {
           channelId: 'default',
           smallIcon: 'ic_stat_name',
@@ -150,7 +154,10 @@ export const FamilyList = ({navigation}) => {
       trigger,
     );
     SnackBarStore.update(() => {
-      return {isOpen: true, text: 'Reminder created'};
+      return {
+        isOpen: true,
+        text: localization.SNACKBAR.REMINDER_CREATED_MESSAGE,
+      };
     });
 
     setTimeout(() => {
@@ -177,7 +184,9 @@ export const FamilyList = ({navigation}) => {
           icon={'arrow-left'}
           onPress={() => navigation.goBack()}
         />
-        <Text variant={'headlineSmall'}>Join requests</Text>
+        <Text variant={'headlineSmall'}>
+          {localization.FAMILY.JOIN_REQUESTS_LABEL}
+        </Text>
       </Surface>
       {familyList && familyList.items && familyList.items.length > 0 ? (
         <FamilyListComponent
@@ -196,8 +205,7 @@ export const FamilyList = ({navigation}) => {
           }}>
           <Text variant={'displayLarge'}>¯\_(ツ)_/¯</Text>
           <Text style={{textAlign: 'center'}}>
-            Your shopping list is currently empty. Go to the recorder page to
-            add some items
+            {localization.SHOPPING_LIST.EMPTY_LIST_LABEL}
           </Text>
         </View>
       )}
@@ -209,12 +217,12 @@ export const FamilyList = ({navigation}) => {
         actions={[
           {
             icon: 'bell',
-            label: 'Remind',
+            label: localization.GLOBAL.REMIND_LABEL,
             onPress: () => setOpenPicker(true),
           },
           {
             icon: 'radiobox-marked',
-            label: 'Add new items',
+            label: localization.GLOBAL.ADD_NEW_ITEMS,
             onPress: handleAddNewItems,
           },
         ]}

@@ -8,6 +8,7 @@ import {IFamilyMember} from '../../../models/IFamilyMember';
 import {FamilyMember} from '../components/FamilyMember';
 import {AuthService} from '../../../services/AuthService';
 import {User} from '../../../models/User';
+import {localization} from '../../../resources/localization';
 
 export interface IFamilyMembersProps {}
 export const FamilyMembers = ({navigation}) => {
@@ -58,12 +59,13 @@ export const FamilyMembers = ({navigation}) => {
           icon={'arrow-left'}
           onPress={() => navigation.goBack()}
         />
-        <Text variant={'headlineSmall'}>Family members</Text>
+        <Text variant={'headlineSmall'}>
+          {localization.FAMILY.MEMBERS_LABEL}
+        </Text>
       </Surface>
       {familyMembers && familyMembers.length > 1 && (
         <Text style={{textAlign: 'center'}}>
-          Here you can see family members who can create, update and edit the
-          shopping list and its items.
+          {localization.FAMILY.MEMBERS_LABEL.DESCRIPTIVE_MESSAGE}
         </Text>
       )}
       {familyMembers && familyMembers.length > 1 ? (
@@ -90,11 +92,10 @@ export const FamilyMembers = ({navigation}) => {
           }}>
           <Text variant={'displayLarge'}>¯\_(ツ)_/¯</Text>
           <Text style={{textAlign: 'center'}}>
-            Currently there are no family members other than you.
+            {localization.FAMILY.MEMBERS.EMPTY_FAMILY_LABEL}
           </Text>
           <Text style={{textAlign: 'center'}}>
-            You can share your family code with them or invite them via email
-            directly
+            {localization.FAMILY.MEMBERS.SHARE_FAMILY_CODE_MESSAGE}
           </Text>
         </View>
       )}

@@ -6,6 +6,7 @@ import {RecorderPage} from './RecorderPage';
 import {SnackBarStore} from '../../shared/state/SnackBarStore';
 import {Dimensions} from 'react-native';
 import {LoaderStore} from '../../shared/state/LoaderStore';
+import {localization} from "../../../resources/localization";
 
 export interface IShoppingListTranscriptPage {
   onReceiveTranscript: any;
@@ -25,7 +26,7 @@ export const ShoppingListTranscriptPage = (
         return {
           ...s,
           isLoading: true,
-          text: 'Robots are processing the transcribed list.',
+          text: localization.LOADER.ROBOTS_PROCESSING_LIST_MESSAGE,
         };
       });
       const result = await ShoppingListService.createRequest({
@@ -43,14 +44,14 @@ export const ShoppingListTranscriptPage = (
         };
       });
       SnackBarStore.update(() => {
-        return {isOpen: true, text: 'Data successfully parsed'};
+        return {isOpen: true, text: localization.SNACKBAR.DATA_PARSE_SUCCESS};
       });
 
       props.onReceiveTranscript(result.summary);
     } catch (err) {
       console.log('Error:', err);
       SnackBarStore.update(() => {
-        return {isOpen: true, text: 'Error parsing data'};
+        return {isOpen: true, text: localization.SNACKBAR.DATA_PARSE_FAIL};
       });
       setTimeout(() => {
         SnackBarStore.update(() => {
@@ -68,10 +69,9 @@ export const ShoppingListTranscriptPage = (
     <View style={{height: '100%'}}>
       {shoppingListPrompt ? (
         <>
-          <Text variant={'headlineMedium'}>Transcription complete</Text>
+          <Text variant={'headlineMedium'}>{localization.TRANSCRIPTION.TRANSCRIPT_COMPLETE_MESSAGE}</Text>
           <Text variant={'labelLarge'}>
-            Here is the transcription based on your voice recording. If
-            something is off, you can always edit it to your liking.
+            {localization.TRANSCRIPTION.TRANSCRIPT_COMPLETE_DESCRIPTIVE_MESSAGE}
           </Text>
           <TextInput
             style={{marginTop: 20, maxHeight: windowHeight / 3}} // Limit the height of TextInput to a third of the window height

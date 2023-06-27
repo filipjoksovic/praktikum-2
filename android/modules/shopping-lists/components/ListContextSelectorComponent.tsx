@@ -1,6 +1,6 @@
 import {SegmentedButtons} from 'react-native-paper';
 import React from 'react';
-import {TouchableNativeFeedback, View} from 'react-native';
+import {localization} from '../../../resources/localization';
 
 export const ListContextSelectorComponent = () => {
   const [value, setValue] = React.useState('');
@@ -12,11 +12,11 @@ export const ListContextSelectorComponent = () => {
       buttons={[
         {
           value: 'family',
-          label: 'Family',
+          label: localization.GLOBAL.FAMILY_LABEL,
         },
         {
           value: 'personal',
-          label: 'Personal',
+          label: localization.GLOBAL.PERSONAL_LABEL,
         },
       ]}
     />

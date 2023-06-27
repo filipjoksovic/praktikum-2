@@ -13,6 +13,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import React from 'react';
+import {localization} from '../../../resources/localization';
 
 export interface ICreateShoppingListPageProps {
   shoppingList: string[];
@@ -48,11 +49,10 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
 
   return (
     <View style={{height: '100%'}}>
-      <Text variant={'headlineLarge'}>Success!</Text>
+      <Text variant={'headlineLarge'}>{localization.GLOBAL.SUCCESS_LABEL}</Text>
 
       <Text variant={'bodyMedium'}>
-        Your data has been successfully processed. You can go over the list one
-        more time, to add or remove items, and then create the list.
+        {localization.SHOPPING_LIST.CREATE.DATA_PROCESS_SUCCESS_MESSAGE}
       </Text>
       {!isAdding && (
         <View>
@@ -77,8 +77,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
             <Text
               variant={'bodySmall'}
               style={{textAlign: 'center', marginTop: 10}}>
-              Only one list exists per family. If the list already exists, the
-              data will be updated while avoiding duplicates.
+              {localization.SHOPPING_LIST.CREATE.ONE_LIST_PER_FAMILY_MESSAGE}
             </Text>
           )}
           {listPrivacyValue === 'per' && (
@@ -124,7 +123,7 @@ export const CreateShoppingListPage = (props: ICreateShoppingListPageProps) => {
           }}>
           <TextInput
             mode="outlined"
-            label={'Item name'}
+            label={localization.GLOBAL.ITEM_NAME_LABEL}
             style={{flex: 1}}
             onChangeText={setNewItem}
           />

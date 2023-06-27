@@ -12,6 +12,7 @@ import React from 'react';
 import {FamilyService} from '../../../services/FamilyService';
 import {useFocusEffect} from '@react-navigation/native';
 import {IFamily} from '../../../models/IFamily';
+import {localization} from '../../../resources/localization';
 
 export interface IEditFamilyProps {}
 
@@ -79,12 +80,14 @@ export const EditFamily = ({navigation}) => {
           icon={'arrow-left'}
           onPress={() => navigation.goBack()}
         />
-        <Text variant={'headlineSmall'}>Edit family</Text>
+        <Text variant={'headlineSmall'}>
+          {localization.FAMILY.EDIT_FAMILY_LABEL}
+        </Text>
       </Surface>
       <View>
-        <Text>Family name</Text>
+        <Text>{localization.FAMILY.FAMILY_NAME_LABEL}</Text>
         <TextInput
-          placeholder={'Family name'}
+          placeholder={localization.FAMILY.FAMILY_NAME_LABEL}
           mode={'outlined'}
           value={name}
           onChangeText={setName}
@@ -99,9 +102,9 @@ export const EditFamily = ({navigation}) => {
           gap: 20,
         }}>
         <View style={{flex: 1}}>
-          <Text>Invite code</Text>
+          <Text>{localization.FAMILY.JOIN_CODE_LABEL}</Text>
           <TextInput
-            placeholder={'Invite code'}
+            placeholder={localization.FAMILY.JOIN_CODE_LABEL}
             mode={'outlined'}
             value={inviteCode}
             onChangeText={setInviteCode}

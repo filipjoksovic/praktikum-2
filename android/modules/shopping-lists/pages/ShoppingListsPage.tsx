@@ -11,6 +11,7 @@ import {ShoppingListStore} from '../../shared/state/ShoppingListsStore';
 import DatePicker from 'react-native-date-picker';
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 import {LoaderStore} from '../../shared/state/LoaderStore';
+import {localization} from '../../../resources/localization';
 
 export const ShoppingListsPage = () => {
   const theme = useTheme();
@@ -59,7 +60,10 @@ export const ShoppingListsPage = () => {
         };
       });
       SnackBarStore.update(() => {
-        return {isOpen: true, text: 'List successfully deleted'};
+        return {
+          isOpen: true,
+          text: localization.SHOPPING_LIST.LIST_DELETED_SUCCESS_MESSAGE,
+        };
       });
     } catch (err) {
       console.log('ShoppingListsPage error', err);
@@ -71,7 +75,7 @@ export const ShoppingListsPage = () => {
       return {
         ...s,
         isLoading: true,
-        text: 'Transcript received. Sent to robots for processing.',
+        text: localization.LOADER.ROBOTS_PROCESSING_LIST_MESSAGE,
       };
     });
     console.log('List for fab', listForFab);
@@ -117,7 +121,10 @@ export const ShoppingListsPage = () => {
         };
       });
       SnackBarStore.update(() => {
-        return {isOpen: true, text: 'Error adding items'};
+        return {
+          isOpen: true,
+          text: localization.SHOPPING_LIST.ADD_ITEMS_FAIL_MESSAGE,
+        };
       });
       setTimeout(() => {
         SnackBarStore.update(() => {
@@ -162,8 +169,11 @@ export const ShoppingListsPage = () => {
     // Create a trigger notification
     await notifee.createTriggerNotification(
       {
-        title: 'List reminder',
-        body: `This is a reminder to look at your ${listForFab?.name} list`,
+        title: localization.NOTIFICATIONS.LOOK_AT_FAMILY_LIST_TITLE,
+        body:
+          localization.NOTIFICATIONS.LOOK_AT_FAMILY_LIST_NOTIFICATION_PART_1 +
+          listForFab?.name +
+          localization.NOTIFICATIONS.LOOK_AT_FAMILY_LIST_NOTIFICATION_PART_2,
         android: {
           channelId: 'default',
           smallIcon: 'ic_stat_name',
@@ -172,7 +182,10 @@ export const ShoppingListsPage = () => {
       trigger,
     );
     SnackBarStore.update(() => {
-      return {isOpen: true, text: 'Reminder created'};
+      return {
+        isOpen: true,
+        text: localization.SNACKBAR.REMINDER_CREATED_MESSAGE,
+      };
     });
 
     setTimeout(() => {
@@ -197,7 +210,7 @@ export const ShoppingListsPage = () => {
         flexDirection: 'column',
       }}>
       <Text variant={'headlineLarge'} style={{marginBottom: 10}}>
-        Shopping lists
+        {localization.GLOBAL.SHOPPING_LISTS}
       </Text>
       <Searchbar
         placeholder="Search"
@@ -220,17 +233,17 @@ export const ShoppingListsPage = () => {
           actions={[
             {
               icon: 'bell',
-              label: 'Remind',
+              label: localization.GLOBAL.REMIND_LABEL,
               onPress: () => setOpenPicker(true),
             },
             {
               icon: 'trash-can',
-              label: 'Delete',
+              label: localization.SHOPPING_LIST.DELETE_LIST_ITEM,
               onPress: handleDelete,
             },
             {
               icon: 'radiobox-marked',
-              label: 'Add new items',
+              label: localization.GLOBAL.ADD_NEW_ITEMS,
               onPress: handleAddNewItems,
             },
           ]}
