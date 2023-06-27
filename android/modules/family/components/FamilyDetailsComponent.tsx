@@ -1,3 +1,4 @@
+import React from 'react';
 import {View} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import {IFamily} from '../../../models/IFamily';
@@ -35,7 +36,7 @@ export const FamilyDetailsComponent = (props: IFamilyDetailsComponentProps) => {
           style={{
             verticalAlign: 'middle',
           }}>
-          Members
+          {localization.FAMILY.MEMBERS_LABEL}
         </Text>
       </Surface>
     </View>

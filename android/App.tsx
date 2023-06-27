@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   StatusBar,
@@ -8,15 +8,13 @@ import {
 } from 'react-native';
 import {STYLESHEET} from './resources/styles/STYLESHEET';
 import {RegisterPage} from './modules/auth/pages/RegisterPage';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import {LoginPage} from './modules/auth/pages/LoginPage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {HomePage} from './modules/home/pages/HomePage';
 import {
   DefaultTheme,
-  MD2Colors,
   PaperProvider,
-  Portal,
   Snackbar,
   Text,
   useTheme,
@@ -29,18 +27,32 @@ import {ShoppingListsPage} from './modules/shopping-lists/pages/ShoppingListsPag
 import {FamilyPage} from './modules/family/pages/FamilyPage';
 import {SnackBarStore} from './modules/shared/state/SnackBarStore';
 import {
-  scheme_green_dark,
-  scheme_green_light,
   scheme_purple_dark,
   scheme_purple_light,
 } from './resources/styles/colorSchemes';
 import {enGB, registerTranslation} from 'react-native-paper-dates';
 import {LoaderStore} from './modules/shared/state/LoaderStore';
 import {localization} from './resources/localization';
+import {AuthService} from './services/AuthService';
+import {CreateOrJoinFamily} from './modules/settings/components/CreateOrJoinFamily';
+import {User} from './models/User';
 
 export const TabNavigation = () => {
   const Tab = createMaterialBottomTabNavigator();
   const theme = useTheme();
+  const [user, setUser] = useState<User | null>(null);
+
+  const getUser = async () => {
+    const usr = await AuthService.getUser();
+    setUser(usr);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUser();
+    }, []),
+  );
+
   return (
     <Tab.Navigator
       barStyle={{backgroundColor: theme.colors.background}}
@@ -74,22 +86,44 @@ export const TabNavigation = () => {
         }}
       />
 
-      <Tab.Screen
-        name={'Family'}
-        component={FamilyPage}
-        options={{
-          tabBarIcon: () => {
-            return (
-              <Icon
-                name={'user-friends'}
-                color={theme.colors.tertiary}
-                size={20}
-              />
-            );
-          },
-          tabBarLabel: localization.GLOBAL.FAMILY_LABEL,
-        }}
-      />
+      {user && user.familyId && (
+        <Tab.Screen
+          name={'Family'}
+          component={FamilyPage}
+          options={{
+            tabBarIcon: () => {
+              return (
+                <Icon
+                  name={'user-friends'}
+                  color={theme.colors.tertiary}
+                  size={20}
+                />
+              );
+            },
+            tabBarLabel: localization.GLOBAL.FAMILY_LABEL,
+          }}
+        />
+      )}
+
+      {user && !user.familyId && (
+        <Tab.Screen
+          name={'CreateOrJoin'}
+          component={CreateOrJoinFamily}
+          options={{
+            tabBarIcon: () => {
+              return (
+                <Icon
+                  name={'user-friends'}
+                  color={theme.colors.tertiary}
+                  size={20}
+                />
+              );
+            },
+            tabBarLabel: localization.GLOBAL.FAMILY_LABEL,
+          }}
+        />
+      )}
+
       <Tab.Screen
         name={'Settings'}
         component={SettingsPage}

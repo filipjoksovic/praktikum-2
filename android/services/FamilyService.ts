@@ -39,6 +39,9 @@ export class FamilyService {
       if (!user) {
         throw new Error('User not logged in');
       }
+      if(!user.familyId){
+        throw new Error("User has no family");
+      }
       return await makeRequest(`families/user/${user.id}`, 'get');
     } catch (err) {
       console.error('getFamilyForUser error', err);

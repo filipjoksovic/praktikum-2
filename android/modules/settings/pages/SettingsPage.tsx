@@ -1,16 +1,8 @@
 import {View} from 'react-native';
-import {
-  Avatar,
-  Button,
-  Surface,
-  Text,
-  TextInput,
-  useTheme,
-} from 'react-native-paper';
+import {Avatar, Button, Text, TextInput, useTheme,} from 'react-native-paper';
 import {LAYOUT} from '../../../resources/styles/STYLESHEET';
-import React, {useState} from 'react';
+import React from 'react';
 import {AuthService} from '../../../services/AuthService';
-import {FamilyService} from '../../../services/FamilyService';
 import {useFocusEffect} from '@react-navigation/native';
 import {User} from '../../../models/User';
 import {localization} from '../../../resources/localization';
@@ -34,7 +26,6 @@ export const SettingsPage = ({navigation}) => {
       getUser();
     }, []),
   );
-  const [inviteCode, setInviteCode] = useState('');
 
   const logout = async () => {
     try {
@@ -42,17 +33,6 @@ export const SettingsPage = ({navigation}) => {
       navigation.navigate('Login');
     } catch (e) {
       console.log('[SettingsPage]: Error occurred when logging out', e);
-    }
-  };
-
-  const sendJoinRequest = async () => {
-    try {
-      await FamilyService.sendJoinRequest(inviteCode);
-    } catch (e) {
-      console.log(
-        '[SettingsPage]: Error occurred when sending join request',
-        e,
-      );
     }
   };
 
@@ -123,20 +103,6 @@ export const SettingsPage = ({navigation}) => {
               mode={'outlined'}
               value={user.email}
             />
-
-            {!user.familyId && (
-              <Surface style={{marginTop: 10, padding: 20, borderRadius: 20}}>
-                <TextInput
-                  value={inviteCode}
-                  label={localization.FAMILY.JOIN_CODE_LABEL}
-                  mode={'outlined'}
-                  onChangeText={text => setInviteCode(text)}
-                />
-                <Button onPress={sendJoinRequest}>
-                  {localization.FAMILY.SEND_REQUEST_LABEL}
-                </Button>
-              </Surface>
-            )}
           </View>
         </View>
         <View
